@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>detalhes</title>
+</head>
+<body>
+  <h1>detalhes</h1>
+
+
+
+
+<style>
+    .anuncio {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #f2f2f2;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Exibir Anúncios</title>
+  <style>
+    .anuncio {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    h3 {
+      margin-bottom: 10px;
+    }
+    p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h2>Meus Anúncios</h2>
+  <div id="lista-anuncios">Carregando anúncios...</div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+      authDomain: "teste-cfe69.firebaseapp.com",
+      projectId: "teste-cfe69",
+      storageBucket: "teste-cfe69.appspot.com",
+      messagingSenderId: "646579509123",
+      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
+    const lista = document.getElementById("lista-anuncios");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const q = query(collection(db, "anuncios"), where("uid", "==", user.uid));
+          const querySnapshot = await getDocs(q);
+
+          if (querySnapshot.empty) {
+            lista.textContent = "Você ainda não publicou nenhum anúncio.";
+          } else {
+            lista.innerHTML = ""; // Limpa o conteúdo de 'Carregando anúncios...'
+            querySnapshot.forEach(doc => {
+              const dados = doc.data();
+
+              // Criação do link do WhatsApp
+              const numeroLimpo = dados.whatsapp.replace(/\D/g, '');
+              const linkWhatsapp = `https://wa.me/${numeroLimpo}`;
+
+              const div = document.createElement("div");
+              div.classList.add("anuncio");
+              div.innerHTML = `
+                <h3>${dados.nome}</h3>
+                <p><strong>Livro:</strong> ${dados.livro}</p>
+                <p><strong>Tema:</strong> ${dados.tema}</p>
+              `;
+
+              // Quando clicar no anúncio, salvar dados no localStorage e redirecionar
+              div.addEventListener('click', () => {
+                localStorage.setItem('anuncioSelecionado', JSON.stringify({
+                  nome: dados.nome,
+                  livro: dados.livro,
+                  capitulo: dados.capitulo,
+                  tema: dados.tema,
+                  licao: dados.licao,
+                  whatsapp: linkWhatsapp
+                }));
+                window.location.href = "detalhes do anúncio sem ID.html";
+              });
+
+              lista.appendChild(div);
+            });
+          }
+        } catch (error) {
+          console.error("Erro ao carregar os anúncios:", error);
+          lista.textContent = "Erro ao carregar anúncios. Veja o console para detalhes.";
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>detalhes test</title>
+</head>
+<body>
+  <h1>detalhes test</h1>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalhes do Anúncio</title>
+  <style>
+    .detalhes {
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      margin: 20px;
+    }
+    h3 {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Detalhes do Anúncio</h2>
+  <div class="detalhes" id="detalhes-anuncio">Carregando...</div>
+
+  <script>
+    // Recupera os dados do anúncio do localStorage
+    const anuncio = JSON.parse(localStorage.getItem('anuncioSelecionado'));
+
+    // Seleciona o elemento onde os detalhes serão exibidos
+    const detalhes = document.getElementById('detalhes-anuncio');
+
+    if (anuncio) {
+      // Exibe os detalhes do anúncio
+      detalhes.innerHTML = `
+        <h3>${anuncio.nome}</h3>
+        <p><strong>Livro:</strong> ${anuncio.livro}</p>
+        <p><strong>Capítulo:</strong> ${anuncio.capitulo}</p>
+        <p><strong>Tema:</strong> ${anuncio.tema}</p>
+        <p><strong>Lição:</strong> ${anuncio.licao}</p>
+        <p><strong>WhatsApp:</strong> <a href="${anuncio.whatsapp}" target="_blank">Conversar no WhatsApp</a></p>
+      `;
+    } else {
+      detalhes.textContent = "Nenhum anúncio selecionado.";
+    }
+  </script>
+</body>
+</html>
