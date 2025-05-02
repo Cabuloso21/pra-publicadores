@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>testando 40</title>
+</head>
+<body>
+  <style>
+body {
+margin: 0px;
+font-family: Roboto, sans-serif;
+background: white;
+
+}
+
+header {
+padding: 20px;
+background: goldenrod;
+border-bottom: 1px solid #ccc;
+}
+
+.text {
+color: black;
+text-align: center;
+font-weight: bold;
+font-size: 19px;
+}
+
+ #form-anuncio {
+  max-width: 500px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  margin-top: 30px;
+  
+}
+
+/* Estilo dos inputs */
+#form-anuncio input[type="text"] {
+  width: 91%;
+  padding: 12px;
+  margin-left: 0px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s;
+  margin-top: 20px;
+}
+
+#form-anuncio input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+
+#form-anuncio button {
+  width: 50%;
+  padding: 12px;
+  margin-left: 70px;
+  margin-top: 40px;
+  background: goldenrod;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#form-anuncio button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo da mensagem */
+#form-anuncio .message {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+</style>
+
+<header>
+<div class="text">Adicionar designação</div>
+</header>
+
+
+<form id="form-anuncio">
+  <input type="text" id="produto" placeholder="Nome do Produto" required />
+  <input type="text" id="tema" placeholder="Tema" required />
+  <button type="submit">Finalizar</button>
+  <p class="message" id="mensagem"></p>
+</form>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const db = getFirestore();
+
+  let usuario = null;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      usuario = user;
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+
+  const form = document.getElementById("form-anuncio");
+  const msg = document.getElementById("mensagem");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const produto = document.getElementById("produto").value;
+    const tema = document.getElementById("tema").value;
+
+    try {
+      await addDoc(collection(db, "anuncios"), {
+        uid: usuario.uid,
+        produto,
+        tema,
+        emailUsuario: usuario.email,
+        nomeUsuario: usuario.displayName || "",
+        criadoEm: new Date()
+      });
+
+      msg.textContent = "assunto publicado com sucesso!";
+      msg.style.color = "green";
+      form.reset();
+    } catch (error) {
+      msg.textContent = "Erro ao publicar anúncio: " + error.message;
+      msg.style.color = "red";
+    }
+  });
+</script>
+
+
+</body>
+</html>
