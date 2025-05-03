@@ -10,7 +10,7 @@
 <style>
  body {
  font-family: 'Segoe UI', sans-serif;
- background-color: #f2f2f2;
+ background: lime;
  margin: 0;
     
 }
@@ -104,26 +104,25 @@ text-align: center;
   }
 </style>
 
-
 <header>
-<div class="text">Minha designação</div>
+  <div class="text">Minha designação</div>
 </header>
 
-<div id="lista-anuncios">Carregando anúncios...</div>
+<div id="lista-designacoes">Carregando designações...</div>
 
- <!-- Firebase SDK -->
- <script type="module">
- import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
- import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
- import {
- getFirestore,
- collection,
- query,
- where,
- getDocs,
- doc,
- updateDoc,
- deleteDoc
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -139,17 +138,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 
-const lista = document.getElementById("lista-anuncios");
+const lista = document.getElementById("lista-designacoes");
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return window.location.href = "login.html";
 
   try {
-    const q = query(collection(db, "anuncios"), where("uid", "==", user.uid));
+    const q = query(collection(db, "designacao"), where("uid", "==", user.uid));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      lista.textContent = "Você ainda não publicou nenhum anúncio.";
+      lista.textContent = "Você ainda não adicionou nenhuma designação.";
       return;
     }
 
@@ -157,10 +156,10 @@ onAuthStateChanged(auth, async (user) => {
 
     querySnapshot.forEach(docSnap => {
       const dados = docSnap.data();
-      const anuncioId = docSnap.id;
+      const designacaoId = docSnap.id;
 
       const div = document.createElement("div");
-      div.className = "anuncio";
+      div.className = "designacao";
       div.style.border = "1px solid #ccc";
       div.style.padding = "10px";
       div.style.marginBottom = "10px";
@@ -171,7 +170,7 @@ onAuthStateChanged(auth, async (user) => {
       titulo.contentEditable = true;
       titulo.textContent = dados.produto || "Sem nome";
       titulo.addEventListener("blur", async () => {
-        await updateDoc(doc(db, "anuncios", anuncioId), { produto: titulo.textContent });
+        await updateDoc(doc(db, "designacao", designacaoId), { produto: titulo.textContent });
       });
 
       // Editar Tema
@@ -180,7 +179,7 @@ onAuthStateChanged(auth, async (user) => {
       tema.innerHTML = `<strong>Tema:</strong> ${dados.tema || "Sem tema"}`;
       tema.addEventListener("blur", async () => {
         const novoTema = tema.textContent.replace("Tema:", "").trim();
-        await updateDoc(doc(db, "anuncios", anuncioId), { tema: novoTema });
+        await updateDoc(doc(db, "designacao", designacaoId), { tema: novoTema });
       });
 
       // Campo de descrição (editável)
@@ -190,7 +189,7 @@ onAuthStateChanged(auth, async (user) => {
       descricao.style.width = "100%";
       descricao.style.marginTop = "8px";
       descricao.addEventListener("blur", async () => {
-        await updateDoc(doc(db, "anuncios", anuncioId), { descricao: descricao.value });
+        await updateDoc(doc(db, "designacao", designacaoId), { descricao: descricao.value });
       });
 
       // Campo para digitar o WhatsApp antes de enviar
@@ -231,9 +230,9 @@ onAuthStateChanged(auth, async (user) => {
       botaoExcluir.style.cursor = "pointer";
 
       botaoExcluir.addEventListener("click", async () => {
-        const confirmar = confirm("Tem certeza que deseja excluir este anúncio?");
+        const confirmar = confirm("Tem certeza que deseja excluir esta designação?");
         if (confirmar) {
-          await deleteDoc(doc(db, "anuncios", anuncioId));
+          await deleteDoc(doc(db, "designacao", designacaoId));
           div.remove();
         }
       });
@@ -250,8 +249,9 @@ onAuthStateChanged(auth, async (user) => {
     });
 
   } catch (error) {
-    lista.textContent = "Erro ao carregar anúncios.";
+    lista.textContent = "Erro ao carregar designações.";
     console.error(error);
   }
 });
 </script>
+
