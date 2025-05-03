@@ -86,11 +86,9 @@ font-weight: bold;
     }
   </style>
 </head>
-
-
-</head>
 <body>
-  <form id="form-anuncio">
+
+<form id="form-anuncio">
     <input type="text" id="nome" placeholder="Nome do estudante" required />
     <input type="text" id="livro" placeholder="Livro de estudo" required />
     <input type="number" id="capitulo" placeholder="Capítulo" required />
@@ -145,7 +143,7 @@ font-weight: bold;
       const whatsapp = document.getElementById("whatsapp").value;
 
       try {
-        await addDoc(collection(db, "anuncios"), {
+        await addDoc(collection(db, "estudantes"), {
           uid: usuario.uid,
           nome,
           livro,
@@ -158,11 +156,11 @@ font-weight: bold;
           criadoEm: new Date()
         });
 
-        msg.textContent = "Anúncio publicado com sucesso!";
+        msg.textContent = "Estudante cadastrado com sucesso!";
         msg.style.color = "green";
         form.reset();
       } catch (error) {
-        msg.textContent = "Erro ao publicar anúncio: " + error.message;
+        msg.textContent = "Erro ao cadastrar estudante: " + error.message;
         msg.style.color = "red";
       }
     });
@@ -170,6 +168,4 @@ font-weight: bold;
 </body>
 </html>
 
-
-</body>
-</html>
+  
