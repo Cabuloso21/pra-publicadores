@@ -90,7 +90,6 @@ font-size: 19px;
 <div class="text">Adicionar designação</div>
 </header>
 
-
 <form id="form-anuncio">
   <input type="text" id="produto" placeholder="Nome do Produto" required />
   <input type="text" id="tema" placeholder="Tema" required />
@@ -132,11 +131,17 @@ font-size: 19px;
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const produto = document.getElementById("produto").value;
-    const tema = document.getElementById("tema").value;
+    const produto = document.getElementById("produto").value.trim();
+    const tema = document.getElementById("tema").value.trim();
+
+    if (!produto || !tema) {
+      msg.textContent = "Preencha todos os campos.";
+      msg.style.color = "red";
+      return;
+    }
 
     try {
-      await addDoc(collection(db, "anuncios"), {
+      await addDoc(collection(db, "designacao"), {
         uid: usuario.uid,
         produto,
         tema,
@@ -145,16 +150,15 @@ font-size: 19px;
         criadoEm: new Date()
       });
 
-      msg.textContent = "assunto publicado com sucesso!";
+      msg.textContent = "Designação publicada com sucesso!";
       msg.style.color = "green";
       form.reset();
     } catch (error) {
-      msg.textContent = "Erro ao publicar anúncio: " + error.message;
+      msg.textContent = "Erro ao publicar designação: " + error.message;
       msg.style.color = "red";
     }
   });
 </script>
-
 
 </body>
 </html>
