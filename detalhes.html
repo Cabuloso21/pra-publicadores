@@ -3,16 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>detalhes test</title>
 </head>
 <body>
-  <h1>detalhes test</h1>
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Detalhes do Anúncio</title>
+  
   <style>
     .detalhes {
       padding: 20px;
@@ -26,29 +19,28 @@
   </style>
 </head>
 <body>
-  <h2>Detalhes do Anúncio</h2>
-  <div class="detalhes" id="detalhes-anuncio">Carregando...</div>
+  
+<h2>Detalhes do Estudante</h2>
+<div class="detalhes" id="detalhes-estudante">Carregando...</div>
 
-  <script>
-    // Recupera os dados do anúncio do localStorage
-    const anuncio = JSON.parse(localStorage.getItem('anuncioSelecionado'));
+<script>
+  // Recupera os dados do estudante do localStorage
+  const estudante = JSON.parse(localStorage.getItem('estudanteSelecionado'));
 
-    // Seleciona o elemento onde os detalhes serão exibidos
-    const detalhes = document.getElementById('detalhes-anuncio');
+  // Seleciona o elemento onde os detalhes serão exibidos
+  const detalhes = document.getElementById('detalhes-estudante');
 
-    if (anuncio) {
-      // Exibe os detalhes do anúncio
-      detalhes.innerHTML = `
-        <h3>${anuncio.nome}</h3>
-        <p><strong>Livro:</strong> ${anuncio.livro}</p>
-        <p><strong>Capítulo:</strong> ${anuncio.capitulo}</p>
-        <p><strong>Tema:</strong> ${anuncio.tema}</p>
-        <p><strong>Lição:</strong> ${anuncio.licao}</p>
-        <p><strong>WhatsApp:</strong> <a href="${anuncio.whatsapp}" target="_blank">Conversar no WhatsApp</a></p>
-      `;
-    } else {
-      detalhes.textContent = "Nenhum anúncio selecionado.";
-    }
-  </script>
-</body>
-</html>
+  if (estudante) {
+    // Exibe os detalhes do estudante
+    detalhes.innerHTML = `
+      <h3>${estudante.nome}</h3>
+      <p><strong>Livro:</strong> ${estudante.livro}</p>
+      <p><strong>Capítulo:</strong> ${estudante.capitulo}</p>
+      <p><strong>Tema:</strong> ${estudante.tema}</p>
+      <p><strong>Lição:</strong> ${estudante.licao}</p>
+      <p><strong>WhatsApp:</strong> <a href="${estudante.whatsapp}" target="_blank">Conversar no WhatsApp</a></p>
+    `;
+  } else {
+    detalhes.textContent = "Nenhum estudante selecionado.";
+  }
+</script>
