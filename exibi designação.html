@@ -12,11 +12,11 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9f9f9;
   margin: 0;
-  padding: 0;
+  
 }
 
 header {
-  background: linear-gradient(to right, #ff9800, #ffb74d);
+  background:lime;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -29,8 +29,8 @@ header {
 }
 
 #lista-designacoes {
-  max-width: 500px;
-  margin: 50px auto;
+  max-width: 400px;
+  margin: 0px auto;
   padding: 0 15px;
 }
 
@@ -64,27 +64,6 @@ header {
   cursor: text;
 }
 
-.designacao textarea {
-  width: 100%;
-  height: 120px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  resize: vertical;
-  margin-top: 10px;
-  background-color: #fefefe;
-}
-
-.designacao input[type="tel"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  background-color: #fefefe;
-}
 
 .designacao button {
   display: inline-block;
@@ -112,7 +91,32 @@ header {
 .designacao button:hover {
   filter: brightness(1.1);
 }
+
+.designacao textarea {
+  width: 100%; /* CORRIGIDO */
+  height: 500px; /* Altura mais proporcional */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  resize: vertical;
+  margin-top: 10px;
+  background-color: #fefefe;
+  box-sizing: border-box; /* Para garantir que padding não estoure o container */
+}
+
+.designacao input[type="tel"] {
+  width: 100%; /* CORRIGIDO */
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fefefe;
+  box-sizing: border-box;
+}
 </style>
+
 <header>
   <div class="text">Minha designação</div>
 </header>
