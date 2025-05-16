@@ -7,9 +7,6 @@
 </head>
 <body>
 
-
-
-
 <style>
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -134,7 +131,7 @@ header {
 </header>
 
 
-        <div id="lista-designacoes">Carregando designações...</div>
+<div id="lista-designacoes">Carregando designações...</div>
 
 
 
@@ -255,20 +252,46 @@ onAuthStateChanged(auth, async (user) => {
         updateDoc(ref, { descricao: novoValor })
       );
 
-      // WhatsApp
-      const inputWhatsapp = document.createElement("input");
-      inputWhatsapp.type = "tel";
-      inputWhatsapp.placeholder = "Digite o número do WhatsApp";
-      inputWhatsapp.style.marginTop = "8px";
-      inputWhatsapp.style.width = "100%";
+ const campoWhatsapp = document.createElement("div");
+ const inputWhatsapp = document.createElement("input");
+ const statusWhatsapp = document.createElement("span");
 
-      const botaoWhatsapp = document.createElement("button");
+inputWhatsapp.type = "tel";
+inputWhatsapp.placeholder = "Digite o número do WhatsApp";
+inputWhatsapp.style.marginTop = "8px";
+inputWhatsapp.style.width = "100%";
+inputWhatsapp.value = dados.whatsapp || "";
+statusWhatsapp.style.marginLeft = "8px";
+statusWhatsapp.style.color = "green";
+statusWhatsapp.style.fontSize = "0.9em";
+
+let salvarTimeoutWhatsapp;
+inputWhatsapp.addEventListener("input", () => {
+  clearTimeout(salvarTimeoutWhatsapp);
+  salvarTimeoutWhatsapp = setTimeout(async () => {
+    const novoNumero = inputWhatsapp.value.trim();
+    try {
+      await updateDoc(ref, { whatsapp: novoNumero });
+      statusWhatsapp.textContent = "Salvo!";
+      setTimeout(() => statusWhatsapp.textContent = "", 2000);
+    } catch (err) {
+      statusWhatsapp.textContent = "Erro!";
+      console.error("Erro ao salvar WhatsApp:", err);
+    }
+  }, 1000);
+});
+
+campoWhatsapp.appendChild(inputWhatsapp);
+campoWhatsapp.appendChild(statusWhatsapp);
+
+ const botaoWhatsapp = document.createElement("button");
       botaoWhatsapp.textContent = "Enviar para o WhatsApp";
       botaoWhatsapp.style.cssText = "margin-top:8px;background:#25d366;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer";
 
       botaoWhatsapp.addEventListener("click", () => {
-        const numero = inputWhatsapp.value.replace(/\D/g, "");
-        if (!numero) return alert("Digite um número válido!");
+      const numero = inputWhatsapp.value.trim().replace(/\D/g, "");
+
+    if (!numero) return alert("Digite um número válido!");
         const produto = campoProduto.querySelector("div").textContent.trim();
         const tema = campoTema.querySelector("div").textContent.trim();
         const descricao = campoDescricao.querySelector("textarea").value.trim();
@@ -308,4 +331,7 @@ onAuthStateChanged(auth, async (user) => {
 </script>
 
 </body>
-</html
+</html>
+
+  
+              
