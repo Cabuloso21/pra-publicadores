@@ -3,33 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>teste</title>
+<title>detalhes</title>
 </head>
 <body>
-
-  <style>
+  
+<style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f4f6f9;
-    color: #333;
     margin: 0;
-    padding: 20px;
-  }
+ }
 
-  h2 {
-    text-align: center;
-    color: #2c3e50;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
+ header {
+  background:lime;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
-  #lista-estudantes {
+.text {
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+ #lista-estudantes {
     display: flex;
     flex-direction: column;
     gap: 15px;
     max-width: 600px;
     margin: 0 auto;
-  }
+    margin-top: 30px;
+
+}
 
   .estudante {
     background: #ffffff;
@@ -40,7 +46,12 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-  }
+    
+    margin-left: 10px;
+    margin-right: 10px;
+    
+
+}
 
   .estudante:hover {
     transform: translateY(-3px);
@@ -61,75 +72,84 @@
     }
   
  </style>
-</head>
-<body>
-  <h2>Meus Estudantes</h2>
-  <div id="lista-estudantes">Carregando estudantes...</div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<header>
+  <div class="text">Meus estudantes</div>
+</header>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-      authDomain: "teste-cfe69.firebaseapp.com",
-      projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.appspot.com",
-      messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
-    };
+<div id="lista-estudantes">Carregando estudantes...</div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const db = getFirestore();
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const lista = document.getElementById("lista-estudantes");
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+  };
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          // Busca na coleção "estudantes" em vez de "anuncios"
-          const q = query(collection(db, "estudantes"), where("uid", "==", user.uid));
-          const querySnapshot = await getDocs(q);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const db = getFirestore();
 
-          if (querySnapshot.empty) {
-            lista.textContent = "Você ainda não cadastrou nenhum estudante.";
-          } else {
-            lista.innerHTML = "";
-            querySnapshot.forEach(doc => {
-              const dados = doc.data();
-              const numeroLimpo = dados.whatsapp.replace(/\D/g, '');
-              const linkWhatsapp = `https://wa.me/${numeroLimpo}`;
+  const lista = document.getElementById("lista-estudantes");
 
-              const div = document.createElement("div");
-              div.classList.add("estudante");
-              div.innerHTML = `<h3>${dados.nome}</h3>`;
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const q = query(collection(db, "estudantes"), where("uid", "==", user.uid));
+        const querySnapshot = await getDocs(q);
 
-              div.addEventListener('click', () => {
-                localStorage.setItem('estudanteSelecionado', JSON.stringify({
-                  nome: dados.nome,
-                  livro: dados.livro,
-                  capitulo: dados.capitulo,
-                  tema: dados.tema,
-                  licao: dados.licao,
-                  whatsapp: linkWhatsapp
-                }));
-                window.location.href = "detalhes.html";
-              });
+        if (querySnapshot.empty) {
+          lista.textContent = "Você ainda não cadastrou nenhum estudante.";
+        } else {
+          lista.innerHTML = "";
+          querySnapshot.forEach(doc => {
+            const dados = doc.data();
 
-              lista.appendChild(div);
+            const numeroLimpo = dados.whatsapp ? dados.whatsapp.replace(/\D/g, '') : "";
+            const linkWhatsapp = numeroLimpo ? `https://wa.me/${numeroLimpo}` : "";
+
+            const div = document.createElement("div");
+            div.classList.add("estudante");
+            div.innerHTML = `<h3>${dados.nome}</h3>`;
+
+            div.addEventListener('click', () => {
+              const estudanteData = {
+                nome: dados.nome,
+                livro: dados.livro,
+                capitulo: dados.capitulo,
+                tema: dados.tema,
+                licao: dados.licao
+              };
+
+              // Inclui o link do WhatsApp apenas se existir
+              if (linkWhatsapp) {
+                estudanteData.whatsapp = linkWhatsapp;
+              }
+
+              localStorage.setItem('estudanteSelecionado', JSON.stringify(estudanteData));
+              window.location.href = "detalhes.html";
             });
-          }
-        } catch (error) {
-          lista.textContent = "Erro ao carregar estudantes.";
-          console.error(error);
+
+            lista.appendChild(div);
+          });
         }
-      } else {
-        window.location.href = "login.html";
+      } catch (error) {
+        lista.textContent = "Erro ao carregar estudantes.";
+        console.error(error);
       }
-    });
-  </script>
-</body>
-</html>
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+
+
