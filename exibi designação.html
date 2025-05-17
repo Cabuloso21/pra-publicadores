@@ -3,99 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>exibi anúncios 41</title>
+<title>tese</title>
 </head>
 <body>
-
+ 
 <style>
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: white;
-  margin: 0;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: white;
+      margin: 0;
+    }
+
+    header {
+      background: #4CAF50;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .text {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #lista-designacoes {
+      max-width: 400px;
+      margin-top: 20px;
+      padding: 0 15px;
+    }
+
+    .designacao {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      margin-top: 50px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .designacao:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .designacao h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #333;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 4px;
+      cursor: text;
+    }
+
+    .designacao p {
+      color: #555;
+      font-size: 16px;
+      margin: 10px 0;
+      cursor: text;
+    }
+
+    .designacao button {
+      display: inline-block;
+      margin-top: 12px;
+      margin-right: 10px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .designacao button:nth-of-type(1) {
+      background-color: #25d366;
+      color: white;
+    }
+
+    .designacao button:nth-of-type(2) {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .designacao button:hover {
+      filter: brightness(1.1);
+    }
+
   
-}
-
-header {
-  background: #4CAF50;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.text {
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-  text-align: center;
-}
-
-#lista-designacoes {
-  max-width: 400px;
-  margin: 0px auto;
-  padding: 0 15px;
-}
-
-.designacao {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  transition: box-shadow 0.3s ease;
-}
-
-.designacao:hover {
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-.designacao h3 {
-  font-size: 20px;
-  margin-bottom: 10px;
-  color: #333;
-  border-bottom: 1px dashed #ccc;
-  padding-bottom: 4px;
-  cursor: text;
-}
-
-.designacao p {
-  color: #555;
-  font-size: 16px;
-  margin: 10px 0;
-  cursor: text;
-}
-
-
-.designacao button {
-  display: inline-block;
-  margin-top: 12px;
-  margin-right: 10px;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s;
-}
-
-.designacao button:nth-of-type(1) {
-  background-color: #25d366;
-  color: white;
-}
-
-.designacao button:nth-of-type(2) {
-  background-color: #f44336;
-  color: white;
-}
-
-.designacao button:hover {
-  filter: brightness(1.1);
-}
-
-
-
-
-.designacao textarea {
+ .designacao textarea {
   width: 100%; /* CORRIGIDO */
   height: 500px; /* Altura mais proporcional */
   padding: 10px;
@@ -106,23 +103,20 @@ header {
   margin-top: 10px;
   background-color: #fefefe;
   box-sizing: border-box; /* Para garantir que padding não estoure o container */
+  outline: none;
 }
 
-.designacao input[type="tel"] {
-  width: 100%; /* CORRIGIDO */
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  background-color: #fefefe;
-  box-sizing: border-box;
-}
-
-
-
-</style>
-
+ .designacao input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      background-color: #fefefe;
+      box-sizing: border-box;
+    }
+  </style>
 
 
 
@@ -130,208 +124,191 @@ header {
   <div class="text">Minha designação</div>
 </header>
 
-
 <div id="lista-designacoes">Carregando designações...</div>
 
-
-
-
-<!-- ... header, div#lista-designacoes e firebase config permanecem iguais ... -->
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const app = initializeApp({
-  apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-  authDomain: "teste-cfe69.firebaseapp.com",
-  projectId: "teste-cfe69",
-  storageBucket: "teste-cfe69.appspot.com",
-  messagingSenderId: "646579509123",
-  appId: "1:646579509123:web:dd23b863dd8c54bca308b6"
-});
-
-const auth = getAuth();
-const db = getFirestore();
-const lista = document.getElementById("lista-designacoes");
-
-// Função para campo com salvamento automático e visual
-function criarCampoEditable(tipo, valorInicial, salvarCallback) {
-  let el;
-  let salvarTimeout;
-  const container = document.createElement("div");
-  const status = document.createElement("span");
-  status.style.color = "green";
-  status.style.marginLeft = "8px";
-  status.style.fontSize = "0.9em";
-
-  if (tipo === "textarea") {
-    el = document.createElement("textarea");
-    el.style.width = "100%";
-    el.style.marginTop = "8px";
-    el.value = valorInicial || "";
-  } else {
-    el = document.createElement("div");
-    el.contentEditable = true;
-    el.textContent = valorInicial || "";
-    el.style.borderBottom = "1px dashed #ccc";
-  }
-
-  function salvar() {
-    const novoValor = tipo === "textarea" ? el.value.trim() : el.textContent.trim();
-    salvarCallback(novoValor)
-      .then(() => {
-        status.textContent = "Salvo!";
-        setTimeout(() => status.textContent = "", 2000);
-      })
-      .catch(err => {
-        status.textContent = "Erro!";
-        console.error("Erro ao salvar:", err);
-      });
-  }
-
-  el.addEventListener("input", () => {
-    clearTimeout(salvarTimeout);
-    salvarTimeout = setTimeout(salvar, 1000);
+  const app = initializeApp({
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6"
   });
 
-  container.appendChild(el);
-  container.appendChild(status);
-  return container;
-}
+  const auth = getAuth();
+  const db = getFirestore();
+  const lista = document.getElementById("lista-designacoes");
 
-// Quando o usuário estiver logado:
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return window.location.href = "login.html";
+  function criarCampoEditable(tipo, valorInicial, salvarCallback, campoNome) {
+    let el;
+    let salvarTimeout;
+    const container = document.createElement("div");
+    const status = document.createElement("span");
+    status.style.color = "green";
+    status.style.marginLeft = "8px";
+    status.style.fontSize = "0.9em";
 
-  try {
-    const q = query(collection(db, "designacao"), where("uid", "==", user.uid));
-    const querySnapshot = await getDocs(q);
+    if (tipo === "textarea") {
+      el = document.createElement("textarea");
+      el.style.width = "100%";
+      el.style.marginTop = "8px";
+      el.value = valorInicial || "";
+      el.placeholder = "Digite seu texto aqui.";
+    } else {
+      el = document.createElement("div");
+      el.contentEditable = true;
+      el.textContent = valorInicial || "";
+      el.style.borderBottom = "1px dashed #ccc";
 
-    lista.innerHTML = "";
-
-    if (querySnapshot.empty) {
-      lista.textContent = "Você ainda não adicionou nenhuma designação.";
-      return;
+      // Aplica font-weight: bold somente no campo "produto"
+      if (campoNome === "produto") {
+        el.style.fontWeight = "bold";
+      }
     }
 
-    querySnapshot.forEach(docSnap => {
-      const dados = docSnap.data();
-      const designacaoId = docSnap.id;
-      const ref = doc(db, "designacao", designacaoId);
-
-      const div = document.createElement("div");
-      div.className = "designacao";
-      div.style.border = "1px solid #ccc";
-      div.style.padding = "10px";
-      div.style.marginBottom = "10px";
-      div.style.borderRadius = "8px";
-
-      // Produto
-      const campoProduto = criarCampoEditable("div", dados.produto, novoValor =>
-        updateDoc(ref, { produto: novoValor })
-      );
-
-      // Tema
-      const campoTema = criarCampoEditable("div", dados.tema, novoValor =>
-        updateDoc(ref, { tema: novoValor })
-      );
-
-      // Descrição
-      const campoDescricao = criarCampoEditable("textarea", dados.descricao, novoValor =>
-        updateDoc(ref, { descricao: novoValor })
-      );
-
- const campoWhatsapp = document.createElement("div");
- const inputWhatsapp = document.createElement("input");
- const statusWhatsapp = document.createElement("span");
-
-inputWhatsapp.type = "tel";
-inputWhatsapp.placeholder = "Digite o número do WhatsApp";
-inputWhatsapp.style.marginTop = "8px";
-inputWhatsapp.style.width = "100%";
-inputWhatsapp.value = dados.whatsapp || "";
-statusWhatsapp.style.marginLeft = "8px";
-statusWhatsapp.style.color = "green";
-statusWhatsapp.style.fontSize = "0.9em";
-
-let salvarTimeoutWhatsapp;
-inputWhatsapp.addEventListener("input", () => {
-  clearTimeout(salvarTimeoutWhatsapp);
-  salvarTimeoutWhatsapp = setTimeout(async () => {
-    const novoNumero = inputWhatsapp.value.trim();
-    try {
-      await updateDoc(ref, { whatsapp: novoNumero });
-      statusWhatsapp.textContent = "Salvo!";
-      setTimeout(() => statusWhatsapp.textContent = "", 2000);
-    } catch (err) {
-      statusWhatsapp.textContent = "Erro!";
-      console.error("Erro ao salvar WhatsApp:", err);
+    function salvar() {
+      const novoValor = tipo === "textarea" ? el.value.trim() : el.textContent.trim();
+      salvarCallback(novoValor)
+        .then(() => {
+          status.textContent = "Salvo!";
+          setTimeout(() => status.textContent = "", 2000);
+        })
+        .catch(err => {
+          status.textContent = "Erro!";
+          console.error("Erro ao salvar:", err);
+        });
     }
-  }, 1000);
-});
 
-campoWhatsapp.appendChild(inputWhatsapp);
-campoWhatsapp.appendChild(statusWhatsapp);
-
- const botaoWhatsapp = document.createElement("button");
-      botaoWhatsapp.textContent = "Enviar para o WhatsApp";
-      botaoWhatsapp.style.cssText = "margin-top:8px;background:#25d366;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer";
-
-      botaoWhatsapp.addEventListener("click", () => {
-      const numero = inputWhatsapp.value.trim().replace(/\D/g, "");
-
-    if (!numero) return alert("Digite um número válido!");
-        const produto = campoProduto.querySelector("div").textContent.trim();
-        const tema = campoTema.querySelector("div").textContent.trim();
-        const descricao = campoDescricao.querySelector("textarea").value.trim();
-
-        const mensagem = `Produto: ${produto}\nTema: ${tema}\nDescrição: ${descricao}`;
-        const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
-        window.open(link, "_blank");
-      });
-
-      // Excluir
-      const botaoExcluir = document.createElement("button");
-      botaoExcluir.textContent = "Excluir";
-      botaoExcluir.style.cssText = "margin-top:8px;background:#f44336;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer";
-
-      botaoExcluir.addEventListener("click", async () => {
-        if (confirm("Tem certeza que deseja excluir esta designação?")) {
-          await deleteDoc(ref);
-          div.remove();
-        }
-      });
-
-      div.appendChild(campoProduto);
-      div.appendChild(campoTema);
-      div.appendChild(campoDescricao);
-      div.appendChild(inputWhatsapp);
-      div.appendChild(botaoWhatsapp);
-      div.appendChild(botaoExcluir);
-
-      lista.appendChild(div);
+    el.addEventListener("input", () => {
+      clearTimeout(salvarTimeout);
+      salvarTimeout = setTimeout(salvar, 1000);
     });
 
-  } catch (err) {
-    console.error("Erro ao carregar designações:", err);
-    lista.textContent = "Erro ao carregar designações.";
+    container.appendChild(el);
+    container.appendChild(status);
+    return container;
   }
-});
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return window.location.href = "login.html";
+
+    try {
+      const q = query(collection(db, "designacao"), where("uid", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+
+      lista.innerHTML = "";
+
+      if (querySnapshot.empty) {
+        lista.textContent = "Você ainda não adicionou nenhuma designação.";
+        return;
+      }
+
+      querySnapshot.forEach(docSnap => {
+        const dados = docSnap.data();
+        const designacaoId = docSnap.id;
+        const ref = doc(db, "designacao", designacaoId);
+
+        const div = document.createElement("div");
+        div.className = "designacao";
+
+        const campoProduto = criarCampoEditable("div", dados.produto, novoValor =>
+          updateDoc(ref, { produto: novoValor })
+        , "produto");
+
+        const campoTema = criarCampoEditable("div", dados.tema, novoValor =>
+          updateDoc(ref, { tema: novoValor })
+        , "tema");
+
+        const campoDescricao = criarCampoEditable("textarea", dados.descricao, novoValor =>
+          updateDoc(ref, { descricao: novoValor })
+        , "descricao");
+
+        const inputWhatsapp = document.createElement("input");
+        inputWhatsapp.type = "tel";
+        inputWhatsapp.placeholder = "Digite o número do WhatsApp";
+        inputWhatsapp.style.marginTop = "8px";
+        inputWhatsapp.style.width = "100%";
+        inputWhatsapp.value = dados.whatsapp || "";
+
+        const statusWhatsapp = document.createElement("span");
+        statusWhatsapp.style.marginLeft = "8px";
+        statusWhatsapp.style.color = "green";
+        statusWhatsapp.style.fontSize = "0.9em";
+
+        let salvarTimeoutWhatsapp;
+        inputWhatsapp.addEventListener("input", () => {
+          clearTimeout(salvarTimeoutWhatsapp);
+          salvarTimeoutWhatsapp = setTimeout(async () => {
+            const novoNumero = inputWhatsapp.value.trim();
+            try {
+              await updateDoc(ref, { whatsapp: novoNumero });
+              statusWhatsapp.textContent = "Salvo!";
+              setTimeout(() => statusWhatsapp.textContent = "", 2000);
+            } catch (err) {
+              statusWhatsapp.textContent = "Erro!";
+              console.error("Erro ao salvar WhatsApp:", err);
+            }
+          }, 1000);
+        });
+
+        const botaoWhatsapp = document.createElement("button");
+        botaoWhatsapp.textContent = "Enviar para o WhatsApp";
+        botaoWhatsapp.style.cssText = "margin-top:8px;background:#25d366;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer";
+
+        botaoWhatsapp.addEventListener("click", () => {
+          const numero = inputWhatsapp.value.trim().replace(/\D/g, "");
+          if (!numero) return alert("Digite um número válido!");
+          const produto = campoProduto.querySelector("div").textContent.trim();
+          const tema = campoTema.querySelector("div").textContent.trim();
+          const descricao = campoDescricao.querySelector("textarea").value.trim();
+          const mensagem = `Produto: ${produto}\nTema: ${tema}\nDescrição: ${descricao}`;
+          const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+          window.open(link, "_blank");
+        });
+
+        const botaoExcluir = document.createElement("button");
+        botaoExcluir.textContent = "Excluir";
+        botaoExcluir.style.cssText = "margin-top:8px;background:#25d366;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer";
+
+        botaoExcluir.addEventListener("click", async () => {
+          if (confirm("Tem certeza que deseja excluir esta designação?")) {
+            await deleteDoc(ref);
+            div.remove();
+          }
+        });
+
+        div.appendChild(campoProduto);
+        div.appendChild(campoTema);
+        div.appendChild(campoDescricao);
+        div.appendChild(inputWhatsapp);
+        div.appendChild(statusWhatsapp);
+        div.appendChild(botaoWhatsapp);
+        div.appendChild(botaoExcluir);
+
+        lista.appendChild(div);
+      });
+
+    } catch (err) {
+      console.error("Erro ao carregar designações:", err);
+      lista.textContent = "Erro ao carregar designações.";
+    }
+  });
 </script>
 
 </body>
 </html>
 
-  
-              
