@@ -3,50 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>teste detalhe</title>
+<title>testando</title>
 </head>
 <body>
-  
+  <h1>testando</h1>
 
 
-  <style>
-    .detalhes {
-      padding: 20px;
-      background-color: #f9f9f9;
-      border-radius: 5px;
-      margin: 20px;
-    }
-    .detalhes input {
-      display: block;
-      margin-bottom: 10px;
-      padding: 8px;
-      width: 100%;
-    }
-    button {
-      padding: 10px 20px;
-      margin-right: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #salvar {
-      background-color: seagreen;
-      color: white;
-    }
-    #excluir {
-      background-color: crimson;
-      color: white;
-    }
-  </style>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  #botoes-topo {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  button {
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .detalhes {
+    background: #f9f9f9;
+    border-radius: 5px;
+    padding: 20px;
+  }
+  h3 {
+    margin-bottom: 15px;
+  }
+  input, textarea {
+    width: 100%;
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  a.whatsapp-link {
+    color: #25d366;
+    font-weight: bold;
+    text-decoration: none;
+  }
+</style>
 </head>
 <body>
 
-<h2>Detalhes do Estudante</h2>
+<div id="botoes-topo">
+  <button id="btnEditar">Editar</button>
+  <button id="btnExcluir">Excluir</button>
+  <a id="btnWhatsApp" href="#" target="_blank" style="display:none;">Conversar no WhatsApp</a>
+</div>
+
 <div class="detalhes" id="detalhes-estudante">Carregando...</div>
-<button id="salvar">Salvar alterações</button>
-<button id="excluir">Excluir estudante</button>
 
-<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getFirestore, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -63,73 +72,125 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore();
 
-  const estudante = JSON.parse(localStorage.getItem('estudanteSelecionado'));
   const detalhes = document.getElementById('detalhes-estudante');
-  const botaoSalvar = document.getElementById('salvar');
-  const botaoExcluir = document.getElementById('excluir');
+  const btnEditar = document.getElementById('btnEditar');
+  const btnExcluir = document.getElementById('btnExcluir');
+  const btnWhatsApp = document.getElementById('btnWhatsApp');
 
-  if (estudante) {
-    detalhes.innerHTML = `
-      <input type="text" id="nome" value="${estudante.nome}" placeholder="Nome">
-      <input type="text" id="livro" value="${estudante.livro}" placeholder="Livro">
-      <input type="text" id="capitulo" value="${estudante.capitulo}" placeholder="Capítulo">
-      <input type="text" id="tema" value="${estudante.tema}" placeholder="Tema">
-      <input type="text" id="licao" value="${estudante.licao}" placeholder="Lição">
-      <input type="text" id="whatsapp" value="${estudante.whatsapp?.replace("https://wa.me/", "") || ""}" placeholder="WhatsApp (apenas número)">
-    `;
-  } else {
+  let estudante = JSON.parse(localStorage.getItem('estudanteSelecionado'));
+
+  if (!estudante) {
     detalhes.textContent = "Nenhum estudante selecionado.";
-    botaoSalvar.style.display = "none";
-    botaoExcluir.style.display = "none";
+    btnEditar.disabled = true;
+    btnExcluir.disabled = true;
+  } else {
+    renderDetalhes(estudante);
+    if (estudante.whatsapp) {
+      btnWhatsApp.href = estudante.whatsapp;
+      btnWhatsApp.style.display = "inline-block";
+    }
   }
 
-  // SALVAR ALTERAÇÕES
-  botaoSalvar.addEventListener('click', async () => {
-    const nome = document.getElementById('nome').value.trim();
-    const livro = document.getElementById('livro').value.trim();
-    const capitulo = document.getElementById('capitulo').value.trim();
-    const tema = document.getElementById('tema').value.trim();
-    const licao = document.getElementById('licao').value.trim();
-    const whatsapp = document.getElementById('whatsapp').value.trim();
+  let editando = false;
 
-    const atualizado = {
-      nome,
-      livro,
-      capitulo,
-      tema,
-      licao,
-      whatsapp: whatsapp ? `https://wa.me/${whatsapp}` : ""
-    };
+  function renderDetalhes(data) {
+    detalhes.innerHTML = `
+      <h3>${data.nome}</h3>
+      <p><strong>Livro:</strong> ${data.livro}</p>
+      <p><strong>Capítulo:</strong> ${data.capitulo}</p>
+      <p><strong>Tema:</strong> ${data.tema}</p>
+      <p><strong>Lição:</strong> ${data.licao}</p>
+    `;
+  }
 
-    try {
-      if (estudante.id) {
-        await updateDoc(doc(db, "estudantes", estudante.id), atualizado);
+  function renderEditForm(data) {
+    detalhes.innerHTML = `
+      <label>Nome:</label>
+      <input type="text" id="inputNome" value="${data.nome}" />
+
+      <label>Livro:</label>
+      <input type="text" id="inputLivro" value="${data.livro}" />
+
+      <label>Capítulo:</label>
+      <input type="text" id="inputCapitulo" value="${data.capitulo}" />
+
+      <label>Tema:</label>
+      <input type="text" id="inputTema" value="${data.tema}" />
+
+      <label>Lição:</label>
+      <textarea id="inputLicao" rows="3">${data.licao}</textarea>
+    `;
+
+    document.getElementById('inputNome').focus();
+  }
+
+  btnEditar.addEventListener('click', async () => {
+    if (!editando) {
+      // Ativa o modo edição
+      editando = true;
+      btnEditar.textContent = "Salvar";
+      renderEditForm(estudante);
+    } else {
+      // Salvar alterações
+      const novoNome = document.getElementById('inputNome').value.trim();
+      const novoLivro = document.getElementById('inputLivro').value.trim();
+      const novoCapitulo = document.getElementById('inputCapitulo').value.trim();
+      const novoTema = document.getElementById('inputTema').value.trim();
+      const novaLicao = document.getElementById('inputLicao').value.trim();
+
+      if (!novoNome) {
+        alert("Nome não pode ser vazio.");
+        return;
       }
-      localStorage.setItem("estudanteSelecionado", JSON.stringify({ ...atualizado, id: estudante.id }));
-      alert("Dados atualizados com sucesso!");
-    } catch (error) {
-      alert("Erro ao salvar alterações.");
-      console.error(error);
+
+      const ref = doc(db, 'estudantes', estudante.id);
+
+      try {
+        await updateDoc(ref, {
+          nome: novoNome,
+          livro: novoLivro,
+          capitulo: novoCapitulo,
+          tema: novoTema,
+          licao: novaLicao
+        });
+
+        // Atualiza localStorage e objeto na memória
+        estudante.nome = novoNome;
+        estudante.livro = novoLivro;
+        estudante.capitulo = novoCapitulo;
+        estudante.tema = novoTema;
+        estudante.licao = novaLicao;
+
+        localStorage.setItem('estudanteSelecionado', JSON.stringify(estudante));
+
+        editando = false;
+        btnEditar.textContent = "Editar";
+        renderDetalhes(estudante);
+
+        alert("Dados atualizados com sucesso!");
+
+      } catch (error) {
+        console.error("Erro ao atualizar dados:", error);
+        alert("Erro ao salvar alterações.");
+      }
     }
   });
 
-  // EXCLUIR
-  botaoExcluir.addEventListener('click', async () => {
-    if (confirm("Tem certeza que deseja excluir este estudante?")) {
+  btnExcluir.addEventListener('click', async () => {
+    if (confirm("Tem certeza que deseja excluir este estudante? Esta ação não pode ser desfeita.")) {
       try {
-        if (estudante.id) {
-          await deleteDoc(doc(db, "estudantes", estudante.id));
-        }
-        localStorage.removeItem("estudanteSelecionado");
-        window.location.href = "lista.html"; // redireciona para lista
+        const ref = doc(db, 'estudantes', estudante.id);
+        await deleteDoc(ref);
+        localStorage.removeItem('estudanteSelecionado');
+        alert("Estudante excluído com sucesso.");
+        window.location.href = "lista.html";  // ajuste o nome da página de lista
       } catch (error) {
+        console.error("Erro ao excluir estudante:", error);
         alert("Erro ao excluir estudante.");
-        console.error(error);
       }
     }
   });
 </script>
-
 </body>
 </html>
 
