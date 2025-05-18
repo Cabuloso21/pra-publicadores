@@ -1,50 +1,38 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>detalhes</title>
+<title>teste</title>
 </head>
 <body>
-  <h1>detalhes</h1>
-
-
-
-
-<style>
-    .anuncio {
-      padding: 10px;
-      margin: 10px 0;
-      background-color: #f2f2f2;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-  </style>
-</head>
-<body>
-  <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Exibir Anúncios</title>
+  
   <style>
-    .anuncio {
+    header {
+      background-color: #007bff;
+      color: white;
       padding: 10px;
-      margin: 10px 0;
-      background-color: #f9f9f9;
+      font-size: 20px;
+    }
+    .estudante {
+      background: #f1f1f1;
+      margin: 10px;
+      padding: 15px;
       border-radius: 5px;
-    }
-    h3 {
-      margin-bottom: 10px;
-    }
-    p {
-      margin: 5px 0;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h2>Meus Anúncios</h2>
-  <div id="lista-anuncios">Carregando anúncios...</div>
+ 
+<h2>Teste</h2>
+ <header>
+    <div class="text">Meus estudantes</div>
+  </header>
+
+  <div id="lista-estudantes">Carregando estudantes...</div>
 
   <!-- Firebase SDK -->
   <script type="module">
@@ -65,57 +53,70 @@
     const auth = getAuth();
     const db = getFirestore();
 
-    const lista = document.getElementById("lista-anuncios");
+    const lista = document.getElementById("lista-estudantes");
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          const q = query(collection(db, "anuncios"), where("uid", "==", user.uid));
+          const q = query(collection(db, "estudantes"), where("uid", "==", user.uid));
           const querySnapshot = await getDocs(q);
 
           if (querySnapshot.empty) {
-            lista.textContent = "Você ainda não publicou nenhum anúncio.";
+            lista.textContent = "Você ainda não cadastrou nenhum estudante.";
           } else {
-            lista.innerHTML = ""; // Limpa o conteúdo de 'Carregando anúncios...'
+            lista.innerHTML = "";
             querySnapshot.forEach(doc => {
               const dados = doc.data();
+              const id = doc.id;
 
-              // Criação do link do WhatsApp
-              const numeroLimpo = dados.whatsapp.replace(/\D/g, '');
-              const linkWhatsapp = `https://wa.me/${numeroLimpo}`;
+              // Verifica se há atualizações no localStorage
+              const atualizado = JSON.parse(localStorage.getItem('estudanteAtualizado'));
+              if (atualizado && atualizado.id === id) {
+                dados.nome = atualizado.nome;
+                dados.livro = atualizado.livro;
+                dados.capitulo = atualizado.capitulo;
+                dados.tema = atualizado.tema;
+                dados.licao = atualizado.licao;
+              }
+
+              const numeroLimpo = dados.whatsapp ? dados.whatsapp.replace(/\D/g, '') : "";
+              const linkWhatsapp = numeroLimpo ? `https://wa.me/${numeroLimpo}` : "";
 
               const div = document.createElement("div");
-              div.classList.add("anuncio");
-              div.innerHTML = `
-                <h3>${dados.nome}</h3>
-                <p><strong>Livro:</strong> ${dados.livro}</p>
-                <p><strong>Tema:</strong> ${dados.tema}</p>
-              `;
+              div.classList.add("estudante");
+              div.innerHTML = `<h3>${dados.nome}</h3>`;
 
-              // Quando clicar no anúncio, salvar dados no localStorage e redirecionar
               div.addEventListener('click', () => {
-                localStorage.setItem('anuncioSelecionado', JSON.stringify({
+                const estudanteData = {
+                  id: id,
                   nome: dados.nome,
                   livro: dados.livro,
                   capitulo: dados.capitulo,
                   tema: dados.tema,
                   licao: dados.licao,
                   whatsapp: linkWhatsapp
-                }));
-                window.location.href = "detalhes do anúncio sem ID.html";
+                };
+                localStorage.setItem('estudanteSelecionado', JSON.stringify(estudanteData));
+                window.location.href = "detalhes.html";
               });
 
               lista.appendChild(div);
             });
+
+            localStorage.removeItem('estudanteAtualizado');
           }
         } catch (error) {
-          console.error("Erro ao carregar os anúncios:", error);
-          lista.textContent = "Erro ao carregar anúncios. Veja o console para detalhes.";
+          lista.textContent = "Erro ao carregar estudantes.";
+          console.error(error);
         }
       } else {
         window.location.href = "login.html";
       }
     });
   </script>
+</body>
+</html>
+
+
 </body>
 </html>
