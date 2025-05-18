@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,52 +7,46 @@
 <title>testando</title>
 </head>
 <body>
-  <h1>testando</h1>
+  
 
-
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  #botoes-topo {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-  button {
-    padding: 8px 14px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .detalhes {
-    background: #f9f9f9;
-    border-radius: 5px;
-    padding: 20px;
-  }
-  h3 {
-    margin-bottom: 15px;
-  }
-  input, textarea {
-    width: 100%;
-    font-size: 16px;
-    margin-bottom: 15px;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-  a.whatsapp-link {
-    color: #25d366;
-    font-weight: bold;
-    text-decoration: none;
-  }
-</style>
+  <style>
+    #botoes-topo {
+      position: fixed;
+     margin-top: 20px;
+      left: 10px;
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+      background: orange;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .detalhes {
+      margin-top: 100px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    input, textarea {
+      display: block;
+      margin-bottom: 10px;
+      width: 100%;
+      padding: 5px;
+    }
+  </style>
 </head>
 <body>
 
+<h2>Detalhes</h2>
+</div>
 <div id="botoes-topo">
   <button id="btnEditar">Editar</button>
   <button id="btnExcluir">Excluir</button>
-  <a id="btnWhatsApp" href="#" target="_blank" style="display:none;">Conversar no WhatsApp</a>
+</div>
+
+<div id="whatsapp-container" style="display: none; margin: 20px;">
+  <textarea id="mensagemWhatsApp" rows="3" placeholder="Digite uma mensagem..."></textarea>
+  <button id="enviarWhatsApp">Enviar no WhatsApp</button>
 </div>
 
 <div class="detalhes" id="detalhes-estudante">Carregando...</div>
@@ -75,22 +70,8 @@
   const detalhes = document.getElementById('detalhes-estudante');
   const btnEditar = document.getElementById('btnEditar');
   const btnExcluir = document.getElementById('btnExcluir');
-  const btnWhatsApp = document.getElementById('btnWhatsApp');
 
   let estudante = JSON.parse(localStorage.getItem('estudanteSelecionado'));
-
-  if (!estudante) {
-    detalhes.textContent = "Nenhum estudante selecionado.";
-    btnEditar.disabled = true;
-    btnExcluir.disabled = true;
-  } else {
-    renderDetalhes(estudante);
-    if (estudante.whatsapp) {
-      btnWhatsApp.href = estudante.whatsapp;
-      btnWhatsApp.style.display = "inline-block";
-    }
-  }
-
   let editando = false;
 
   function renderDetalhes(data) {
@@ -120,18 +101,17 @@
       <label>Lição:</label>
       <textarea id="inputLicao" rows="3">${data.licao}</textarea>
     `;
-
     document.getElementById('inputNome').focus();
   }
 
   btnEditar.addEventListener('click', async () => {
+    if (!estudante) return;
+
     if (!editando) {
-      // Ativa o modo edição
       editando = true;
       btnEditar.textContent = "Salvar";
       renderEditForm(estudante);
     } else {
-      // Salvar alterações
       const novoNome = document.getElementById('inputNome').value.trim();
       const novoLivro = document.getElementById('inputLivro').value.trim();
       const novoCapitulo = document.getElementById('inputCapitulo').value.trim();
@@ -154,19 +134,12 @@
           licao: novaLicao
         });
 
-        // Atualiza localStorage e objeto na memória
-        estudante.nome = novoNome;
-        estudante.livro = novoLivro;
-        estudante.capitulo = novoCapitulo;
-        estudante.tema = novoTema;
-        estudante.licao = novaLicao;
-
+        estudante = { ...estudante, nome: novoNome, livro: novoLivro, capitulo: novoCapitulo, tema: novoTema, licao: novaLicao };
         localStorage.setItem('estudanteSelecionado', JSON.stringify(estudante));
 
         editando = false;
         btnEditar.textContent = "Editar";
         renderDetalhes(estudante);
-
         alert("Dados atualizados com sucesso!");
 
       } catch (error) {
@@ -177,20 +150,50 @@
   });
 
   btnExcluir.addEventListener('click', async () => {
+    if (!estudante) return;
+
     if (confirm("Tem certeza que deseja excluir este estudante? Esta ação não pode ser desfeita.")) {
       try {
         const ref = doc(db, 'estudantes', estudante.id);
         await deleteDoc(ref);
         localStorage.removeItem('estudanteSelecionado');
+
+        detalhes.innerHTML = "<p>Estudante excluído.</p>";
+        document.getElementById("whatsapp-container").style.display = "none";
+        btnEditar.disabled = true;
+        btnExcluir.disabled = true;
+
         alert("Estudante excluído com sucesso.");
-        window.location.href = "lista.html";  // ajuste o nome da página de lista
+
       } catch (error) {
         console.error("Erro ao excluir estudante:", error);
         alert("Erro ao excluir estudante.");
       }
     }
   });
+
+  if (estudante && estudante.whatsapp) {
+    document.getElementById("whatsapp-container").style.display = "block";
+
+    document.getElementById("enviarWhatsApp").addEventListener("click", () => {
+      const mensagem = document.getElementById("mensagemWhatsApp").value.trim();
+      const numero = estudante.whatsapp.replace("https://wa.me/", "");
+
+      const link = mensagem
+        ? `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`
+        : `https://wa.me/${numero}`;
+
+      window.open(link, "_blank");
+    });
+  }
+
+  if (estudante) {
+    renderDetalhes(estudante);
+  } else {
+    detalhes.innerHTML = "<p>Nenhum estudante selecionado.</p>";
+  }
 </script>
+
 </body>
 </html>
 
