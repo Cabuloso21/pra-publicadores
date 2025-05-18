@@ -1,16 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>testes detalhes</title>
+<title>teste detalhe</title>
 </head>
 <body>
-  <h1>testes detalhes</h1>
-
-
   
+
+
   <style>
     .detalhes {
       padding: 20px;
@@ -18,38 +16,40 @@
       border-radius: 5px;
       margin: 20px;
     }
-    h3 {
-      margin-bottom: 15px;
-    }
-    input {
+    .detalhes input {
       display: block;
-      margin: 10px 0;
+      margin-bottom: 10px;
       padding: 8px;
       width: 100%;
-      box-sizing: border-box;
     }
     button {
-      padding: 10px;
-      background-color: #28a745;
-      color: white;
+      padding: 10px 20px;
+      margin-right: 10px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+    }
+    #salvar {
+      background-color: seagreen;
+      color: white;
+    }
+    #excluir {
+      background-color: crimson;
+      color: white;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="text">Meus estudantes</div>
-</header>
-
 <h2>Detalhes do Estudante</h2>
 <div class="detalhes" id="detalhes-estudante">Carregando...</div>
+<button id="salvar">Salvar alterações</button>
+<button id="excluir">Excluir estudante</button>
 
+<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { getFirestore, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
@@ -61,72 +61,75 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const db = getFirestore();
 
-  const estudante = JSON.parse(localStorage.getItem('estudanteSelecionado')) || {};
+  const estudante = JSON.parse(localStorage.getItem('estudanteSelecionado'));
   const detalhes = document.getElementById('detalhes-estudante');
+  const botaoSalvar = document.getElementById('salvar');
+  const botaoExcluir = document.getElementById('excluir');
 
-  function exibirDetalhes() {
-    if (estudante.nome) {
-      detalhes.innerHTML = `
-        <h3>${estudante.nome}</h3>
-        <p><strong>Livro:</strong> ${estudante.livro}</p>
-        <p><strong>Capítulo:</strong> ${estudante.capitulo}</p>
-        <p><strong>Tema:</strong> ${estudante.tema}</p>
-        <p><strong>Lição:</strong> ${estudante.licao}</p>
-        <p><strong>WhatsApp:</strong> <a href="${estudante.whatsapp}" target="_blank">Conversar no WhatsApp</a></p>
-        <button onclick="editarDetalhes()">Editar</button>
-      `;
-    } else {
-      detalhes.textContent = "Nenhum estudante selecionado.";
-    }
+  if (estudante) {
+    detalhes.innerHTML = `
+      <input type="text" id="nome" value="${estudante.nome}" placeholder="Nome">
+      <input type="text" id="livro" value="${estudante.livro}" placeholder="Livro">
+      <input type="text" id="capitulo" value="${estudante.capitulo}" placeholder="Capítulo">
+      <input type="text" id="tema" value="${estudante.tema}" placeholder="Tema">
+      <input type="text" id="licao" value="${estudante.licao}" placeholder="Lição">
+      <input type="text" id="whatsapp" value="${estudante.whatsapp?.replace("https://wa.me/", "") || ""}" placeholder="WhatsApp (apenas número)">
+    `;
+  } else {
+    detalhes.textContent = "Nenhum estudante selecionado.";
+    botaoSalvar.style.display = "none";
+    botaoExcluir.style.display = "none";
   }
 
-  window.editarDetalhes = () => {
-    detalhes.innerHTML = `
-      <input type="text" id="nome" value="${estudante.nome || ''}" placeholder="Nome">
-      <input type="text" id="livro" value="${estudante.livro || ''}" placeholder="Livro">
-      <input type="text" id="capitulo" value="${estudante.capitulo || ''}" placeholder="Capítulo">
-      <input type="text" id="tema" value="${estudante.tema || ''}" placeholder="Tema">
-      <input type="text" id="licao" value="${estudante.licao || ''}" placeholder="Lição">
-      <input type="text" id="whatsapp" value="${estudante.whatsapp || ''}" placeholder="Link do WhatsApp">
-      <button onclick="salvarEdicao()">Salvar</button>
-    `;
-  };
+  // SALVAR ALTERAÇÕES
+  botaoSalvar.addEventListener('click', async () => {
+    const nome = document.getElementById('nome').value.trim();
+    const livro = document.getElementById('livro').value.trim();
+    const capitulo = document.getElementById('capitulo').value.trim();
+    const tema = document.getElementById('tema').value.trim();
+    const licao = document.getElementById('licao').value.trim();
+    const whatsapp = document.getElementById('whatsapp').value.trim();
 
-  window.salvarEdicao = async () => {
-    estudante.nome = document.getElementById('nome').value;
-    estudante.livro = document.getElementById('livro').value;
-    estudante.capitulo = document.getElementById('capitulo').value;
-    estudante.tema = document.getElementById('tema').value;
-    estudante.licao = document.getElementById('licao').value;
-    estudante.whatsapp = document.getElementById('whatsapp').value;
+    const atualizado = {
+      nome,
+      livro,
+      capitulo,
+      tema,
+      licao,
+      whatsapp: whatsapp ? `https://wa.me/${whatsapp}` : ""
+    };
 
-    localStorage.setItem('estudanteSelecionado', JSON.stringify(estudante));
+    try {
+      if (estudante.id) {
+        await updateDoc(doc(db, "estudantes", estudante.id), atualizado);
+      }
+      localStorage.setItem("estudanteSelecionado", JSON.stringify({ ...atualizado, id: estudante.id }));
+      alert("Dados atualizados com sucesso!");
+    } catch (error) {
+      alert("Erro ao salvar alterações.");
+      console.error(error);
+    }
+  });
 
-    if (estudante.id) {
-      const ref = doc(db, "estudantes", estudante.id);
+  // EXCLUIR
+  botaoExcluir.addEventListener('click', async () => {
+    if (confirm("Tem certeza que deseja excluir este estudante?")) {
       try {
-        await updateDoc(ref, {
-          nome: estudante.nome,
-          livro: estudante.livro,
-          capitulo: estudante.capitulo,
-          tema: estudante.tema,
-          licao: estudante.licao,
-          whatsapp: estudante.whatsapp
-        });
-        alert("Informações atualizadas com sucesso!");
-      } catch (e) {
-        console.error("Erro ao atualizar estudante:", e);
-        alert("Erro ao salvar no banco de dados.");
+        if (estudante.id) {
+          await deleteDoc(doc(db, "estudantes", estudante.id));
+        }
+        localStorage.removeItem("estudanteSelecionado");
+        window.location.href = "lista.html"; // redireciona para lista
+      } catch (error) {
+        alert("Erro ao excluir estudante.");
+        console.error(error);
       }
     }
-
-    exibirDetalhes();
-  };
-
-  exibirDetalhes();
+  });
 </script>
+
 </body>
 </html>
 
