@@ -3,162 +3,371 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>testando 40</title>
 </head>
 <body>
-  <style>
-body {
-margin: 0px;
-font-family: Roboto, sans-serif;
-background: white;
-
+  
+<style>
+ body {
+ font-family: Roboto, sans-serif;
+ background: white;
+ margin: 0;
 }
-
-header {
-padding: 20px;
-background: goldenrod;
-border-bottom: 1px solid #ccc;
+ 
+ header {
+ background: #3498db;
+ padding: 15px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .text {
-color: black;
-text-align: center;
-font-weight: bold;
-font-size: 19px;
+ color: white;
+ font-size: 21px;
+ font-weight: bold;
+ text-align: center;
 }
 
- #form-anuncio {
-  max-width: 500px;
-  margin-left: 20px;
-  margin-right: 20px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
-  margin-top: 30px;
-  
+ #lista-designacoes {
+ max-width: 500px;
+ margin-top: 20px;
+ padding: 0 15px;
 }
 
-/* Estilo dos inputs */
-#form-anuncio input[type="text"] {
-  width: 91%;
-  padding: 12px;
-  margin-left: 0px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  transition: border-color 0.3s;
-  margin-top: 20px;
+.designacao {
+ background: white;
+ border: 1px solid #ddd;
+ border-radius: 5px;
+ padding: 16px;
+ margin-bottom: 24px;
+ margin-top: 50px;
+ box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+ transition: box-shadow 0.3s ease;
+ color: black;
 }
 
-#form-anuncio input[type="text"]:focus {
-  border-color: #007bff;
-  outline: none;
+.designacao:hover {
+ box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-
-#form-anuncio button {
-  width: 50%;
-  padding: 12px;
-  margin-left: 70px;
-  margin-top: 40px;
-  background: goldenrod;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.designacao p {
+ color: #555;
+ font-size: 16px;
+ margin: 10px 0;
+ cursor: text;
 }
 
-#form-anuncio button:hover {
-  background-color: #0056b3;
+.designacao button {
+ display: inline-block;
+ margin-top: 12px;
+ margin-right: 10px;
+ padding: 8px 14px;
+ border: none;
+ border-radius: 8px;
+ font-weight: bold;
+ cursor: pointer;
+ font-size: 14px;
+ transition: background 0.3s;
 }
 
-/* Estilo da mensagem */
-#form-anuncio .message {
-  margin-top: 15px;
-  text-align: center;
-  font-weight: bold;
+.designacao button:nth-of-type(1) {
+ background: #3498db;
+ color: white;
+}
+
+.designacao button:nth-of-type(2) {
+ background-color: #3498db;
+ color: white;
+}
+
+.designacao button:hover {
+ filter: brightness(1.1);
+}
+
+.designacao textarea {
+ width: 100%;
+ height: 500px; 
+ padding: 10px;
+ border: 1px solid #ccc;
+ border-radius: 5px;
+ font-size: 15px;
+ resize: vertical;
+ margin-top: 10px;
+ background-color: #fefefe;
+ box-sizing: border-box;
+ outline: none;
+ line-height: 1.6;
+}
+
+.designacao input[type="tel"] {
+ width: 100%;
+ padding: 10px;
+ margin-top: 10px;
+ border: 1px solid #ccc;
+ border-radius: 8px;
+ font-size: 15px;
+ background-color: #fefefe;
+ box-sizing: border-box;
+}
+
+.modal-confirmar, .modal-alerta {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: rgba(0,0,0,0.6);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ z-index: 9999;
+}
+
+.modal-conteudo, .modal-conteudo-alerta {
+ background: #fff;
+ padding: 20px 30px;
+ border-radius: 8px;
+ text-align: center;
+ max-width: 90%;
+}
+
+ .modal-conteudo button, .modal-conteudo-alerta button {
+ margin: 10px 5px 0;
+ padding: 6px 12px;
+ border: none;
+ border-radius: 4px;
+ cursor: pointer;
+}
+
+.modal-conteudo button.confirmar {
+ background: #d9534f;
+ color: white;
+}
+
+.modal-conteudo button.cancelar,
+.modal-conteudo-alerta button {
+ background: #ccc;
 }
 
 </style>
 
-<header>
-<div class="text">Adicionar designação</div>
-</header>
+ <header>
+ <div class="text">Minha designação</div>
+ </header>
 
-<form id="form-anuncio">
-  <input type="text" id="produto" placeholder="Nome do Produto" required />
-  <input type="text" id="tema" placeholder="Tema" required />
-  <button type="submit">Finalizar</button>
-  <p class="message" id="mensagem"></p>
-</form>
+ <div id="lista-designacoes">Carregando designações...</div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-    authDomain: "teste-cfe69.firebaseapp.com",
-    projectId: "teste-cfe69",
-    storageBucket: "teste-cfe69.appspot.com",
-    messagingSenderId: "646579509123",
-    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
-  };
+const app = initializeApp({
+  apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+  authDomain: "teste-cfe69.firebaseapp.com",
+  projectId: "teste-cfe69",
+  storageBucket: "teste-cfe69.appspot.com",
+  messagingSenderId: "646579509123",
+  appId: "1:646579509123:web:dd23b863dd8c54bca308b6"
+});
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth();
-  const db = getFirestore();
+const auth = getAuth();
+const db = getFirestore();
+const lista = document.getElementById("lista-designacoes");
 
-  let usuario = null;
+function criarCampoEditable(tipo, valorInicial, salvarCallback, campoNome) {
+  let el;
+  let salvarTimeout;
+  const container = document.createElement("div");
+  const status = document.createElement("span");
+  status.style.color = "green";
+  status.style.marginLeft = "8px";
+  status.style.fontSize = "0.9em";
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      usuario = user;
-    } else {
-      window.location.href = "login.html";
+  if (tipo === "textarea") {
+    el = document.createElement("textarea");
+    el.style.width = "100%";
+    el.style.marginTop = "8px";
+    el.value = valorInicial || "";
+    el.placeholder = "Digite seu texto aqui.";
+  } else {
+    el = document.createElement("div");
+    el.contentEditable = true;
+    el.textContent = valorInicial || "";
+    el.style.borderBottom = "1px dashed #ccc";
+
+    if (campoNome === "produto") {
+      el.style.fontWeight = "bold";
     }
+  }
+
+  function salvar() {
+    const novoValor = tipo === "textarea" ? el.value.trim() : el.textContent.trim();
+    salvarCallback(novoValor)
+      .then(() => {
+        status.textContent = "Salvo!";
+        setTimeout(() => status.textContent = "", 2000);
+      })
+      .catch(err => {
+        status.textContent = "Erro!";
+        console.error("Erro ao salvar:", err);
+      });
+  }
+
+  el.addEventListener("input", () => {
+    clearTimeout(salvarTimeout);
+    salvarTimeout = setTimeout(salvar, 1000);
   });
 
-  const form = document.getElementById("form-anuncio");
-  const msg = document.getElementById("mensagem");
+  container.appendChild(el);
+  container.appendChild(status);
+  return container;
+}
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+// Modal de confirmação
+function mostrarModalConfirmacao(mensagem, aoConfirmar) {
+  const modal = document.createElement("div");
+  modal.className = "modal-confirmar";
+  modal.innerHTML = `
+    <div class="modal-conteudo">
+      <p>${mensagem}</p>
+      <button class="confirmar">Sim</button>
+      <button class="cancelar">Cancelar</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
 
-    const produto = document.getElementById("produto").value.trim();
-    const tema = document.getElementById("tema").value.trim();
+  modal.querySelector(".confirmar").onclick = () => {
+    aoConfirmar();
+    modal.remove();
+  };
+  modal.querySelector(".cancelar").onclick = () => modal.remove();
+}
 
-    if (!produto || !tema) {
-      msg.textContent = "Preencha todos os campos.";
-      msg.style.color = "red";
+// Modal de alerta
+function mostrarModalAlertaWhatsapp(mensagem) {
+  const modal = document.createElement("div");
+  modal.className = "modal-alerta";
+  modal.innerHTML = `
+    <div class="modal-conteudo-alerta">
+      <p>${mensagem}</p>
+      <button>OK</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.querySelector("button").onclick = () => modal.remove();
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return window.location.href = "login.html";
+
+  try {
+    const q = query(collection(db, "designacao"), where("uid", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    lista.innerHTML = "";
+
+    if (querySnapshot.empty) {
+      lista.textContent = "Você ainda não adicionou nenhuma designação.";
       return;
     }
 
-    try {
-      await addDoc(collection(db, "designacao"), {
-        uid: usuario.uid,
-        produto,
-        tema,
-        emailUsuario: usuario.email,
-        nomeUsuario: usuario.displayName || "",
-        criadoEm: new Date()
+    querySnapshot.forEach(docSnap => {
+      const dados = docSnap.data();
+      const designacaoId = docSnap.id;
+      const ref = doc(db, "designacao", designacaoId);
+
+      const div = document.createElement("div");
+      div.className = "designacao";
+
+      const campoProduto = criarCampoEditable("div", dados.produto, novoValor =>
+        updateDoc(ref, { produto: novoValor }), "produto");
+
+      const campoTema = criarCampoEditable("div", dados.tema, novoValor =>
+        updateDoc(ref, { tema: novoValor }), "tema");
+
+      const campoDescricao = criarCampoEditable("textarea", dados.descricao, novoValor =>
+        updateDoc(ref, { descricao: novoValor }), "descricao");
+
+      const inputWhatsapp = document.createElement("input");
+      inputWhatsapp.type = "tel";
+      inputWhatsapp.placeholder = "Digite o número do WhatsApp";
+      inputWhatsapp.style.marginTop = "8px";
+      inputWhatsapp.style.width = "100%";
+      inputWhatsapp.value = dados.whatsapp || "";
+
+      const statusWhatsapp = document.createElement("span");
+      statusWhatsapp.style.marginLeft = "8px";
+      statusWhatsapp.style.color = "green";
+      statusWhatsapp.style.fontSize = "0.9em";
+
+      let salvarTimeoutWhatsapp;
+      inputWhatsapp.addEventListener("input", () => {
+        clearTimeout(salvarTimeoutWhatsapp);
+        salvarTimeoutWhatsapp = setTimeout(async () => {
+          const novoNumero = inputWhatsapp.value.trim();
+          try {
+            await updateDoc(ref, { whatsapp: novoNumero });
+            statusWhatsapp.textContent = "Salvo!";
+            setTimeout(() => statusWhatsapp.textContent = "", 2000);
+          } catch (err) {
+            statusWhatsapp.textContent = "Erro!";
+            console.error("Erro ao salvar WhatsApp:", err);
+          }
+        }, 1000);
       });
 
-      msg.textContent = "Designação publicada com sucesso!";
-      msg.style.color = "green";
-      form.reset();
-    } catch (error) {
-      msg.textContent = "Erro ao publicar designação: " + error.message;
-      msg.style.color = "red";
-    }
-  });
+      const botaoWhatsapp = document.createElement("button");
+      botaoWhatsapp.textContent = "Enviar para o WhatsApp";
+      botaoWhatsapp.style.cssText = "margin-top:8px;background:#25d366;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer";
+
+      botaoWhatsapp.addEventListener("click", () => {
+        const numero = inputWhatsapp.value.trim().replace(/\D/g, "");
+        if (!numero) {
+          mostrarModalAlertaWhatsapp("Digite um número válido de WhatsApp antes de continuar.");
+          return;
+        }
+        const produto = campoProduto.querySelector("div").textContent.trim();
+        const tema = campoTema.querySelector("div").textContent.trim();
+        const descricao = campoDescricao.querySelector("textarea").value.trim();
+        const mensagem = `Produto: ${produto}\nTema: ${tema}\nDescrição: ${descricao}`;
+        const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+        window.open(link, "_blank");
+      });
+
+      const botaoExcluir = document.createElement("button");
+      botaoExcluir.textContent = "Excluir";
+      botaoExcluir.style.cssText = "margin-top:8px;background:#25d366;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer";
+
+      botaoExcluir.addEventListener("click", () => {
+        mostrarModalConfirmacao("Tem certeza que deseja excluir esta designação?", async () => {
+          await deleteDoc(ref);
+          div.remove();
+        });
+      });
+
+      div.appendChild(campoProduto);
+      div.appendChild(campoTema);
+      div.appendChild(campoDescricao);
+      div.appendChild(inputWhatsapp);
+      div.appendChild(statusWhatsapp);
+      div.appendChild(botaoWhatsapp);
+      div.appendChild(botaoExcluir);
+
+      lista.appendChild(div);
+    });
+
+  } catch (err) {
+    console.error("Erro ao carregar designações:", err);
+    lista.textContent = "Erro ao carregar designações.";
+  }
+});
 </script>
 
-</body>
-</html>
+
