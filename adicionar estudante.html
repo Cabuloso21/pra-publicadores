@@ -1,106 +1,92 @@
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulário de Anúncio</title>
-  
-<style>
-    
-
-body {
- margin: 0px;
-font-family: Roboto, sans-serif;
-}
- 
-header {
-  background: white;
-  padding: 15px;
- border-bottom: 1px solid #ccc;
- }
-
-.logo {
-    text-align: absolute;
-    color: orange;
-    font-size: 22px;
-    font-weight: bold;
- margin-left: 0px;
-}
-
-   
-
-    .text {
-    text-align: center;
-    color: black;
-    font-size: 20px;
-    font-weight: bold;
-margin-bottom: 20px;
-margin-top: 35px;
-
-}
-
-    
-
- label {
-color: black;
-margin-left: 15px;   
-font-weight: bold;
-}
-
-
-    input, textarea {
-      width: 82.50%;
-      padding: 15px;
-      margin: 15.0px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    margin-left: 16px;
-
-}
-    button {
-  width: 40%;
-      padding: 15px;
-      background-color: orange;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-     margin-left: 30%;
-    margin-bottom: 50px;
- font-size: 15px;
-  font-weight: bold;
-
- }
-
-
-      
-    button:hover {
-      background-color: #218838;
-    }
-    .message {
-      margin-top: 15px;
-      font-weight: bold;
-      color: green;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>teste</title>
 </head>
 <body>
 
+<style>
+ body {
+ margin: 0px;
+ font-family: Roboto, sans-serif;
+ background: white;
+}
 
-<form id="form-anuncio">
-  <input type="text" id="nome" placeholder="Nome do estudante" required />
-  <input type="text" id="livro" placeholder="Livro de estudo" required />
-  <input type="number" id="capitulo" placeholder="Capítulo" required />
-  <input type="text" id="tema" placeholder="Tema" required />
-  <input type="text" id="licao" placeholder="Lição" required />
+ header {
+ padding: 15px;
+ background: #3498db;
+ border-bottom: 1px solid #ccc;
+}
 
-  <!-- Campo de WhatsApp removido -->
+ .text {
+ color: #f2f2f2;
+ text-align: center;
+ font-weight: bold;
+ font-size: 19px;
+}
 
-  <button type="submit">Finalizar</button>
-  <p class="message" id="mensagem"></p>
-</form>
+ label {
+ color: black;
+ margin-left: 15px;   
+ font-weight: bold;
+}
 
-<!-- Firebase SDK -->
+ input, textarea {
+ width: 82.50%;
+ padding: 15px;
+ margin: 15.0px;
+ border-radius: 4px;
+ border: 1px solid #ccc;
+ margin-left: 16px;
+}
+    
+ button {
+ width: 40%;
+ padding: 15px;
+ background: #3498db;
+ color: white;
+ border: none;
+ cursor: pointer;
+ border-radius: 4px;
+ margin-left: 30%;
+ margin-bottom: 50px;
+ font-size: 15px;
+ font-weight: bold;
+}
+
+ button:hover {
+ background-color: #218838;
+}
+ 
+.message {
+ margin-top: 15px;
+ font-weight: bold;
+ color: green;
+}
+  
+</style>
+ </head>
+ <body>
+
+ <header>
+ <div class="text">Adicione Estudante</div>
+ </header>
+
+ <form id="form-anuncio">
+ <input type="text" id="nome" placeholder="Nome do estudante" required />
+ <input type="text" id="livro" placeholder="Livro de estudo" required />
+ <input type="number" id="capitulo" placeholder="Capítulo" required />
+ <input type="text" id="tema" placeholder="Tema" required />
+ <input type="text" id="licao" placeholder="Lição" required />
+
+ <button type="submit">Finalizar</button>
+ <p class="message" id="mensagem"></p>
+ </form>
+
+ <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -163,7 +149,4 @@ font-weight: bold;
     }
   });
 </script>
-
-
-
 
