@@ -3,153 +3,162 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>detalhes</title>
+<title>teste</title>
 </head>
 <body>
   
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f4f6f9;
-    margin: 0;
- }
+ body {
+ font-family: Roboto, sans-serif;;
+ background: #f4f6f9;
+ margin: 0;
+}
 
  header {
-  background:lime;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ background: #3498db;
+ padding: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .text {
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-  text-align: center;
+ color: white;
+ font-size: 22px;
+ font-weight: bold;
+ text-align: center;
 }
 
  #lista-estudantes {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 600px;
-    margin: 0 auto;
-    margin-top: 30px;
-
+ display: flex;
+ flex-direction: column;
+ gap: 15px;
+ max-width: 600px;
+ margin: 0 auto;
+ margin-top: 30px;
 }
 
-  .estudante {
-    background: #ffffff;
-    border: 1px solid #ddd;
-    border-left: 5px solid #3498db;
-    border-radius: 8px;
-    padding: 15px 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    
-    margin-left: 10px;
-    margin-right: 10px;
-    
-
+ .estudante {
+ background: #ffffff;
+ border: 1px solid #ddd;
+ border-left: 5px solid #3498db;
+ border-radius: 8px;
+ padding: 15px 20px;
+ box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+ cursor: pointer;
+ transition: transform 0.2s, box-shadow 0.2s;
+ margin-left: 10px;
+ margin-right: 10px;
 }
 
-  .estudante:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
+ .estudante:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-  .estudante h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #2c3e50;
-  }
-    .anuncio {
-      padding: 10px;
-      margin: 10px 0;
-      background-color: #f2f2f2;
-      cursor: pointer;
-      border-radius: 5px;
-    }
+ .estudante h3 {
+ margin: 0;
+ font-size: 1.2rem;
+ color: #2c3e50;
+}
+    
+ .anuncio {
+ padding: 10px;
+ margin: 10px 0;
+ background-color: #f2f2f2;
+ cursor: pointer;
+ border-radius: 5px;
+}
   
  </style>
+ </head>
+ <body>
+ 
+ <header>
+ <div class="text">Meus estudantes</div>
+ </header>
 
-<header>
-  <div class="text">Meus estudantes</div>
-</header>
+ <div id="lista-estudantes">Carregando estudantes...</div>
 
-<div id="lista-estudantes">Carregando estudantes...</div>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+      authDomain: "teste-cfe69.firebaseapp.com",
+      projectId: "teste-cfe69",
+      storageBucket: "teste-cfe69.appspot.com",
+      messagingSenderId: "646579509123",
+      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+    };
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-    authDomain: "teste-cfe69.firebaseapp.com",
-    projectId: "teste-cfe69",
-    storageBucket: "teste-cfe69.appspot.com",
-    messagingSenderId: "646579509123",
-    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
-  };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth();
-  const db = getFirestore();
+    const lista = document.getElementById("lista-estudantes");
 
-  const lista = document.getElementById("lista-estudantes");
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const q = query(collection(db, "estudantes"), where("uid", "==", user.uid));
+          const querySnapshot = await getDocs(q);
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      try {
-        const q = query(collection(db, "estudantes"), where("uid", "==", user.uid));
-        const querySnapshot = await getDocs(q);
+          if (querySnapshot.empty) {
+            lista.textContent = "Você ainda não cadastrou nenhum estudante.";
+          } else {
+            lista.innerHTML = "";
+            querySnapshot.forEach(doc => {
+              const dados = doc.data();
+              const id = doc.id;
 
-        if (querySnapshot.empty) {
-          lista.textContent = "Você ainda não cadastrou nenhum estudante.";
-        } else {
-          lista.innerHTML = "";
-          querySnapshot.forEach(doc => {
-            const dados = doc.data();
-
-            const numeroLimpo = dados.whatsapp ? dados.whatsapp.replace(/\D/g, '') : "";
-            const linkWhatsapp = numeroLimpo ? `https://wa.me/${numeroLimpo}` : "";
-
-            const div = document.createElement("div");
-            div.classList.add("estudante");
-            div.innerHTML = `<h3>${dados.nome}</h3>`;
-
-            div.addEventListener('click', () => {
-              const estudanteData = {
-                nome: dados.nome,
-                livro: dados.livro,
-                capitulo: dados.capitulo,
-                tema: dados.tema,
-                licao: dados.licao
-              };
-
-              // Inclui o link do WhatsApp apenas se existir
-              if (linkWhatsapp) {
-                estudanteData.whatsapp = linkWhatsapp;
+              // Verifica se há atualizações no localStorage
+              const atualizado = JSON.parse(localStorage.getItem('estudanteAtualizado'));
+              if (atualizado && atualizado.id === id) {
+                dados.nome = atualizado.nome;
+                dados.livro = atualizado.livro;
+                dados.capitulo = atualizado.capitulo;
+                dados.tema = atualizado.tema;
+                dados.licao = atualizado.licao;
               }
 
-              localStorage.setItem('estudanteSelecionado', JSON.stringify(estudanteData));
-              window.location.href = "detalhes.html";
+              const numeroLimpo = dados.whatsapp ? dados.whatsapp.replace(/\D/g, '') : "";
+              const linkWhatsapp = numeroLimpo ? `https://wa.me/${numeroLimpo}` : "";
+
+              const div = document.createElement("div");
+              div.classList.add("estudante");
+              div.innerHTML = `<h3>${dados.nome}</h3>`;
+
+              div.addEventListener('click', () => {
+                const estudanteData = {
+                  id: id,
+                  nome: dados.nome,
+                  livro: dados.livro,
+                  capitulo: dados.capitulo,
+                  tema: dados.tema,
+                  licao: dados.licao,
+                  whatsapp: linkWhatsapp
+                };
+                localStorage.setItem('estudanteSelecionado', JSON.stringify(estudanteData));
+                window.location.href = "detalhes.html";
+              });
+
+              lista.appendChild(div);
             });
 
-            lista.appendChild(div);
-          });
+            localStorage.removeItem('estudanteAtualizado');
+          }
+        } catch (error) {
+          lista.textContent = "Erro ao carregar estudantes.";
+          console.error(error);
         }
-      } catch (error) {
-        lista.textContent = "Erro ao carregar estudantes.";
-        console.error(error);
+      } else {
+        window.location.href = "login.html";
       }
-    } else {
-      window.location.href = "login.html";
-    }
-  });
-</script>
-
+    });
+  </script>
+</body>
+</html>
 
 
