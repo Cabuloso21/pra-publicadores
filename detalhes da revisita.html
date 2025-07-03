@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>detalhes testando</title>
+</head>
+<body>
+  
+ <style>
+ body {
+ font-family: Roboto, sans-serif;;
+ background: #f4f6f9;
+ margin: 0;
+}
+
+ header {
+ background: #3498db;
+ padding: 15px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.text {
+ color: #ccc;
+ font-size: 22px;
+ font-weight: bold;
+ text-align: center;
+}
+
+
+button {
+border-radius: 10px;
+border: 1px solid #3498db;   
+padding: 10px;
+font-weight: bold;
+color: #3498db;
+background: #f2f2f2;
+margin-top: 20px;
+margin-left: 10px;
+}
+
+.card {
+background: white;
+border-radius: 2px;
+margin-left: 10px;
+margin-right: 10px;
+
+}
+ 
+.detalhes {
+ color: black;
+margin-left: 10px;
+margin-top: 40px;
+}
+
+h3 {
+background: white;
+margin-left: 0px;
+margin-right: 10px;
+color: #349;
+text-align: absolute;
+font-size: 21px;
+position: relative;
+top: 20px;
+margin-bottom: 50px;
+border-bottom: 1.50px solid #ccc;
+}
+
+label {
+background: white;
+margin-left: 10px;
+margin-right: 0px;
+color: green;
+}
+
+
+input {
+background: white;
+border-radius: 2px;
+border: 1px solid #ccc;
+margin-left: 0px;
+margin-right: 10px;
+padding: 10px;
+
+}
+
+
+
+
+
+ #modalConfirmacao {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    #modalConfirmacao .conteudo {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    #mensagemStatus {
+      display: none;
+      color: white;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+ </head>
+ <body>
+
+ <header>
+ <div class="text">Detalhes</div>
+ </header>
+
+ <div id="botoes-topo">
+ <button id="btnEditar">Editar</button>
+ <button id="btnExcluir">Excluir</button>
+ </div>
+
+ <div class="card">
+ <div class="detalhes" id="detalhes-revisita">Carregando...</div>
+
+ <div id="whatsContainer" style="margin-top: 20px; display: none;">
+ <label>WhatsApp:</label>
+ <input type="tel" id="numeroWhatsApp" placeholder="Ex: 95350376" />
+ <!-- Botão será criado via JS -->
+ </div>
+ </div>
+
+ <div id="mensagemStatus"></div>
+
+ <div id="modalConfirmacao">
+ <div class="conteudo">
+ <p>Tem certeza que deseja excluir esta Revisita?</p>
+ <button id="confirmarExclusao">Sim</button>
+ <button id="cancelarExclusao">Cancelar</button>
+ </div>
+ </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getFirestore, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore();
+
+  const detalhes = document.getElementById('detalhes-revisita');
+  const btnEditar = document.getElementById('btnEditar');
+  const btnExcluir = document.getElementById('btnExcluir');
+  const inputNumero = document.getElementById('numeroWhatsApp');
+  const whatsContainer = document.getElementById("whatsContainer");
+
+  const modal = document.getElementById("modalConfirmacao");
+  const btnConfirmar = document.getElementById("confirmarExclusao");
+  const btnCancelar = document.getElementById("cancelarExclusao");
+
+  let revisita = JSON.parse(localStorage.getItem('revisitaSelecionado'));
+  let editando = false;
+  let btnWhats = null;
+
+  function mostrarMensagem(texto, cor = "#4caf50") {
+    const mensagem = document.getElementById("mensagemStatus");
+    mensagem.textContent = texto;
+    mensagem.style.backgroundColor = cor;
+    mensagem.style.display = "block";
+    setTimeout(() => {
+      mensagem.style.display = "none";
+    }, 3000);
+  }
+
+  function renderDetalhes(data) {
+    detalhes.innerHTML = `
+      <h3>${data.nome}</h3>
+      <p><strong>Assunto:</strong> ${data.assunto}</p>
+      <p><strong>Texto:</strong> ${data.texto}</p>
+      <p><strong>Tema:</strong> ${data.tema}</p>
+      <p><strong>Endereço:</strong> ${data.endereco}</p>
+      <p><strong>Casa:</strong> ${data.casa}</p>
+    `;
+    inputNumero.value = data.numero || '';
+  }
+
+  function renderEditForm(data) {
+    detalhes.innerHTML = `
+      <label>Nome:</label>
+      <input type="text" id="inputNome" value="${data.nome}" />
+      <label>Assunto:</label>
+      <input type="text" id="inputAssunto" value="${data.assunto}" />
+      <label>Texto:</label>
+      <input type="text" id="inputTexto" value="${data.texto}" />
+      <label>Tema:</label>
+      <input type="text" id="inputTema" value="${data.tema}" />
+      <label>Endereço:</label>
+      <input type="text" id="inputEndereco" value="${data.endereco}" />
+      <label>Casa:</label>
+      <input type="text" id="inputCasa" value="${data.casa}" />
+    `;
+    document.getElementById("inputNome").focus();
+  }
+
+  btnEditar.addEventListener("click", async () => {
+    if (!revisita) return;
+
+    if (!editando) {
+      editando = true;
+      btnEditar.textContent = "Salvar";
+      renderEditForm(revisita);
+    } else {
+      const novoNome = document.getElementById('inputNome').value.trim();
+      const novoAssunto = document.getElementById('inputAssunto').value.trim();
+      const novoTexto = document.getElementById('inputTexto').value.trim();
+      const novoTema = document.getElementById('inputTema').value.trim();
+      const novoEndereco = document.getElementById('inputEndereco').value.trim();
+      const novoCasa = document.getElementById('inputCasa').value.trim();
+
+      if (!novoNome) {
+        mostrarMensagem("Nome não pode ser vazio.", "#f44336");
+        return;
+      }
+
+      const ref = doc(db, 'revisita', revisita.id);
+      try {
+        await updateDoc(ref, {
+          nome: novoNome,
+          assunto: novoAssunto,
+          texto: novoTexto,
+          tema: novoTema,
+          endereco: novoEndereco,
+          casa: novoCasa
+        });
+
+        revisita = { ...revisita, nome: novoNome, assunto: novoAssunto, texto: novoTexto, tema: novoTema, endereco: novoEndereco, casa: novoCasa };
+        localStorage.setItem('revisitaSelecionado', JSON.stringify(revisita));
+
+        editando = false;
+        btnEditar.textContent = "Editar";
+        renderDetalhes(revisita);
+        mostrarMensagem("Dados atualizados com sucesso!");
+      } catch (error) {
+        console.error("Erro ao atualizar:", error);
+        mostrarMensagem("Erro ao salvar alterações.", "#f44336");
+      }
+    }
+  });
+
+  btnExcluir.addEventListener("click", () => {
+    if (!revisita) return;
+    modal.style.display = "flex";
+  });
+
+  btnConfirmar.addEventListener("click", async () => {
+    const ref = doc(db, 'revisita', revisita.id);
+    try {
+      await deleteDoc(ref);
+      localStorage.removeItem('revisitaSelecionado');
+      revisita = null;
+      detalhes.innerHTML = "<p>Revisita excluída.</p>";
+      btnEditar.disabled = true;
+      btnExcluir.disabled = true;
+      whatsContainer.style.display = "none";
+      inputNumero.value = "";
+      if (btnWhats) btnWhats.remove();
+      mostrarMensagem("Revisita excluída com sucesso.");
+    } catch (error) {
+      console.error("Erro ao excluir:", error);
+      mostrarMensagem("Erro ao excluir revisita.", "#f44336");
+    }
+    modal.style.display = "none";
+  });
+
+  btnCancelar.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  function conversarNoWhatsApp() {
+    const numero = inputNumero.value.trim();
+    if (!numero) {
+      mostrarMensagem("Por favor, insira o número da revisita.", "#f44336");
+      return;
+    }
+
+    const mensagem = encodeURIComponent(`Olá ${revisita.nome}, tudo bem?`);
+    const link = `https://wa.me/${numero}?text=${mensagem}`;
+    window.open(link, "_blank");
+  }
+
+  if (revisita) {
+    renderDetalhes(revisita);
+    whatsContainer.style.display = "block";
+    btnWhats = document.createElement("button");
+    btnWhats.textContent = "Conversar no WhatsApp";
+    btnWhats.style.marginTop = "10px";
+    btnWhats.style.display = "block";
+    inputNumero.insertAdjacentElement("afterend", btnWhats);
+    btnWhats.addEventListener("click", conversarNoWhatsApp);
+  } else {
+    detalhes.innerHTML = "<p>Nenhuma revisita selecionada.</p>";
+  }
+</script>
+
+
+</body>
+</html>
