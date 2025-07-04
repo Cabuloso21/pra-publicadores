@@ -1,9 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>teste</title>
 </head>
 <body>
 
@@ -18,20 +18,38 @@
  display: flex;
  justify-content: space-between; /* espaçamento entre logo e botão */
  align-items: center; /* alinha verticalmente */
- padding: 10px 20px;
+ padding: 15px;
  background: #2c3e50;
  list-style: none;
  text-decoration: none;
 }
 
-.logo {
-color: White;
-font-weight: bold;
-text-align: center;
-font-size: 22px;
+ .logo {
+ color: White;
+ font-weight: bold;
+ text-align: center;
+ font-size: 22px;
 }
 
-.menu {
+ .btn-sair {
+ background: #2c3e50;
+ color: white;
+ border: none;
+ padding: 6px 12px;
+ border-radius: 5px;
+ cursor: pointer;
+font-weight: bolder;
+}
+
+ .btn-sair:hover {
+ background-color: darkred;
+}
+
+
+
+.menu ul {
+ list-style: none;
+ padding: 0;
  width: 97.1%;
  background: white;
  overflow-x: scroll;
@@ -47,11 +65,8 @@ font-size: 22px;
 
 }
 
- li {
- margin: 0px;
-}
 
- a {
+a {
  display: flex;
  color: #2c3e50;
  text-decoration: none;
@@ -65,6 +80,26 @@ font-size: 22px;
  color: #74bb17;
  
 } 
+
+ .menu a:hover {
+ color: #006400;
+}
+
+.menu .icone {
+ margin-right: 8px;
+ width: 20px;
+ height: 20px;
+ fill: green;
+ transition: transform 0.3s, fill 0.3s;
+}
+
+ .menu a:hover .icone {
+ transform: scale(1.2);
+ fill: #006400;
+}
+
+
+
 
 .text {
  color:  black;
@@ -107,21 +142,53 @@ font-size: 22px;
  font-weight: bold;
  color: white;
  margin-top: 20px;
-  
-}
-  
+ }
 </style>
-<header>
-<div class="logo">Painel</div>
-</header>
 
-<div class="menu">
+ <header>
+ <div class="logo">Painel</div>
+ <button class="btn-sair" onclick="sair()">Sair</button>
+ </header>
+
+
+ <div class="menu">
   <ul>
-  <li><a href="adicionar designação.html">Adicionar designação</a></li>
-  <li><a href="adicionar estudante.html">Adicionar estudante</a></li>
-  <li><a href="adicionar revisita.html">Adicionar revisita</a></li>
- </ul>
+  <li>
+  <a href="adicionar designação.html">
+    <!-- Ícone: Caderno com caneta -->
+    <svg class="icone" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="green">
+      <path d="M3 2C2.44772 2 2 2.44772 2 3V21C2 21.5523 2.44772 22 3 22H15C15.5523 22 16 21.5523 16 21V3C16 2.44772 15.5523 2 15 2H3ZM4 4H14V20H4V4ZM18.586 6.586L17.172 8L20 10.828L21.414 9.414C21.8045 9.02348 21.8045 8.39031 21.414 8L19.999 6.586C19.6085 6.19548 18.9753 6.19548 18.585 6.586H18.586ZM16.464 9.879L10 16.343V19H12.657L19.121 12.536L16.464 9.879Z"/>
+    </svg>
+    Adicionar designação
+  </a>
+ </li>
+ <li>
+     
+
+ <a href="adicionar estudante.html">
+        <!-- Ícone de usuário (Estudante) -->
+        <svg class="icone" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+          <path d="M2 14s-1 0-1-1 1-4 7-4 7 3 7 4-1 1-1 1H2z"/>
+        </svg>
+        Adicionar estudante
+      </a>
+    </li>
+    <li>
+      <a href="adicionar revisita.html">
+        <!-- Ícone de calendário/agenda (Revisita) -->
+        <svg class="icone" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h.5A1.5 1.5 0 0 1 15 2.5V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2.5A1.5 1.5 0 0 1 2.5 1H3v-.5a.5.5 0 0 1 .5-.5zM14 4H2v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V4z"/>
+        </svg>
+        Adicionar revisita
+      </a>
+    </li>
+    <li>
+      <a href="adicionar revisita.html">Meus Dados</a>
+    </li>
+  </ul>
 </div>
+
 
 
 
@@ -140,11 +207,11 @@ font-size: 22px;
 </div>
 
 <div class="card" onclick="redirecionar('designação.html')">
-<div class="texto">Designação</div>
+<div class="texto">Pregação</div>
 </div>
 
 <div class="card" onclick="redirecionar('dia de pregação.html')">
-<div class="texto">Pregação</div>
+<div class="texto">Relatório</div>
 </div>
 
 
@@ -155,90 +222,25 @@ font-size: 22px;
 
 
 
+
 <script defer src="caminho.js"></script>
-</head>
-<body>
-    
+
 <script>
-
-
-
-function redirecionar(url) {
+ function redirecionar(url) {
  window.location.href = url;
 }
+</script>
 
 
- 
+<script>
+  function sair() {
+    // Exemplo: limpar dados do localStorage
+    localStorage.clear();
 
-
-
-        // Função para habilitar a edição do cabeçalho
-        function habilitarEdicao() {
-            var header = document.getElementById("headerText");
-            header.focus();
-        }
-
-  
-  
-  
-  
-  
-        // Função para selecionar e exibir uma imagem
-        function selecionarImagem() {
-            var imagemInput = document.getElementById("imagemInput");
-            imagemInput.click();
-
-            imagemInput.addEventListener("change", function () {
-                var logo = document.getElementById("logo");
-                var file = imagemInput.files[0];
-                var reader = new FileReader();
-
-                reader.onload = function () {
-                    logo.src = reader.result;
-                    // Salvar a imagem no armazenamento local
-                    localStorage.setItem("imagem", reader.result);
-                };
-
-                if (file) {
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        // Carregar imagem do armazenamento local ao carregar a página
-        var imagemSalva = localStorage.getItem("imagem");
-        if (imagemSalva) {
-            var logo = document.getElementById("logo");
-            logo.src = imagemSalva;
-        }
-
-  
-  
-  
-  
-  
-  
-  
-        // Restante do seu código JavaScript para salvar edições automaticamente
-        var headerText = document.getElementById("headerText");
-
-        headerText.addEventListener("input", function () {
-            // Salvar o texto do cabeçalho no armazenamento local
-            localStorage.setItem("cabecalho", headerText.textContent);
-        });
-
-        // Carregar texto do cabeçalho do armazenamento local ao carregar a página
-        var cabecalhoSalvo = localStorage.getItem("cabecalho");
-        if (cabecalhoSalvo) {
-            headerText.textContent = cabecalhoSalvo;
-        }
-    
-    
+    // Redirecionar para página de login (altere conforme sua estrutura)
+    window.location.href = "login.html";
+  }
 </script>
 </body>
 </html>
-  
-
-
-
 
