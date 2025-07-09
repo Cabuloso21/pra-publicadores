@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>teste 3</title>
+</head>
+<body>
+  
+<style>
+  body { 
+  margin: 0px;
+  font-family: Arial, sans-serif;
+   
+ }
+  .arrow {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  transform: rotate(-130deg);
+  position: absolute;
+  top: 21px;
+  left: 15px;
+        
+ }
+
+      
+  header {
+  background-color: #cc3;
+  padding: 15px;
+  border-bottom: 1.50px solid White;
+        
+ }
+
+  .title {
+  color: black;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+        
+ }
+
+  form {
+  margin: 20px;
+       
+ }
+
+  label {
+  display: inline-block;
+  width: 150px;
+  font-weight: bold;
+  color: black;
+  margin: 6px;
+            
+ }
+
+  input[type="text"] {
+  width: 200px;
+  padding: 14px;
+  margin-bottom: 6px;
+  border: 1px solid #cc1;
+  border-radius: 10px;
+  font-size: 16px;
+          
+ }
+
+  input {
+  color: black;
+         
+ }
+  
+  
+  button {
+  display: block;
+  margin: 10px auto;
+  margin-bottom: 50px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background-color: #ff6534;
+          
+ }
+  
+  input[type="number"] {
+  width: 200px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #cc4;
+  font-size: 16px;
+    
+ }
+    
+ </style>
+
+
+
+
+
+<header>
+  <div class="title">Meu relatório</div>
+</header>
+
+<form>
+  <label for="nome">Nome:</label>
+  <input type="text" id="nome" name="nome"><br><br>
+
+  <label for="mês">Mês:</label>
+  <input type="text" id="mês" name="mês"><br><br>
+
+  <label for="participou_na_pregacao">Participou na pregação:</label>
+  <input type="text" id="participou_na_pregacao" name="participou_na_pregacao"><br><br>
+
+  <label for="quantas_vezes">Quantas vezes?</label>
+  <input type="number" id="quantas_vezes" name="quantas_vezes"><br><br>
+
+  <label for="estudo">Estudos:</label>
+  <input type="number" id="estudo" name="estudo"><br><br>
+
+  <button type="button" onclick="enviarWhatsapp()">Enviar relatório</button>
+</form>
+
+<!-- Firebase SDK (modular) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    doc,
+    updateDoc,
+    getDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  // Configuração Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.firebasestorage.app",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:5565c595f322cf3ba308b6",
+    measurementId: "G-81YQG8L41X"
+  };
+
+  // Inicializar Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+
+  const uniqueKey = "pagina1";
+
+  // Carregar dados do localStorage
+  document.getElementById("nome").value = localStorage.getItem(uniqueKey + "_nome") || "";
+  document.getElementById("mês").value = localStorage.getItem(uniqueKey + "_mês") || "";
+  document.getElementById("participou_na_pregacao").value = localStorage.getItem(uniqueKey + "_participou_na_pregacao") || "";
+  document.getElementById("quantas_vezes").value = localStorage.getItem(uniqueKey + "_quantas_vezes") || "";
+  document.getElementById("estudo").value = localStorage.getItem(uniqueKey + "_estudo") || "";
+
+  // Salvar no localStorage ao digitar
+  document.getElementById("nome").addEventListener("input", e => localStorage.setItem(uniqueKey + "_nome", e.target.value));
+  document.getElementById("mês").addEventListener("input", e => localStorage.setItem(uniqueKey + "_mês", e.target.value));
+  document.getElementById("participou_na_pregacao").addEventListener("input", e => localStorage.setItem(uniqueKey + "_participou_na_pregacao", e.target.value));
+  document.getElementById("quantas_vezes").addEventListener("input", e => localStorage.setItem(uniqueKey + "_quantas_vezes", e.target.value));
+  document.getElementById("estudo").addEventListener("input", e => localStorage.setItem(uniqueKey + "_estudo", e.target.value));
+
+  // Função para enviar relatório
+  window.enviarWhatsapp = async function () {
+    const nome = document.getElementById("nome").value;
+    const mês = document.getElementById("mês").value;
+    const participouNaPregacao = document.getElementById("participou_na_pregacao").value;
+    const quantasVezes = document.getElementById("quantas_vezes").value;
+    const estudo = document.getElementById("estudo").value;
+
+    // Salvar no localStorage
+    localStorage.setItem(uniqueKey + "_nome", nome);
+    localStorage.setItem(uniqueKey + "_mês", mês);
+    localStorage.setItem(uniqueKey + "_participou_na_pregacao", participouNaPregacao);
+    localStorage.setItem(uniqueKey + "_quantas_vezes", quantasVezes);
+    localStorage.setItem(uniqueKey + "_estudo", estudo);
+
+    let docId = localStorage.getItem(uniqueKey + "_docId");
+
+    try {
+      if (docId) {
+        const docRef = doc(db, "relatorios", docId);
+        const snap = await getDoc(docRef);
+
+        if (snap.exists()) {
+          await updateDoc(docRef, {
+            nome: nome,
+            mes: mês,
+            participouNaPregacao: participouNaPregacao,
+            quantasVezes: parseInt(quantasVezes),
+            estudo: parseInt(estudo),
+            dataEdicao: serverTimestamp()
+          });
+          console.log("Relatório atualizado com sucesso!");
+        } else {
+          const novoDoc = await addDoc(collection(db, "relatorios"), {
+            nome: nome,
+            mes: mês,
+            participouNaPregacao: participouNaPregacao,
+            quantasVezes: parseInt(quantasVezes),
+            estudo: parseInt(estudo),
+            dataEnvio: serverTimestamp()
+          });
+          localStorage.setItem(uniqueKey + "_docId", novoDoc.id);
+          console.log("Novo relatório criado (documento anterior não encontrado).");
+        }
+      } else {
+        const novoDoc = await addDoc(collection(db, "relatorios"), {
+          nome: nome,
+          mes: mês,
+          participouNaPregacao: participouNaPregacao,
+          quantasVezes: parseInt(quantasVezes),
+          estudo: parseInt(estudo),
+          dataEnvio: serverTimestamp()
+        });
+        localStorage.setItem(uniqueKey + "_docId", novoDoc.id);
+        console.log("Relatório criado no Firestore");
+      }
+    } catch (e) {
+      console.error("Erro ao salvar no Firestore:", e);
+    }
+
+    // Enviar mensagem via WhatsApp (sem número fixo)
+    const mensagem = `Nome: ${nome}%0AMês: ${mês}%0AParticipou na pregação: ${participouNaPregacao}%0AQuantas vezes: ${quantasVezes}%0AEstudo: ${estudo}`;
+    window.open(`https://wa.me/?text=${mensagem}`);
+  };
+</script>
+
+</body>
+</html>
