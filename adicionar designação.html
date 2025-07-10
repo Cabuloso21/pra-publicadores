@@ -11,6 +11,18 @@
  background: white;
 }
 
+ .arrow {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #f2f2f2;
+  border-right: 2px solid #f2f2f2;
+  transform: rotate(-130deg);
+  position: absolute;
+  top: 21px;
+  left: 15px;
+ }
+
  header {
  padding: 16px;
  background: #4A6DA7;
@@ -18,7 +30,7 @@
 }
 
  .text {
- color: white;
+ color: #f2f2f2;
  text-align: center;
  font-weight: bold;
  font-size: 19px;
@@ -38,11 +50,11 @@
 
  #form-anuncio input[type="text"] {
  width: 91%;
- padding: 12px;
+ padding: 16px;
  margin-left: 0px;
  border: 1px solid #ccc;
  border-radius: 8px;  
- font-size: 15px;
+ font-size: 16px;
  transition: border-color 0.3s;
  margin-top: 20px;
 }
@@ -55,9 +67,9 @@
  #form-anuncio button {
  width: 50%;
  padding: 12px;
- margin-left: 70px;
+ margin-left: 83px;
  margin-top: 40px;
- background: #3498db;
+ background: #4A6DA7;
  color: white;
  border: none;
  border-radius: 8px;
@@ -78,6 +90,11 @@
 }
 
 </style>
+
+ <a href="index.html">
+ <span class="arrow"></span>
+ </a>
+ </div>
 
  <header>
  <div class="text">Adicionar designação</div>
@@ -155,4 +172,3 @@
 
 </body>
 </html>
-
