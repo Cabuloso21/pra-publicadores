@@ -221,7 +221,7 @@ function criarCampoEditable(tipo, valorInicial, salvarCallback, campoNome) {
     el.textContent = valorInicial || "";
     el.style.borderBottom = "1px dashed #ccc";
 
-    if (campoNome === "produto") {
+    if (campoNome === "nome") {
       el.style.fontWeight = "bold";
     }
   }
@@ -304,8 +304,8 @@ onAuthStateChanged(auth, async (user) => {
       const div = document.createElement("div");
       div.className = "designacao";
 
-      const campoProduto = criarCampoEditable("div", dados.produto, novoValor =>
-        updateDoc(ref, { produto: novoValor }), "produto");
+      const campoNome = criarCampoEditable("div", dados.nome, novoValor =>
+        updateDoc(ref, { nome: novoValor }), "nome");
 
       const campoTema = criarCampoEditable("div", dados.tema, novoValor =>
         updateDoc(ref, { tema: novoValor }), "tema");
@@ -351,10 +351,10 @@ onAuthStateChanged(auth, async (user) => {
           mostrarModalAlertaWhatsapp("Por favor. digite um número válido do WhatsApp para enviar essa designação.");
           return;
         }
-        const produto = campoProduto.querySelector("div").textContent.trim();
+        const nome = campoNome.querySelector("div").textContent.trim();
         const tema = campoTema.querySelector("div").textContent.trim();
         const descricao = campoDescricao.querySelector("textarea").value.trim();
-        const mensagem = `Produto: ${produto}\nTema: ${tema}\nDescrição: ${descricao}`;
+        const mensagem = `Nome: ${nome}\nTema: ${tema}\nDescrição: ${descricao}`;
         const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
         window.open(link, "_blank");
       });
@@ -370,7 +370,7 @@ onAuthStateChanged(auth, async (user) => {
         });
       });
 
-      div.appendChild(campoProduto);
+      div.appendChild(campoNome);
       div.appendChild(campoTema);
       div.appendChild(campoDescricao);
       div.appendChild(inputWhatsapp);
