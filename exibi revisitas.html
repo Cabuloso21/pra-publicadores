@@ -13,6 +13,19 @@
  margin: 0;
 }
 
+.arrow {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #f2f2f2;
+  border-right: 2px solid #f2f2f2;
+  transform: rotate(-130deg);
+  position: absolute;
+  top: 21px;
+  left: 15px;
+}
+
+
  header {
  background: #4A6DA7;
  padding: 15px;
@@ -39,7 +52,7 @@
  .revisita {
  background: #ffffff;
  border: 1px solid #ddd;
- border-left: 5px solid #3498db;
+ border-left: 5px solid #4A6DA7;
  border-radius: 8px;
  padding: 15px 10px;
  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -72,16 +85,16 @@
  </head>
  <body>
  
+ <a href="painel.html">
+ <span class="arrow"></span>
+ </a>
+ </div>
+
  <header>
  <div class="text">Minhas Revisitas</div>
  </header>
 
-
-
-
-  
-
-<div id="lista-revisitas">Carregando revisitas...</div>
+ <div id="lista-revisitas">Carregando revisitas...</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
