@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>detalhes testando</title>
+<title>teste 4</title>
 </head>
 <body>
   
  <style>
  body {
+ margin: 0px;
  font-family: Roboto, sans-serif;;
- background: #f4f6f9;
- margin: 0;
+ background: white;
 }
-
  .arrow {
   display: inline-block;
   width: 10px;
@@ -24,142 +23,143 @@
   position: absolute;
   top: 21px;
   left: 15px;
- }
+}
 
  header {
  background: #4A6DA7;
  padding: 15px;
  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ margin-bottom: 30px;
 }
 
 .text {
- color: #f2f2f2;
+ color: white;
  font-size: 22px;
  font-weight: bold;
  text-align: center;
 }
 
-button {
-border-radius: 10px;
-border: 1px solid #4A6DA7;
-padding: 10px;
-font-weight: bold;
-color: #4A6DA7;
-background: #f2f2f2;
-margin-top: 20px;
-margin-left: 10px;
-}
-
-.card {
-background: white;
-border-radius: 2px;
-margin-left: 10px;
-margin-right: 10px;
-
-}
- 
-.detalhes {
- color: black;
- margin-left: 10px;
- margin-right: 100px;
- margin-top: 40px;
+ .detalhes {
+ background: white;
+ height: 250px;
+ margin-left: 15px;
 }
 
 h3 {
-background: white;
-margin-left: 0px;
-width: 393px;
 color: #349;
-text-align: absolute;
-font-size: 21px;
-position: relative;
-top: 20px;
-margin-bottom: 50px;
-border-bottom: 1.50px solid #ccc;
-}
-
-label {
-background: white;
-margin-left: 10px;
-margin-right: 0px;
-color: green;
+border-bottom: 1px solid #ccc;
+margin-bottom: 30px;
+margin-right: 15px;
 }
 
 
-input {
-background: white;
-border-radius: 2px;
-border: 1px solid #ccc;
-margin-left: 0px;
-margin-right: 10px;
-padding: 10px;
-
-}
-
-
- #modalConfirmacao {
+#mensagemStatus {
+      display: none;
+      padding: 10px;
+      color: white;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+    #modalConfirmacao {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       justify-content: center;
       align-items: center;
     }
-    #modalConfirmacao .conteudo {
-      background: #fff;
+    .conteudo {
+      background: white;
       padding: 20px;
       border-radius: 10px;
-    }
-    #mensagemStatus {
-      display: none;
-      color: white;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 5px;
       text-align: center;
-    }
-  </style>
- </head>
- <body>
+     color: black;
 
- <a href="exibi revisitas.html">
+ }
+    
+button {
+background: white;
+color: #4A6DA7;
+font-weight: bolder;
+border-radius: 10px;
+border: 1px solid #4A6DA7;
+padding: 10px;
+margin-left: 15px;
+margin-bottom: 40px;
+
+}
+
+label { 
+display: block; 
+margin-top: 10px; 
+margin-left: 15px;
+color: black;
+font-weight: bolder; 
+}
+
+ input { 
+ width: 40%;
+ padding: 10px; 
+ margin-bottom: 10px; 
+ margin-left: 15px;
+border-radius: 5px;
+border: 1px solid #ccc;
+
+}
+ 
+
+.card {
+ margin-top: 20px; 
+ background: white;
+}
+    
+</style>
+</head>
+<body>
+
+<a href="lista de estudantes2.html">
  <span class="arrow"></span>
  </a>
  </div>
 
  <header>
- <div class="text">Detalhes</div>
+ <div class="text">Detalhes da revisita</div>
  </header>
-
- <div id="botoes-topo">
- <button id="btnEditar">Editar</button>
- <button id="btnExcluir">Excluir</button>
- </div>
-
- <div class="card">
- <div class="detalhes" id="detalhes-revisita">Carregando...</div>
-
- <div id="whatsContainer" style="margin-top: 20px; display: none;">
- <label>WhatsApp:</label>
- <input type="tel" id="numeroWhatsApp" placeholder="Ex: 95350376" />
- <!-- Botão será criado via JS -->
  </div>
  </div>
 
- <div id="mensagemStatus"></div>
 
- <div id="modalConfirmacao">
- <div class="conteudo">
- <p>Tem certeza que deseja excluir esta Revisita?</p>
- <button id="confirmarExclusao">Sim</button>
- <button id="cancelarExclusao">Cancelar</button>
- </div>
- </div>
+<div id="botoes-topo">
+  <button id="btnEditar">Editar</button>
+  <button id="btnExcluir">Excluir</button>
+</div>
+
+<div class="card">
+  <div class="detalhes" id="detalhes-revisita">Carregando...</div>
+
+  <div id="whatsContainer" style="margin-top: 20px; display: none;">
+    <label>WhatsApp:</label>
+    <input type="tel" id="numeroWhatsApp" placeholder="Ex: 95350376" />
+  </div>
+</div>
+
+<div id="mensagemStatus"></div>
+
+<div id="modalConfirmacao">
+  <div class="conteudo">
+    <p>Tem certeza que deseja excluir esta Revisita?</p>
+    <button id="confirmarExclusao">Sim</button>
+    <button id="cancelarExclusao">Cancelar</button>
+  </div>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getFirestore, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import {
+    getFirestore, collection, getDocs, query, orderBy, limit,
+    doc, updateDoc, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
@@ -178,12 +178,12 @@ padding: 10px;
   const btnExcluir = document.getElementById('btnExcluir');
   const inputNumero = document.getElementById('numeroWhatsApp');
   const whatsContainer = document.getElementById("whatsContainer");
-
   const modal = document.getElementById("modalConfirmacao");
   const btnConfirmar = document.getElementById("confirmarExclusao");
   const btnCancelar = document.getElementById("cancelarExclusao");
 
-  let revisita = JSON.parse(localStorage.getItem('revisitaSelecionado'));
+  let revisitaId = null;
+  let revisitaData = null;
   let editando = false;
   let btnWhats = null;
 
@@ -192,9 +192,7 @@ padding: 10px;
     mensagem.textContent = texto;
     mensagem.style.backgroundColor = cor;
     mensagem.style.display = "block";
-    setTimeout(() => {
-      mensagem.style.display = "none";
-    }, 3000);
+    setTimeout(() => { mensagem.style.display = "none"; }, 3000);
   }
 
   function renderDetalhes(data) {
@@ -223,17 +221,19 @@ padding: 10px;
       <input type="text" id="inputEndereco" value="${data.endereco}" />
       <label>Casa:</label>
       <input type="text" id="inputCasa" value="${data.casa}" />
+      <label>WhatsApp:</label>
+      <input type="tel" id="inputNumeroWhatsApp" value="${data.numero || ''}" />
     `;
-    document.getElementById("inputNome").focus();
   }
 
   btnEditar.addEventListener("click", async () => {
-    if (!revisita) return;
+    if (!revisitaId || !revisitaData) return;
 
     if (!editando) {
       editando = true;
       btnEditar.textContent = "Salvar";
-      renderEditForm(revisita);
+      whatsContainer.style.display = "none";
+      renderEditForm(revisitaData);
     } else {
       const novoNome = document.getElementById('inputNome').value.trim();
       const novoAssunto = document.getElementById('inputAssunto').value.trim();
@@ -241,29 +241,29 @@ padding: 10px;
       const novoTema = document.getElementById('inputTema').value.trim();
       const novoEndereco = document.getElementById('inputEndereco').value.trim();
       const novoCasa = document.getElementById('inputCasa').value.trim();
+      const novoNumero = document.getElementById('inputNumeroWhatsApp').value.trim();
 
       if (!novoNome) {
         mostrarMensagem("Nome não pode ser vazio.", "#f44336");
         return;
       }
 
-      const ref = doc(db, 'revisita', revisita.id);
       try {
-        await updateDoc(ref, {
+        await updateDoc(doc(db, 'revisita', revisitaId), {
           nome: novoNome,
           assunto: novoAssunto,
           texto: novoTexto,
           tema: novoTema,
           endereco: novoEndereco,
-          casa: novoCasa
+          casa: novoCasa,
+          numero: novoNumero
         });
 
-        revisita = { ...revisita, nome: novoNome, assunto: novoAssunto, texto: novoTexto, tema: novoTema, endereco: novoEndereco, casa: novoCasa };
-        localStorage.setItem('revisitaSelecionado', JSON.stringify(revisita));
-
+        revisitaData = { nome: novoNome, assunto: novoAssunto, texto: novoTexto, tema: novoTema, endereco: novoEndereco, casa: novoCasa, numero: novoNumero };
         editando = false;
         btnEditar.textContent = "Editar";
-        renderDetalhes(revisita);
+        renderDetalhes(revisitaData);
+        whatsContainer.style.display = "block";
         mostrarMensagem("Dados atualizados com sucesso!");
       } catch (error) {
         console.error("Erro ao atualizar:", error);
@@ -273,21 +273,19 @@ padding: 10px;
   });
 
   btnExcluir.addEventListener("click", () => {
-    if (!revisita) return;
+    if (!revisitaId) return;
     modal.style.display = "flex";
   });
 
   btnConfirmar.addEventListener("click", async () => {
-    const ref = doc(db, 'revisita', revisita.id);
     try {
-      await deleteDoc(ref);
-      localStorage.removeItem('revisitaSelecionado');
-      revisita = null;
+      await deleteDoc(doc(db, 'revisita', revisitaId));
+      revisitaData = null;
       detalhes.innerHTML = "<p>Revisita excluída.</p>";
       btnEditar.disabled = true;
       btnExcluir.disabled = true;
-      whatsContainer.style.display = "none";
       inputNumero.value = "";
+      whatsContainer.style.display = "none";
       if (btnWhats) btnWhats.remove();
       mostrarMensagem("Revisita excluída com sucesso.");
     } catch (error) {
@@ -307,14 +305,24 @@ padding: 10px;
       mostrarMensagem("Por favor, insira o número da revisita.", "#f44336");
       return;
     }
-
-    const mensagem = encodeURIComponent(`Olá ${revisita.nome}, tudo bem?`);
+    const mensagem = encodeURIComponent(`Olá ${revisitaData.nome}, tudo bem?`);
     const link = `https://wa.me/${numero}?text=${mensagem}`;
     window.open(link, "_blank");
   }
 
-  if (revisita) {
-    renderDetalhes(revisita);
+  async function carregarRevisitaMaisRecente() {
+    const ref = query(collection(db, "revisita"), orderBy("nome", "desc"), limit(1));
+    const snapshot = await getDocs(ref);
+    if (snapshot.empty) {
+      detalhes.innerHTML = "<p>Nenhuma revisita encontrada.</p>";
+      return;
+    }
+
+    const docSnap = snapshot.docs[0];
+    revisitaId = docSnap.id;
+    revisitaData = docSnap.data();
+    renderDetalhes(revisitaData);
+
     whatsContainer.style.display = "block";
     btnWhats = document.createElement("button");
     btnWhats.textContent = "Conversar no WhatsApp";
@@ -322,11 +330,30 @@ padding: 10px;
     btnWhats.style.display = "block";
     inputNumero.insertAdjacentElement("afterend", btnWhats);
     btnWhats.addEventListener("click", conversarNoWhatsApp);
-  } else {
-    detalhes.innerHTML = "<p>Nenhuma revisita selecionada.</p>";
-  }
-</script>
 
+    // ✅ Corrigido: salvar e atualizar localmente o número
+    inputNumero.addEventListener("input", async () => {
+      if (!revisitaId) return;
+      const novoNumero = inputNumero.value.trim();
+      try {
+        await updateDoc(doc(db, 'revisita', revisitaId), { numero: novoNumero });
+        revisitaData.numero = novoNumero; // Atualiza localmente!
+        mostrarMensagem("Número do WhatsApp salvo!");
+      } catch (error) {
+        console.error("Erro ao salvar número:", error);
+        mostrarMensagem("Erro ao salvar número.", "#f44336");
+      }
+    });
+  }
+
+  carregarRevisitaMaisRecente();
+</script>
 
 </body>
 </html>
+
+
+
+
+
+
