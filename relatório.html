@@ -3,41 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>teste 3</title>
 </head>
 <body>
-  
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Relatório</title>
+ 
+<style>
+ body {
+ font-family: Nunito, sans-serif;
+ margin: 0px; 
+}
+
+  .arrow {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #f2f2f2;
+  border-right: 2px solid #f2f2f2;
+  transform: rotate(-130deg);
+  position: absolute;
+  top: 21px;
+  left: 15px;
+}
+
+ header .title {
+ font-size: 21px;
+ font-weight: bold;
+ margin-bottom: 20px;
+ text-align: center;
+ background: #4A6DA7;
+ padding: 15px;
+ color: white;
+}
+
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+   label {
+   display: block;
+   margin-top: 10px;
+   font-weight: bolder;
+   color: black;
+  margin-top: 25px;
+ }
+
+    input {
+      width: 80%;
+      padding: 14px;
+      margin-top: 4px;
+     font-size: 15px;
+ }
+
+    button {
+      margin-top: 20px;
+      margin-left: 19%;
+      font-weight: bolder;
+      padding: 10px;
+      width: 50%;
+      background: #4A6DA7;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #loader-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #loader {
+      display: none;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
+ 
+ <a href="painel.html">
+ <span class="arrow"></span>
+ </a>
+ </div>
 
-  <header>
-    <div class="title">Meu relatório</div>
-  </header>
+ <header>
+ <div class="title">Meu relatório</div>
+ </header>
 
+  <!-- Loader redondo -->
+  <div id="loader-container">
+  <div id="loader"></div>
+  </div>
+
+  <!-- Formulário -->
   <form>
-    <label for="nome">Nome:</label>
-    <input type="text" id="nome" name="nome" placeholder="Digite seu nome"><br><br>
+  <label for="nome">Nome:</label>
+  <input type="text" id="nome" name="nome" placeholder="Digite seu nome"><br>
 
-    <label for="mês">Mês:</label>
-    <input type="text" id="mês" name="mês"><br><br>
+  <label for="mês">Mês:</label>
+  <input type="text" id="mês" name="mês"><br>
 
-    <label for="participou_na_pregacao">Participou na pregação:</label>
-    <input type="text" id="participou_na_pregacao" name="participou_na_pregacao"><br><br>
+  <label for="participou_na_pregacao">Participou na pregação:</label>
+  <input type="text" id="participou_na_pregacao" name="participou_na_pregacao"><br>
 
-    <label for="quantas_vezes">Quantas vezes?</label>
-    <input type="number" id="quantas_vezes" name="quantas_vezes"><br><br>
+  <label for="quantas_vezes">Quantas vezes?</label>
+  <input type="number" id="quantas_vezes" name="quantas_vezes"><br>
 
-    <label for="estudo">Estudos:</label>
-    <input type="number" id="estudo" name="estudo"><br><br>
-
-    <button type="button" onclick="enviarWhatsapp()">Enviar relatório</button>
+  <label for="estudo">Estudos:</label>
+  <input type="number" id="estudo" name="estudo"><br>
+  <button type="button" onclick="enviarWhatsapp()">Enviar relatório</button>
   </form>
 
+  <!-- Firebase + Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
@@ -49,52 +138,51 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-    // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
       authDomain: "teste-cfe69.firebaseapp.com",
       databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
       projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.firebasestorage.app",
+      storageBucket: "teste-cfe69.appspot.com",
       messagingSenderId: "646579509123",
       appId: "1:646579509123:web:5565c595f322cf3ba308b6",
       measurementId: "G-81YQG8L41X"
     };
 
-    // Inicialização do Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
     const nomeInput = document.getElementById("nome");
 
-    // Quando o campo "nome" perde o foco, tenta carregar dados do Firestore
-    nomeInput.addEventListener("blur", async function () {
-      const nome = nomeInput.value.trim().toLowerCase();
-      if (!nome) return;
+    async function carregarRelatorio(nome) {
+      const loader = document.getElementById("loader");
+      loader.style.display = "block";
 
-      const docRef = doc(db, "relatorios", nome);
-      const snap = await getDoc(docRef);
+      const docRef = doc(db, "relatorios", nome.toLowerCase());
 
-      if (snap.exists()) {
-        const data = snap.data();
-        document.getElementById("mês").value = data.mes || "";
-        document.getElementById("participou_na_pregacao").value = data.participouNaPregacao || "";
-        document.getElementById("quantas_vezes").value = data.quantasVezes || "";
-        document.getElementById("estudo").value = data.estudo || "";
-        console.log("Relatório carregado com sucesso.");
-      } else {
-        console.log("Nenhum relatório encontrado para esse nome.");
+      try {
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          document.getElementById("mês").value = data.mes || "";
+          document.getElementById("participou_na_pregacao").value = data.participouNaPregacao || "";
+          document.getElementById("quantas_vezes").value = data.quantasVezes || "";
+          document.getElementById("estudo").value = data.estudo || "";
+          console.log("Relatório carregado com sucesso.");
+        } else {
+          console.log("Nenhum relatório encontrado para esse nome.");
+        }
+      } catch (error) {
+        console.error("Erro ao carregar relatório:", error);
+      } finally {
+        loader.style.display = "none";
       }
-    });
+    }
 
-    // Função chamada ao clicar no botão
-    window.enviarWhatsapp = async function () {
+    async function salvarAutomaticamente() {
       const nome = nomeInput.value.trim();
-      if (!nome) {
-        alert("Por favor, preencha o nome antes de enviar.");
-        return;
-      }
+      if (!nome) return;
 
       const nomeId = nome.toLowerCase();
       const mês = document.getElementById("mês").value;
@@ -111,16 +199,47 @@
           estudo,
           ultimaAtualizacao: serverTimestamp()
         });
-
-        console.log("Relatório salvo com sucesso!");
+        console.log("Salvo automaticamente no Firestore.");
       } catch (e) {
-        console.error("Erro ao salvar no Firestore:", e);
+        console.error("Erro ao salvar automaticamente:", e);
       }
+    }
+
+    ["mês", "participou_na_pregacao", "quantas_vezes", "estudo"].forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener("input", salvarAutomaticamente);
+    });
+
+    nomeInput.addEventListener("blur", async function () {
+      const nome = nomeInput.value.trim().toLowerCase();
+      if (!nome) return;
+
+      localStorage.setItem("nomeUsuario", nome);
+      await carregarRelatorio(nome);
+    });
+
+    window.onload = async function () {
+      const nomeSalvo = localStorage.getItem("nomeUsuario");
+      if (nomeSalvo) {
+        nomeInput.value = nomeSalvo;
+        await carregarRelatorio(nomeSalvo);
+      }
+    };
+
+    window.enviarWhatsapp = function () {
+      const nome = nomeInput.value.trim();
+      const mês = document.getElementById("mês").value;
+      const participouNaPregacao = document.getElementById("participou_na_pregacao").value;
+      const quantasVezes = document.getElementById("quantas_vezes").value;
+      const estudo = document.getElementById("estudo").value;
 
       const mensagem = `Nome: ${nome}%0AMês: ${mês}%0AParticipou na pregação: ${participouNaPregacao}%0AQuantas vezes: ${quantasVezes}%0AEstudo: ${estudo}`;
       window.open(`https://wa.me/?text=${mensagem}`);
     };
   </script>
-
 </body>
 </html>
+
+
+
+ 
