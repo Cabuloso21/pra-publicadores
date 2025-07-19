@@ -30,7 +30,7 @@
  font-weight: bold;
  margin-bottom: 20px;
  text-align: center;
- background: #4A6DA7;
+ background: lime;
  padding: 15px;
  color: white;
 }
@@ -123,10 +123,13 @@
  <button type="button" onclick="enviarWhatsapp()">Enviar relatório</button>
  </form>
 
+
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
   import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
@@ -142,57 +145,67 @@
   const app = initializeApp(firebaseConfig);
   getAnalytics(app);
   const db = getFirestore(app);
-  const RELATORIO_ID = "relatorio_unico";
+  const auth = getAuth(app);
 
   const campos = ["nome", "mes", "participou_na_pregacao", "quantas_vezes", "estudo"];
 
-  // Carregar dados ao abrir
-  window.onload = async () => {
-    try {
-      const snap = await getDoc(doc(db, "relatorios", RELATORIO_ID));
-      if (snap.exists()) {
-        const data = snap.data();
-        campos.forEach(c => {
-          document.getElementById(c).value = data[c] ?? "";
-        });
-      }
-    } catch (e) {
-      console.error("Erro ao carregar:", e);
-    }
-  };
+  // Esperar autenticação para carregar e salvar dados
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const RELATORIO_ID = user.uid;
 
-  // Salvar automaticamente quando qualquer campo for editado
-  campos.forEach(c => {
-    document.getElementById(c).addEventListener("input", async () => {
-      const payload = { ultimaAtualizacao: serverTimestamp() };
-      campos.forEach(campo => {
-        const val = document.getElementById(campo).value;
-        payload[campo] = (campo === "quantas_vezes" || campo === "estudo") ? Number(val) : val;
-      });
+      // Carregar dados ao abrir a página
       try {
-        await setDoc(doc(db, "relatorios", RELATORIO_ID), payload);
+        const snap = await getDoc(doc(db, "relatorios", RELATORIO_ID));
+        if (snap.exists()) {
+          const data = snap.data();
+          campos.forEach(c => {
+            document.getElementById(c).value = data[c] ?? "";
+          });
+        }
       } catch (e) {
-        console.error("Erro ao salvar:", e);
+        console.error("Erro ao carregar dados:", e);
       }
-    });
-  });
 
-  // Função de envio via WhatsApp
-  window.enviarWhatsapp = () => {
-    const msg = campos.map(c => {
-      const labels = {
-        nome: "Nome",
-        mes: "Mês",
-        participou_na_pregacao: "Participou na pregação",
-        quantas_vezes: "Quantas vezes",
-        estudo: "Estudos"
+      // Salvar dados automaticamente ao editar
+      campos.forEach(c => {
+        document.getElementById(c).addEventListener("input", async () => {
+          const payload = { ultimaAtualizacao: serverTimestamp() };
+          campos.forEach(campo => {
+            const val = document.getElementById(campo).value;
+            payload[campo] = (campo === "quantas_vezes" || campo === "estudo") ? Number(val) : val;
+          });
+
+          try {
+            await setDoc(doc(db, "relatorios", RELATORIO_ID), payload);
+          } catch (e) {
+            console.error("Erro ao salvar dados:", e);
+          }
+        });
+      });
+
+      // Enviar via WhatsApp
+      window.enviarWhatsapp = () => {
+        const msg = campos.map(c => {
+          const labels = {
+            nome: "Nome",
+            mes: "Mês",
+            participou_na_pregacao: "Participou na pregação",
+            quantas_vezes: "Quantas vezes",
+            estudo: "Estudos"
+          };
+          return `${labels[c]}: ${document.getElementById(c).value}`;
+        }).join("%0A");
+
+        window.open(`https://wa.me/?text=${msg}`);
       };
-      return `${labels[c]}: ${document.getElementById(c).value}`;
-    }).join("%0A");
-    window.open(`https://wa.me/?text=${msg}`);
-  };
+
+    } else {
+      alert("Você precisa estar logado para acessar o relatório.");
+      window.location.href = "login.html"; // redireciona para o login
+    }
+  });
 </script>
 
 
- 
-
+  
