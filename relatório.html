@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>testando</title>
 </head>
 <body>
  
@@ -90,8 +91,8 @@
       100% { transform: rotate(360deg); }
     }
   </style>
-</head>
-<body>
+ </head>
+ <body>
  
  <a href="painel.html">
  <span class="arrow"></span>
@@ -101,145 +102,97 @@
  <header>
  <div class="title">Meu relatório</div>
  </header>
+ </div>
 
-  <!-- Loader redondo -->
-  <div id="loader-container">
-  <div id="loader"></div>
-  </div>
+ <form>
+ <label for="nome">Nome:</label>
+ <input type="text" id="nome" placeholder="Digite seu nome">
 
-  <!-- Formulário -->
-  <form>
-  <label for="nome">Nome:</label>
-  <input type="text" id="nome" name="nome" placeholder="Digite seu nome"><br>
+ <label for="mes">Mês:</label>
+ <input type="text" id="mes" placeholder="Ex: Julho">
 
-  <label for="mês">Mês:</label>
-  <input type="text" id="mês" name="mês"><br>
+ <label for="participou_na_pregacao">Participou na pregação:</label>
+ <input type="text" id="participou_na_pregacao" placeholder="Sim/Não">
 
-  <label for="participou_na_pregacao">Participou na pregação:</label>
-  <input type="text" id="participou_na_pregacao" name="participou_na_pregacao"><br>
+ <label for="quantas_vezes">Quantas vezes?</label>
+ <input type="number" id="quantas_vezes" placeholder="0">
 
-  <label for="quantas_vezes">Quantas vezes?</label>
-  <input type="number" id="quantas_vezes" name="quantas_vezes"><br>
+ <label for="estudo">Estudos:</label>
+ <input type="number" id="estudo" placeholder="0">
 
-  <label for="estudo">Estudos:</label>
-  <input type="number" id="estudo" name="estudo"><br>
-  <button type="button" onclick="enviarWhatsapp()">Enviar relatório</button>
-  </form>
+ <button type="button" onclick="enviarWhatsapp()">Enviar relatório</button>
+ </form>
 
-  <!-- Firebase + Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+  import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-      authDomain: "teste-cfe69.firebaseapp.com",
-      databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
-      projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.appspot.com",
-      messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:5565c595f322cf3ba308b6",
-      measurementId: "G-81YQG8L41X"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:5565c595f322cf3ba308b6",
+    measurementId: "G-81YQG8L41X"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  getAnalytics(app);
+  const db = getFirestore(app);
+  const RELATORIO_ID = "relatorio_unico";
 
-    const nomeInput = document.getElementById("nome");
+  const campos = ["nome", "mes", "participou_na_pregacao", "quantas_vezes", "estudo"];
 
-    async function carregarRelatorio(nome) {
-      const loader = document.getElementById("loader");
-      loader.style.display = "block";
-
-      const docRef = doc(db, "relatorios", nome.toLowerCase());
-
-      try {
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          document.getElementById("mês").value = data.mes || "";
-          document.getElementById("participou_na_pregacao").value = data.participouNaPregacao || "";
-          document.getElementById("quantas_vezes").value = data.quantasVezes || "";
-          document.getElementById("estudo").value = data.estudo || "";
-          console.log("Relatório carregado com sucesso.");
-        } else {
-          console.log("Nenhum relatório encontrado para esse nome.");
-        }
-      } catch (error) {
-        console.error("Erro ao carregar relatório:", error);
-      } finally {
-        loader.style.display = "none";
-      }
-    }
-
-    async function salvarAutomaticamente() {
-      const nome = nomeInput.value.trim();
-      if (!nome) return;
-
-      const nomeId = nome.toLowerCase();
-      const mês = document.getElementById("mês").value;
-      const participouNaPregacao = document.getElementById("participou_na_pregacao").value;
-      const quantasVezes = parseInt(document.getElementById("quantas_vezes").value || 0);
-      const estudo = parseInt(document.getElementById("estudo").value || 0);
-
-      try {
-        await setDoc(doc(db, "relatorios", nomeId), {
-          nome,
-          mes: mês,
-          participouNaPregacao,
-          quantasVezes,
-          estudo,
-          ultimaAtualizacao: serverTimestamp()
+  // Carregar dados ao abrir
+  window.onload = async () => {
+    try {
+      const snap = await getDoc(doc(db, "relatorios", RELATORIO_ID));
+      if (snap.exists()) {
+        const data = snap.data();
+        campos.forEach(c => {
+          document.getElementById(c).value = data[c] ?? "";
         });
-        console.log("Salvo automaticamente no Firestore.");
-      } catch (e) {
-        console.error("Erro ao salvar automaticamente:", e);
       }
+    } catch (e) {
+      console.error("Erro ao carregar:", e);
     }
+  };
 
-    ["mês", "participou_na_pregacao", "quantas_vezes", "estudo"].forEach(id => {
-      const input = document.getElementById(id);
-      input.addEventListener("input", salvarAutomaticamente);
-    });
-
-    nomeInput.addEventListener("blur", async function () {
-      const nome = nomeInput.value.trim().toLowerCase();
-      if (!nome) return;
-
-      localStorage.setItem("nomeUsuario", nome);
-      await carregarRelatorio(nome);
-    });
-
-    window.onload = async function () {
-      const nomeSalvo = localStorage.getItem("nomeUsuario");
-      if (nomeSalvo) {
-        nomeInput.value = nomeSalvo;
-        await carregarRelatorio(nomeSalvo);
+  // Salvar automaticamente quando qualquer campo for editado
+  campos.forEach(c => {
+    document.getElementById(c).addEventListener("input", async () => {
+      const payload = { ultimaAtualizacao: serverTimestamp() };
+      campos.forEach(campo => {
+        const val = document.getElementById(campo).value;
+        payload[campo] = (campo === "quantas_vezes" || campo === "estudo") ? Number(val) : val;
+      });
+      try {
+        await setDoc(doc(db, "relatorios", RELATORIO_ID), payload);
+      } catch (e) {
+        console.error("Erro ao salvar:", e);
       }
-    };
+    });
+  });
 
-    window.enviarWhatsapp = function () {
-      const nome = nomeInput.value.trim();
-      const mês = document.getElementById("mês").value;
-      const participouNaPregacao = document.getElementById("participou_na_pregacao").value;
-      const quantasVezes = document.getElementById("quantas_vezes").value;
-      const estudo = document.getElementById("estudo").value;
-
-      const mensagem = `Nome: ${nome}%0AMês: ${mês}%0AParticipou na pregação: ${participouNaPregacao}%0AQuantas vezes: ${quantasVezes}%0AEstudo: ${estudo}`;
-      window.open(`https://wa.me/?text=${mensagem}`);
-    };
-  </script>
-</body>
-</html>
-
+  // Função de envio via WhatsApp
+  window.enviarWhatsapp = () => {
+    const msg = campos.map(c => {
+      const labels = {
+        nome: "Nome",
+        mes: "Mês",
+        participou_na_pregacao: "Participou na pregação",
+        quantas_vezes: "Quantas vezes",
+        estudo: "Estudos"
+      };
+      return `${labels[c]}: ${document.getElementById(c).value}`;
+    }).join("%0A");
+    window.open(`https://wa.me/?text=${msg}`);
+  };
+</script>
 
 
  
+
