@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>teste 4</title>
 </head>
 <body>
-  
- <style>
+
+<style>
  body {
  margin: 0px;
  font-family: Roboto, sans-serif;;
@@ -26,7 +25,7 @@
 }
 
  header {
- background: #4A6DA7;
+ background: red;
  padding: 15px;
  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
  margin-bottom: 30px;
@@ -115,20 +114,14 @@ border: 1px solid #ccc;
 }
     
 </style>
-</head>
-<body>
 
-<a href="exibi revisitas.html">
- <span class="arrow"></span>
- </a>
- </div>
 
- <header>
- <div class="text">Detalhes da revisita</div>
- </header>
- </div>
- </div>
 
+
+
+<header>
+  <div class="text">Detalhes da revisita</div>
+</header>
 
 <div id="botoes-topo">
   <button id="btnEditar">Editar</button>
@@ -146,7 +139,7 @@ border: 1px solid #ccc;
 
 <div id="mensagemStatus"></div>
 
-<div id="modalConfirmacao">
+<div id="modalConfirmacao" style="display: none;">
   <div class="conteudo">
     <p>Tem certeza que deseja excluir esta Revisita?</p>
     <button id="confirmarExclusao">Sim</button>
@@ -157,8 +150,7 @@ border: 1px solid #ccc;
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import {
-    getFirestore, collection, getDocs, query, orderBy, limit,
-    doc, updateDoc, deleteDoc
+    getFirestore, doc, getDoc, updateDoc, deleteDoc
   } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -287,6 +279,7 @@ border: 1px solid #ccc;
       inputNumero.value = "";
       whatsContainer.style.display = "none";
       if (btnWhats) btnWhats.remove();
+      localStorage.removeItem('revisitaSelecionado');
       mostrarMensagem("Revisita excluída com sucesso.");
     } catch (error) {
       console.error("Erro ao excluir:", error);
@@ -310,50 +303,59 @@ border: 1px solid #ccc;
     window.open(link, "_blank");
   }
 
-  async function carregarRevisitaMaisRecente() {
-    const ref = query(collection(db, "revisita"), orderBy("nome", "desc"), limit(1));
-    const snapshot = await getDocs(ref);
-    if (snapshot.empty) {
-      detalhes.innerHTML = "<p>Nenhuma revisita encontrada.</p>";
+  async function carregarRevisitaSelecionada() {
+    const revisita = JSON.parse(localStorage.getItem('revisitaSelecionado'));
+
+    if (!revisita || !revisita.id) {
+      detalhes.innerHTML = "<p>Revisita não encontrada.</p>";
       return;
     }
 
-    const docSnap = snapshot.docs[0];
-    revisitaId = docSnap.id;
-    revisitaData = docSnap.data();
-    renderDetalhes(revisitaData);
+    try {
+      const docRef = doc(db, "revisita", revisita.id);
+      const docSnap = await getDoc(docRef);
 
-    whatsContainer.style.display = "block";
-    btnWhats = document.createElement("button");
-    btnWhats.textContent = "Conversar no WhatsApp";
-    btnWhats.style.marginTop = "10px";
-    btnWhats.style.display = "block";
-    inputNumero.insertAdjacentElement("afterend", btnWhats);
-    btnWhats.addEventListener("click", conversarNoWhatsApp);
-
-    // ✅ Corrigido: salvar e atualizar localmente o número
-    inputNumero.addEventListener("input", async () => {
-      if (!revisitaId) return;
-      const novoNumero = inputNumero.value.trim();
-      try {
-        await updateDoc(doc(db, 'revisita', revisitaId), { numero: novoNumero });
-        revisitaData.numero = novoNumero; // Atualiza localmente!
-        mostrarMensagem("Número do WhatsApp salvo!");
-      } catch (error) {
-        console.error("Erro ao salvar número:", error);
-        mostrarMensagem("Erro ao salvar número.", "#f44336");
+      if (!docSnap.exists()) {
+        detalhes.innerHTML = "<p>Revisita não encontrada no banco de dados.</p>";
+        return;
       }
-    });
+
+      revisitaId = docSnap.id;
+      revisitaData = docSnap.data();
+
+      renderDetalhes(revisitaData);
+
+      whatsContainer.style.display = "block";
+      btnWhats = document.createElement("button");
+      btnWhats.textContent = "Conversar no WhatsApp";
+      btnWhats.style.marginTop = "10px";
+      btnWhats.style.display = "block";
+      inputNumero.insertAdjacentElement("afterend", btnWhats);
+      btnWhats.addEventListener("click", conversarNoWhatsApp);
+
+      inputNumero.addEventListener("input", async () => {
+        if (!revisitaId) return;
+        const novoNumero = inputNumero.value.trim();
+        try {
+          await updateDoc(doc(db, 'revisita', revisitaId), { numero: novoNumero });
+          revisitaData.numero = novoNumero;
+          mostrarMensagem("Número do WhatsApp salvo!");
+        } catch (error) {
+          console.error("Erro ao salvar número:", error);
+          mostrarMensagem("Erro ao salvar número.", "#f44336");
+        }
+      });
+
+    } catch (error) {
+      detalhes.innerHTML = "<p>Erro ao carregar revisita.</p>";
+      console.error("Erro ao carregar revisita:", error);
+    }
   }
 
-  carregarRevisitaMaisRecente();
+  carregarRevisitaSelecionada();
 </script>
 
 </body>
 </html>
-
-
-
-
 
 
