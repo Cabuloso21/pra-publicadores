@@ -130,10 +130,12 @@ margin-bottom: 50px;
   <button type="button" onclick="enviarWhatsapp()">Enviar relatório</button>
 </form>
 
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
   import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
@@ -149,46 +151,62 @@ margin-bottom: 50px;
   const app = initializeApp(firebaseConfig);
   getAnalytics(app);
   const db = getFirestore(app);
-  const RELATORIO_ID = "pregacao";
+  const auth = getAuth(app);
+
   const campos = ["tema", "texto", "descricao"];
 
-  window.onload = async () => {
-    try {
-      const snap = await getDoc(doc(db, "relatorios", RELATORIO_ID));
-      if (snap.exists()) {
-        const data = snap.data();
-        campos.forEach(c => {
-          document.getElementById(c).value = data[c] ?? "";
-        });
-      }
-    } catch (e) {
-      console.error("Erro ao carregar:", e);
-    }
-  };
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const docRef = doc(db, "pregacoes", user.uid);
 
-  campos.forEach(c => {
-    document.getElementById(c).addEventListener("input", async () => {
-      const payload = { ultimaAtualizacao: serverTimestamp() };
-      campos.forEach(campo => {
-        payload[campo] = document.getElementById(campo).value;
-      });
+      // Carregar dados
       try {
-        await setDoc(doc(db, "relatorios", RELATORIO_ID), payload);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          campos.forEach(c => {
+            document.getElementById(c).value = data[c] ?? "";
+          });
+        }
       } catch (e) {
-        console.error("Erro ao salvar:", e);
+        console.error("Erro ao carregar:", e);
       }
-    });
-  });
 
-  window.enviarWhatsapp = () => {
-    const msg = campos.map(c => {
-      const labels = {
-        tema: "Tema",
-        texto: "Texto",
-        descricao: "Descrição"
+      // Salvar ao digitar
+      campos.forEach(c => {
+        document.getElementById(c).addEventListener("input", async () => {
+          const payload = { ultimaAtualizacao: serverTimestamp() };
+          campos.forEach(campo => {
+            payload[campo] = document.getElementById(campo).value;
+          });
+
+          try {
+            await setDoc(docRef, payload);
+          } catch (e) {
+            console.error("Erro ao salvar:", e);
+          }
+        });
+      });
+
+      // WhatsApp
+      window.enviarWhatsapp = () => {
+        const msg = campos.map(c => {
+          const labels = {
+            tema: "Tema",
+            texto: "Texto",
+            descricao: "Descrição"
+          };
+          return `${labels[c]}: ${document.getElementById(c).value}`;
+        }).join("%0A");
+
+        window.open(`https://wa.me/?text=${msg}`);
       };
-      return `${labels[c]}: ${document.getElementById(c).value}`;
-    }).join("%0A");
-    window.open(`https://wa.me/?text=${msg}`);
-  };
+
+    } else {
+      alert("Você precisa estar logado para acessar este formulário.");
+      window.location.href = "login.html";
+    }
+  });
 </script>
+
+  
