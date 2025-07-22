@@ -96,16 +96,17 @@
  </a>
  </div>
 
- <header>
- <div class="text">Adicionar designação</div>
- </header>
 
- <form id="form-anuncio">
- <input type="text" id="produto" placeholder="Nome do participante" required />
- <input type="text" id="tema" placeholder="Tema" required />
- <button type="submit">Finalizar</button>
- <p class="message" id="mensagem"></p>
- </form>
+<header>
+  <div class="text">Adicionar designação</div>
+</header>
+
+<form id="form-anuncio">
+  <input type="text" id="produto" placeholder="Nome do participante" required />
+  <input type="text" id="tema" placeholder="Tema" required />
+  <button type="submit">Finalizar</button>
+  <p class="message" id="mensagem"></p>
+</form>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -141,10 +142,10 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const produto = document.getElementById("produto").value.trim();
+    const nome = document.getElementById("produto").value.trim(); // ✅ agora é "nome"
     const tema = document.getElementById("tema").value.trim();
 
-    if (!produto || !tema) {
+    if (!nome || !tema) {
       msg.textContent = "Preencha todos os campos.";
       msg.style.color = "red";
       return;
@@ -153,7 +154,7 @@
     try {
       await addDoc(collection(db, "designacao"), {
         uid: usuario.uid,
-        produto,
+        nome, // salva como "nome"
         tema,
         emailUsuario: usuario.email,
         nomeUsuario: usuario.displayName || "",
@@ -170,5 +171,4 @@
   });
 </script>
 
-</body>
-</html>
+  
