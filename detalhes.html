@@ -129,209 +129,226 @@ padding: 10px;
  </a>
  </div>
 
- <header>
- <div class="text">Detalhes</div>
- </header>
- </div>
- </div>
+<header>
+<div class="text">Detalhes</div>
+</header>
 
- <div id="botoes-topo">
- <button id="btnEditar">Editar</button>
- <button id="btnExcluir">Excluir</button>
- </div>
+<div id="botoes-topo">
+  <button id="btnEditar">Editar</button>
+  <button id="btnExcluir">Excluir</button>
+</div>
 
- <div class="card">
- <div class="detalhes" id="detalhes-estudante">Carregando...</div>
+<div class="card">
+  <div class="detalhes" id="detalhes-estudante">Carregando...</div>
 
- <div id="whatsContainer" style="margin-top: 20px; display: none;">
+  <div id="whatsContainer" style="margin-top: 20px; display: none;">
+    <label>WhatsApp:</label>
+    <input type="tel" id="numeroWhatsApp" placeholder="Ex: 95350376" />
+  </div>
+</div>
+
+<div id="mensagemStatus"></div>
+
+<div id="modalConfirmacao">
+  <div class="conteudo">
+    <p>Tem certeza que deseja excluir este estudante?</p>
+    <button id="confirmarExclusao">Sim</button>
+    <button id="cancelarExclusao">Cancelar</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getFirestore, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore();
+
+  const detalhes = document.getElementById('detalhes-estudante');
+  const btnEditar = document.getElementById('btnEditar');
+  const btnExcluir = document.getElementById('btnExcluir');
+  const inputNumero = document.getElementById('numeroWhatsApp');
+  const whatsContainer = document.getElementById("whatsContainer");
+
+  const modal = document.getElementById("modalConfirmacao");
+  const btnConfirmar = document.getElementById("confirmarExclusao");
+  const btnCancelar = document.getElementById("cancelarExclusao");
+
+  let estudante = JSON.parse(localStorage.getItem('estudanteSelecionado'));
+  let editando = false;
+  let btnWhats = null;
+
+  function mostrarMensagem(texto, cor = "#4caf50") {
+    const mensagem = document.getElementById("mensagemStatus");
+    mensagem.textContent = texto;
+    mensagem.style.backgroundColor = cor;
+    mensagem.style.display = "block";
+    setTimeout(() => {
+      mensagem.style.display = "none";
+    }, 3000);
+  }
+
+  function renderDetalhes(data) {
+    detalhes.innerHTML = `
+      <h3>${data.nome}</h3>
+      <p><strong>Livro:</strong> ${data.livro}</p>
+      <p><strong>Capítulo:</strong> ${data.capitulo}</p>
+      <p><strong>Tema:</strong> ${data.tema}</p>
+      <p><strong>Lição:</strong> ${data.licao}</p>
+    `;
+    inputNumero.value = data.numero || '';
+  }
+
+  function renderEditForm(data) {
+    detalhes.innerHTML = `
+      <label>Nome:</label>
+      <input type="text" id="inputNome" value="${data.nome}" />
+      <label>Livro:</label>
+      <input type="text" id="inputLivro" value="${data.livro}" />
+      <label>Capítulo:</label>
+      <input type="text" id="inputCapitulo" value="${data.capitulo}" />
+      <label>Tema:</label>
+      <input type="text" id="inputTema" value="${data.tema}" />
+     <label>Lição:</label>
+     <input type="text" id="inputLicao" value="${data.licao}" />
+    
  <label>WhatsApp:</label>
- <input type="tel" id="numeroWhatsApp" placeholder="Ex: 95350376" />
-      <!-- Botão será criado via JS -->
-  </div>
-  </div>
+      <input type="tel" id="inputNumero" value="${data.numero || ''}" />
+    `;
+    document.getElementById("inputNome").focus();
+  }
 
- <div id="mensagemStatus"></div>
+  btnEditar.addEventListener("click", async () => {
+    if (!estudante) return;
 
- <div id="modalConfirmacao">
- <div class="conteudo">
- <p>Tem certeza que deseja excluir este estudante?</p>
- <button id="confirmarExclusao">Sim</button>
- <button id="cancelarExclusao">Cancelar</button>
- </div>
- </div>
+    if (!editando) {
+      editando = true;
+      btnEditar.textContent = "Salvar";
+      whatsContainer.style.display = "none"; // Oculta o campo duplicado
+      renderEditForm(estudante);
+    } else {
+      const novoNome = document.getElementById('inputNome').value.trim();
+      const novoLivro = document.getElementById('inputLivro').value.trim();
+      const novoCapitulo = document.getElementById('inputCapitulo').value.trim();
+      const novoTema = document.getElementById('inputTema').value.trim();
+      const novaLicao = document.getElementById('inputLicao').value.trim();
+      const novoNumero = document.getElementById('inputNumero').value.trim();
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getFirestore, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-      authDomain: "teste-cfe69.firebaseapp.com",
-      projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.appspot.com",
-      messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore();
-
-    const detalhes = document.getElementById('detalhes-estudante');
-    const btnEditar = document.getElementById('btnEditar');
-    const btnExcluir = document.getElementById('btnExcluir');
-    const inputNumero = document.getElementById('numeroWhatsApp');
-    const whatsContainer = document.getElementById("whatsContainer");
-
-    const modal = document.getElementById("modalConfirmacao");
-    const btnConfirmar = document.getElementById("confirmarExclusao");
-    const btnCancelar = document.getElementById("cancelarExclusao");
-
-    let estudante = JSON.parse(localStorage.getItem('estudanteSelecionado'));
-    let editando = false;
-    let btnWhats = null;
-
-    function mostrarMensagem(texto, cor = "#4caf50") {
-      const mensagem = document.getElementById("mensagemStatus");
-      mensagem.textContent = texto;
-      mensagem.style.backgroundColor = cor;
-      mensagem.style.display = "block";
-      setTimeout(() => {
-        mensagem.style.display = "none";
-      }, 3000);
-    }
-
-    function renderDetalhes(data) {
-      detalhes.innerHTML = `
-        <h3>${data.nome}</h3>
-        <p><strong>Livro:</strong> ${data.livro}</p>
-        <p><strong>Capítulo:</strong> ${data.capitulo}</p>
-        <p><strong>Tema:</strong> ${data.tema}</p>
-        <p><strong>Lição:</strong> ${data.licao}</p>
-      `;
-      inputNumero.value = data.numero || '';
-    }
-
-    function renderEditForm(data) {
-      detalhes.innerHTML = `
-        <label>Nome:</label>
-        <input type="text" id="inputNome" value="${data.nome}" />
-        <label>Livro:</label>
-        <input type="text" id="inputLivro" value="${data.livro}" />
-        <label>Capítulo:</label>
-        <input type="text" id="inputCapitulo" value="${data.capitulo}" />
-        <label>Tema:</label>
-        <input type="text" id="inputTema" value="${data.tema}" />
-        <label>Lição:</label>
-        <textarea id="inputLicao" rows="3">${data.licao}</textarea>
-      `;
-      document.getElementById("inputNome").focus();
-    }
-
-    btnEditar.addEventListener("click", async () => {
-      if (!estudante) return;
-
-      if (!editando) {
-        editando = true;
-        btnEditar.textContent = "Salvar";
-        renderEditForm(estudante);
-      } else {
-        const novoNome = document.getElementById('inputNome').value.trim();
-        const novoLivro = document.getElementById('inputLivro').value.trim();
-        const novoCapitulo = document.getElementById('inputCapitulo').value.trim();
-        const novoTema = document.getElementById('inputTema').value.trim();
-        const novaLicao = document.getElementById('inputLicao').value.trim();
-        const novoNumero = inputNumero.value.trim();
-
-        if (!novoNome) {
-          mostrarMensagem("Nome não pode ser vazio.", "#f44336");
-          return;
-        }
-
-        const ref = doc(db, 'estudantes', estudante.id);
-        try {
-          await updateDoc(ref, {
-            nome: novoNome,
-            livro: novoLivro,
-            capitulo: novoCapitulo,
-            tema: novoTema,
-            licao: novaLicao,
-            numero: novoNumero
-          });
-
-          estudante = { ...estudante, nome: novoNome, livro: novoLivro, capitulo: novoCapitulo, tema: novoTema, licao: novaLicao, numero: novoNumero };
-          localStorage.setItem('estudanteSelecionado', JSON.stringify(estudante));
-
-          editando = false;
-          btnEditar.textContent = "Editar";
-          renderDetalhes(estudante);
-          mostrarMensagem("Dados atualizados com sucesso!");
-
-        } catch (error) {
-          console.error("Erro ao atualizar:", error);
-          mostrarMensagem("Erro ao salvar alterações.", "#f44336");
-        }
-      }
-    });
-
-    btnExcluir.addEventListener("click", () => {
-      if (!estudante) return;
-      modal.style.display = "flex";
-    });
-
-    btnConfirmar.addEventListener("click", async () => {
-      const ref = doc(db, 'estudantes', estudante.id);
-      try {
-        await deleteDoc(ref);
-        localStorage.removeItem('estudanteSelecionado');
-        estudante = null;
-        detalhes.innerHTML = "<p>Estudante excluído.</p>";
-        btnEditar.disabled = true;
-        btnExcluir.disabled = true;
-
-        // Esconde campo e botão do WhatsApp
-        whatsContainer.style.display = "none";
-        inputNumero.value = "";
-        if (btnWhats) btnWhats.remove();
-
-        mostrarMensagem("Estudante excluído com sucesso.");
-      } catch (error) {
-        console.error("Erro ao excluir:", error);
-        mostrarMensagem("Erro ao excluir estudante.", "#f44336");
-      }
-      modal.style.display = "none";
-    });
-
-    btnCancelar.addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-
-    function conversarNoWhatsApp() {
-      const numero = inputNumero.value.trim();
-      if (!numero) {
-        mostrarMensagem("Por favor, insira o número do estudante.", "#f44336");
+      if (!novoNome) {
+        mostrarMensagem("Nome não pode ser vazio.", "#f44336");
         return;
       }
 
-      const mensagem = encodeURIComponent(`Olá ${estudante.nome}, tudo bem?`);
-      const link = `https://wa.me/${numero}?text=${mensagem}`;
-      window.open(link, "_blank");
+      const ref = doc(db, 'estudantes', estudante.id);
+      try {
+        await updateDoc(ref, {
+          nome: novoNome,
+          livro: novoLivro,
+          capitulo: novoCapitulo,
+          tema: novoTema,
+          licao: novaLicao,
+          numero: novoNumero
+        });
+
+        estudante = { ...estudante, nome: novoNome, livro: novoLivro, capitulo: novoCapitulo, tema: novoTema, licao: novaLicao, numero: novoNumero };
+        localStorage.setItem('estudanteSelecionado', JSON.stringify(estudante));
+
+        editando = false;
+        btnEditar.textContent = "Editar";
+        renderDetalhes(estudante);
+        whatsContainer.style.display = "block"; // Reexibe o campo original
+        inputNumero.value = novoNumero;
+        mostrarMensagem("Dados atualizados com sucesso!");
+      } catch (error) {
+        console.error("Erro ao atualizar:", error);
+        mostrarMensagem("Erro ao salvar alterações.", "#f44336");
+      }
+    }
+  });
+
+  btnExcluir.addEventListener("click", () => {
+    if (!estudante) return;
+    modal.style.display = "flex";
+  });
+
+  btnConfirmar.addEventListener("click", async () => {
+    const ref = doc(db, 'estudantes', estudante.id);
+    try {
+      await deleteDoc(ref);
+      localStorage.removeItem('estudanteSelecionado');
+      estudante = null;
+      detalhes.innerHTML = "<p>Estudante excluído.</p>";
+      btnEditar.disabled = true;
+      btnExcluir.disabled = true;
+      whatsContainer.style.display = "none";
+      inputNumero.value = "";
+      if (btnWhats) btnWhats.remove();
+
+      mostrarMensagem("Estudante excluído com sucesso.");
+    } catch (error) {
+      console.error("Erro ao excluir:", error);
+      mostrarMensagem("Erro ao excluir estudante.", "#f44336");
+    }
+    modal.style.display = "none";
+  });
+
+  btnCancelar.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  function conversarNoWhatsApp() {
+    const numero = inputNumero.value.trim();
+    if (!numero) {
+      mostrarMensagem("Por favor, insira o número do estudante.", "#f44336");
+      return;
     }
 
-    if (estudante) {
-      renderDetalhes(estudante);
+    const mensagem = encodeURIComponent(`Olá ${estudante.nome}, tudo bem?`);
+    const link = `https://wa.me/${numero}?text=${mensagem}`;
+    window.open(link, "_blank");
+  }
 
-      // Exibe container e cria botão WhatsApp
-      whatsContainer.style.display = "block";
-      btnWhats = document.createElement("button");
-      btnWhats.textContent = "Conversar no WhatsApp";
-      btnWhats.style.marginTop = "10px";
-      btnWhats.style.display = "block";
-      inputNumero.insertAdjacentElement("afterend", btnWhats);
-      btnWhats.addEventListener("click", conversarNoWhatsApp);
-    } else {
-      detalhes.innerHTML = "<p>Nenhum estudante selecionado.</p>";
+  inputNumero.addEventListener("input", async () => {
+    if (!estudante || editando) return;
+
+    const novoNumero = inputNumero.value.trim();
+    const ref = doc(db, 'estudantes', estudante.id);
+
+    try {
+      await updateDoc(ref, { numero: novoNumero });
+      estudante.numero = novoNumero;
+      localStorage.setItem('estudanteSelecionado', JSON.stringify(estudante));
+      mostrarMensagem("Número do WhatsApp atualizado!");
+    } catch (error) {
+      console.error("Erro ao salvar número:", error);
+      mostrarMensagem("Erro ao salvar número.", "#f44336");
     }
-  </script>
-</body>
-</html>
+  });
 
+  if (estudante) {
+    renderDetalhes(estudante);
+
+    whatsContainer.style.display = "block";
+    btnWhats = document.createElement("button");
+    btnWhats.textContent = "Conversar no WhatsApp";
+    btnWhats.style.marginTop = "10px";
+    btnWhats.style.display = "block";
+    inputNumero.insertAdjacentElement("afterend", btnWhats);
+    btnWhats.addEventListener("click", conversarNoWhatsApp);
+  } else {
+    detalhes.innerHTML = "<p>Nenhum estudante selecionado.</p>";
+  }
+</script>
+
+
+ 
+         
