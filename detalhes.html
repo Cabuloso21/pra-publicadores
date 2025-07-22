@@ -24,7 +24,7 @@
 }
 
  header {
- background: orange;
+ background: red;
  padding: 15px;
  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -133,7 +133,7 @@ padding: 10px;
 <div class="text">Detalhes</div>
 </header>
 
-<div id="botoes-topo">
+ <div id="botoes-topo">
   <button id="btnEditar">Editar</button>
   <button id="btnExcluir">Excluir</button>
 </div>
@@ -218,10 +218,9 @@ padding: 10px;
       <input type="text" id="inputCapitulo" value="${data.capitulo}" />
       <label>Tema:</label>
       <input type="text" id="inputTema" value="${data.tema}" />
-     <label>Lição:</label>
-     <input type="text" id="inputLicao" value="${data.licao}" />
-    
- <label>WhatsApp:</label>
+      <label>Lição:</label>
+      <textarea id="inputLicao" rows="3">${data.licao}</textarea>
+      <label>WhatsApp:</label>
       <input type="tel" id="inputNumero" value="${data.numero || ''}" />
     `;
     document.getElementById("inputNome").focus();
@@ -233,7 +232,7 @@ padding: 10px;
     if (!editando) {
       editando = true;
       btnEditar.textContent = "Salvar";
-      whatsContainer.style.display = "none"; // Oculta o campo duplicado
+      whatsContainer.style.display = "none"; // Oculta o campo fora do modo edição
       renderEditForm(estudante);
     } else {
       const novoNome = document.getElementById('inputNome').value.trim();
@@ -265,8 +264,8 @@ padding: 10px;
         editando = false;
         btnEditar.textContent = "Editar";
         renderDetalhes(estudante);
-        whatsContainer.style.display = "block"; // Reexibe o campo original
-        inputNumero.value = novoNumero;
+        whatsContainer.style.display = "block"; // Reexibe o campo fora do modo edição
+        inputNumero.value = novoNumero; // Atualiza o input para mostrar o número atualizado
         mostrarMensagem("Dados atualizados com sucesso!");
       } catch (error) {
         console.error("Erro ao atualizar:", error);
@@ -317,8 +316,9 @@ padding: 10px;
     window.open(link, "_blank");
   }
 
+  // Agora o inputNumero salva o número sempre que muda, mesmo no modo edição
   inputNumero.addEventListener("input", async () => {
-    if (!estudante || editando) return;
+    if (!estudante) return; // Remove a checagem do editando para permitir salvar sempre
 
     const novoNumero = inputNumero.value.trim();
     const ref = doc(db, 'estudantes', estudante.id);
@@ -348,3 +348,9 @@ padding: 10px;
     detalhes.innerHTML = "<p>Nenhum estudante selecionado.</p>";
   }
 </script>
+
+
+ <h1>fff</h1>
+</body>
+</htm
+      
