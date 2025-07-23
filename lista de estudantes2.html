@@ -39,6 +39,22 @@
  text-align: center;
 }
 
+ 
+    .loader {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ccc;
+    border-top: 4px solid orange;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 40px auto;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+   
  #lista-estudantes {
  display: flex;
  flex-direction: column;
@@ -90,82 +106,80 @@
  </div>
 
  <header>
-    <div class="text">Minhas estudantes</div>
-  </header>
+  <div class="text">Minhas estudantes</div>
+ </header>
+  </div>
+  
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-  <div id="lista-revisitas">Carregando estudantes...</div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+  };
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const db = getFirestore();
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-      authDomain: "teste-cfe69.firebaseapp.com",
-      projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.appspot.com",
-      messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
-    };
+  const lista = document.getElementById("lista-revisitas");
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const db = getFirestore();
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const q = query(collection(db, "estudantes"), where("uid", "==", user.uid));
+        const querySnapshot = await getDocs(q);
 
-    const lista = document.getElementById("lista-revisitas");
+        lista.innerHTML = ""; // Remove o loader
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const q = query(collection(db, "estudantes"), where("uid", "==", user.uid));
-          const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          lista.textContent = "Você ainda não cadastrou nenhum estudante.";
+        } else {
+          querySnapshot.forEach(doc => {
+            const dados = doc.data();
+            const id = doc.id;
 
-          if (querySnapshot.empty) {
-            lista.textContent = "Você ainda não cadastrou nenhum estudante.";
-          } else {
-            lista.innerHTML = "";
+            const atualizado = JSON.parse(localStorage.getItem('estudanteAtualizado'));
+            if (atualizado && atualizado.id === id) {
+              dados.nome = atualizado.nome;
+            }
 
-            querySnapshot.forEach(doc => {
-              const dados = doc.data();
-              const id = doc.id;
+            const div = document.createElement("div");
+            div.classList.add("estudante");
+            div.innerHTML = `<h3>${dados.nome}</h3>`;
 
-              const atualizado = JSON.parse(localStorage.getItem('estudanteAtualizado'));
-              if (atualizado && atualizado.id === id) {
-                dados.nome = atualizado.nome;
-              }
-
-              const div = document.createElement("div");
-              div.classList.add("estudante");
-              div.innerHTML = `<h3>${dados.nome}</h3>`;
-
-              div.addEventListener('click', () => {
-                const estudanteData = {
-                  id: id,
-                  nome: dados.nome,
-                  livro: dados.livro,
-                  capitulo: dados.capitulo,
-                  tema: dados.tema,
-                  licao: dados.licao
-                };
-                localStorage.setItem('estudanteSelecionado', JSON.stringify(estudanteData));
-                window.location.href = "detalhes.html";
-              });
-
-              lista.appendChild(div);
+            div.addEventListener('click', () => {
+              const estudanteData = {
+                id: id,
+                nome: dados.nome,
+                livro: dados.livro,
+                capitulo: dados.capitulo,
+                tema: dados.tema,
+                licao: dados.licao
+              };
+              localStorage.setItem('estudanteSelecionado', JSON.stringify(estudanteData));
+              window.location.href = "detalhes.html";
             });
 
-            localStorage.removeItem('estudanteAtualizado');
-          }
-        } catch (error) {
-          lista.textContent = "Erro ao carregar estudantes.";
-          console.error(error);
-        }
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-  </script>
+            lista.appendChild(div);
+          });
 
-</body>
-</html>
+          localStorage.removeItem('estudanteAtualizado');
+        }
+      } catch (error) {
+        lista.textContent = "Erro ao carregar estudantes.";
+        console.error(error);
+      }
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+
