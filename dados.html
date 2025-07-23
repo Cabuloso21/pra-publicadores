@@ -13,23 +13,39 @@ margin: 0px;
 font-family: Roboto, sans-serif;
 }
  
+
+.arrow {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid orange;
+  border-right: 2px solid orange;
+  transform: rotate(-130deg);
+  position: absolute;
+  top: 21px;
+  left: 15px;
+}
+
+
+
+
  header {
- background: #4CAF50;
+ background: #4A6DA7;
  padding: 15px;
  border-bottom: 1px solid #ccc;
 }
 
 .titulo {
  text-align: center;
- color: black;
- font-size: 17px;
+ color: orange;
+ font-size: 20px;
  font-weight: bold;
 }
 
 .text {
  text-align: center;
  color: #555;
- font-size: 15px;
+ font-size: 16px;
  font-weight: none;
  margin-top: 30px;
  margin-bottom: 30px;
@@ -49,6 +65,7 @@ font-family: Roboto, sans-serif;
  border-radius: 4px;
  margin-top: 10px;
  margin-bottom: 10px;
+ font-size: 15px;
 }
     
  label {
@@ -59,7 +76,7 @@ font-family: Roboto, sans-serif;
 
  button {
  padding: 15px;
- background: #4CAF50;
+ background: #4A6DA7;
  color: white;
  border: none;
  cursor: pointer;
@@ -67,7 +84,7 @@ font-family: Roboto, sans-serif;
  margin-left: 30%;
  margin-bottom: 50px;
  margin-top: 20px;
- font-size: 13px;
+ font-size: 15px;
  font-weight: bold;
 }
 
@@ -79,6 +96,9 @@ font-family: Roboto, sans-serif;
  margin-top: 10px;
  padding: 10px;
  border-radius: 4px;
+ font-size: 15px;
+  
+
 }
     
 .success {
@@ -89,16 +109,24 @@ font-family: Roboto, sans-serif;
 .warning {
  background-color: #fff3cd;
  color: #856404;
+ margin-left: 20px;
+ margin-right: 20px;
 }
   
 </style>
  </head>
  <body>
+ 
+ <a href="painel.html">
+ <span class="arrow"></span>
+ </a>
+ </div>
+
  <header>
  <div class="titulo">Editar Perfil</div>
  </header>
   
- <div class="text">Aqui você pode ver todas as Informações do seu cliente</div>
+ <div class="text">Aqui você pode alterar as Informações da sua conta.</div>
  </div>
 
  <form id="form-editar">
@@ -114,7 +142,7 @@ font-family: Roboto, sans-serif;
     <button type="button" onclick="atualizarPerfil()">Salvar alterações</button>
 
     <p class="message warning">
-      * Se você alterar o e-mail, um link de verificação será enviado. As alterações só serão aplicadas após a verificação.
+      Ao alterar seu e-mail, um link de verificação será enviado. as alterações só serão aplicadas após a verificação.
     </p>
 
     <button type="button" id="reenviarVerificacao" style="display:none;" onclick="reenviarEmailVerificacao()">
