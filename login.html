@@ -1,58 +1,144 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Lopixe</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    .titulo {
-      font-size: 24px;
+ <!DOCTYPE html>
+ <html lang="pt-BR">
+ <head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Login - Lopixe</title>
+  
+<style>
+ 
+ body {
+ font-family: Arial, sans-serif;
+ margin: 0; 
+ background: white;
+ }
+ 
+ header {
+ border-bottom: 1.50px solid #ccc;
+ background: white;
+ padding: 15px;
+
+}
+ 
+.logo {
+ font-size: 22px;
+ font-weight: bolder;
+ text-align: absolute;
+ margin-left: 5px;
+ color: #4A6DA7;
+
+}
+
+ .logo::first-letter {
+ font-size: 30px; /* tamanho da letra L */
+ font-weight: bold;
+ color: orange;
+ 
+}
+
+ .titulo {
+      font-size: 20px;
       margin-bottom: 20px;
-    }
-    .input-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-    }
-    .btn {
-      padding: 10px 20px;
-      background-color: #007bff;
+      font-weight: bolder;
+      color: black;
+      text-align: center;
+      margin-top: 40px;
+ }
+    
+ .btn {
+      padding: 10px 60px;
+      background: #4A6DA7;
       color: white;
-      border: none;
+      border-radius: 5px;
+      border: 1px solid #4A6DA7;
       cursor: pointer;
-    }
+      font-weight: bolder;
+      font-size: 16px;
+      text-align: center;
+      margin-left: 31%;
+      
+}
     .btn:hover {
-      background-color: #0056b3;
+      background-color: #4A6DA7;
     }
     .error-message {
       margin-top: 15px;
       color: red;
       font-weight: bold;
     }
-    footer {
-      margin-top: 40px;
-      font-size: 14px;
-      text-align: center;
-      color: #666;
-    }
-    footer a {
-      color: #007bff;
-      text-decoration: none;
-    }
-  </style>
-</head>
-<body>
+    
+
+
+ label {
+ display: block;
+ margin-bottom: 5px;
+ font-weight: bolder;
+ color: #4A6DA;
+ }
+
+
+ .input-group {
+    margin-bottom: 16px;
+    display: flex;
+   margin-left: 20px;
+   margin-right: 20px;
+   flex-direction: column;
+  }
+
+  .input-group input[type="password"],
+  .input-group input[type="text"],
+  .input-group input[type="email"],
+  .input-group input[type="text"] {
+    padding: 15px;
+    font-size: 16px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-weight: bolder;
+}
+
+  .mostrar-senha {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #444;
+  }
+
+  .mostrar-senha input[type="checkbox"] {
+    accent-color: #2196f3;
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+
+  .mostrar-senha label {
+    cursor: pointer;
+    user-select: none;
+  }
+
+
+ footer {
+ margin-top: 80%;
+ font-size: 14px;
+ text-align: center;
+ color: #666;
+}
+    
+ footer a {
+ color: #007bff;
+ text-decoration: none;
+}
+
+</style>
+ </head>
+ <body>
+
+ <header>
+ <div class="logo">Publicador jw </div>
+ </header>
+ </div>
+ 
 
   <div class="titulo">Fazer login</div>
   
@@ -61,12 +147,17 @@
       <label for="email">E-mail:</label>
       <input type="email" id="email" required />
     </div>
-    <div class="input-group">
-      <label for="senha">Senha:</label>
-      <input type="password" id="senha" required />
-    </div>
     
-    <button type="submit" class="btn">Entrar</button>
+   <div class="input-group">
+  <label for="senha">Senha:</label>
+  <input type="password" id="senha" required />
+  <div class="mostrar-senha">
+    <input type="checkbox" id="mostrarSenha" />
+    <label for="mostrarSenha">Mostrar senha</label>
+  </div>
+</div>
+
+ <button type="submit" class="btn">Entrar</button>
   </form>
  
   <p><a href="recuperar senha.html">Esqueceu sua senha?</a></p>
@@ -75,11 +166,7 @@
   
   <footer>
     <div class="brand">
-      <p>
-        <a href="privacidade.html" target="_blank">Política de Privacidade</a> | 
-        <a href="quem-somos.html" target="_blank">Quem Somos?</a>
-      </p>
-      <p>&copy; 2024° - Lopixe / todos os direitos reservados.</p>
+    <p>&copy; 2025° - Publicador jw / todos os direitos reservados.</p>
     </div>
   </footer>
 
@@ -133,7 +220,7 @@
             erroMensagem = "Muitas tentativas falhas. Tente novamente mais tarde.";
             break;
           default:
-            erroMensagem = "Erro ao fazer login. Senha ou Email incorreto.";
+            erroMensagem = "Ops Erro ao fazer login, Senha ou Email incorreto.";
         }
 
         mensagemErro.textContent = erroMensagem;
@@ -141,6 +228,14 @@
     });
   </script>
 
+
+
+<script>
+ document.getElementById("mostrarSenha").addEventListener("change", function () {
+ const senhaInput = document.getElementById("senha");
+ senhaInput.type = this.checked ? "text" : "password";
+});
+</script>
 </body>
 </html>
 
