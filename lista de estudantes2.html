@@ -27,7 +27,7 @@
  }
 
  header {
- background: #4A6DA7;
+ background: black;
  padding: 15px;
  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -90,12 +90,11 @@
  </div>
 
  <header>
- <div class="text">Meus estudantes</div>
- </header>
+    <div class="text">Minhas estudantes</div>
+  </header>
 
- <div id="lista-estudantes">Carregando estudantes...</div>
+  <div id="lista-revisitas">Carregando estudantes...</div>
 
-  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -114,7 +113,7 @@
     const auth = getAuth();
     const db = getFirestore();
 
-    const lista = document.getElementById("lista-estudantes");
+    const lista = document.getElementById("lista-revisitas");
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -126,22 +125,15 @@
             lista.textContent = "Você ainda não cadastrou nenhum estudante.";
           } else {
             lista.innerHTML = "";
+
             querySnapshot.forEach(doc => {
               const dados = doc.data();
               const id = doc.id;
 
-              // Verifica se há atualizações no localStorage
               const atualizado = JSON.parse(localStorage.getItem('estudanteAtualizado'));
               if (atualizado && atualizado.id === id) {
                 dados.nome = atualizado.nome;
-                dados.livro = atualizado.livro;
-                dados.capitulo = atualizado.capitulo;
-                dados.tema = atualizado.tema;
-                dados.licao = atualizado.licao;
               }
-
-              const numeroLimpo = dados.whatsapp ? dados.whatsapp.replace(/\D/g, '') : "";
-              const linkWhatsapp = numeroLimpo ? `https://wa.me/${numeroLimpo}` : "";
 
               const div = document.createElement("div");
               div.classList.add("estudante");
@@ -154,11 +146,10 @@
                   livro: dados.livro,
                   capitulo: dados.capitulo,
                   tema: dados.tema,
-                  licao: dados.licao,
-                  whatsapp: linkWhatsapp
+                  licao: dados.licao
                 };
                 localStorage.setItem('estudanteSelecionado', JSON.stringify(estudanteData));
-                window.location.href = "detalhes.html";
+                window.location.href = "detalhes do estudante.html";
               });
 
               lista.appendChild(div);
@@ -175,5 +166,6 @@
       }
     });
   </script>
+
 </body>
 </html>
