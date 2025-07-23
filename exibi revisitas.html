@@ -17,8 +17,8 @@
   display: inline-block;
   width: 10px;
   height: 10px;
-  border-top: 2px solid #f2f2f2;
-  border-right: 2px solid #f2f2f2;
+  border-top: 2px solid orange;
+  border-right: 2px solid orange;
   transform: rotate(-130deg);
   position: absolute;
   top: 21px;
@@ -30,36 +30,56 @@
  background: #4A6DA7;
  padding: 15px;
  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+
 }
 
+ p {
+ font-size: 14px;
+ color: black;
+ text-align: center;
+ margin-top: 30px;
+ margin-bottom: 50px;
+}
+
+
+
 .text {
- color: white;
+ color: orange;
  font-size: 21px;
  font-weight: bold;
  text-align: center;
 }
 
- #lista-revisitas {
- display: flex;
- flex-direction: column;
- gap: 15px;
- max-width: 600px;
- margin: 0 auto;
- margin-top: 30px;
- 
-}
+.loader {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #ccc;
+    border-top: 4px solid orange;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 40px auto;
+   
+ }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
  .revisita {
  background: #ffffff;
  border: 1px solid #ddd;
- border-left: 5px solid #4A6DA7;
+ border-left: 5px solid orange;
  border-radius: 8px;
- padding: 15px 10px;
+ padding: 19px 10px;
  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
  cursor: pointer;
  transition: transform 0.2s, box-shadow 0.2s;
  margin-left: 10px;
  margin-right: 10px;
+ margin-top: 15px;
+
 }
 
  .revisita:hover {
@@ -69,8 +89,8 @@
 
  .revisita h3 {
  margin: 0;
- font-size: 1.2rem;
- color: #2c3e50;
+ font-size: 18px;
+ color: #4A6DA7;
 }
     
  .anuncio {
@@ -82,9 +102,7 @@
 }
   
  </style>
- </head>
- <body>
- 
+
  <a href="painel.html">
  <span class="arrow"></span>
  </a>
@@ -94,7 +112,13 @@
  <div class="text">Minhas Revisitas</div>
  </header>
 
- <div id="lista-revisitas">Carregando revisitas...</div>
+ <p>Clique em cima para ver os detalhes do seu estudante.</p>
+
+ <div id="lista-revisitas">
+ <div class="loader"></div>
+ </div>
+
+
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -122,11 +146,11 @@
         const q = query(collection(db, "revisita"), where("uid", "==", user.uid));
         const querySnapshot = await getDocs(q);
 
+        lista.innerHTML = ""; // Remove o loader
+
         if (querySnapshot.empty) {
           lista.textContent = "Você ainda não cadastrou nenhuma revisita.";
         } else {
-          lista.innerHTML = "";
-
           querySnapshot.forEach(doc => {
             const dados = doc.data();
             const id = doc.id;
@@ -168,6 +192,6 @@
     }
   });
 </script>
-
 </body>
 </html>
+
