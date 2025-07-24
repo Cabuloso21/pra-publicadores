@@ -1,123 +1,190 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>teste</title>
 </head>
 <body>
-
+  
 <style>
- body {
- margin: 0px;
- font-family: Roboto, sans-serif;;
- background: white;
-}
- .arrow {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-top: 2px solid #f2f2f2;
-  border-right: 2px solid #f2f2f2;
-  transform: rotate(-130deg);
+  body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    
+    background-color: #f3f4f6;
+    color: #333;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .arrow {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-left: 3px solid #333;
+    border-bottom: 3px solid #333;
+    
+    margin-bottom: 10px;
+ transform: rotate(45deg);
   position: absolute;
   top: 21px;
   left: 15px;
-}
 
- header {
- background: #4A6DA7;
- padding: 15px;
- box-shadow: 0 4px 6px rgba(0,0,0,0.1);
- margin-bottom: 30px;
-}
-
-.text {
- color: white;
- font-size: 22px;
- font-weight: bold;
- text-align: center;
-}
-
- .detalhes {
- background: white;
- height: 250px;
- margin-left: 15px;
-}
-
-h3 {
-color: #349;
-border-bottom: 1px solid #ccc;
-margin-bottom: 30px;
-margin-right: 15px;
-}
-
-
-#mensagemStatus {
-      display: none;
-      padding: 10px;
-      color: white;
-      margin-top: 10px;
-      border-radius: 5px;
-    }
-    #modalConfirmacao {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      justify-content: center;
-      align-items: center;
-    }
-    .conteudo {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-     color: black;
 
  }
-    
-button {
-background: white;
-color: #4A6DA7;
-font-weight: bolder;
-border-radius: 10px;
-border: 1px solid #4A6DA7;
-padding: 10px;
-margin-left: 15px;
-margin-bottom: 40px;
 
-}
+  header {
+    background-color: #2563eb;
+    color: white;
+    padding: 15px;
+    border-radius: 0px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
 
-label { 
-display: block; 
-margin-top: 10px; 
-margin-left: 15px;
-color: black;
-font-weight: bolder; 
-}
+  header .text {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
 
- input { 
- width: 40%;
- padding: 10px; 
- margin-bottom: 10px; 
- margin-left: 15px;
-border-radius: 5px;
-border: 1px solid #ccc;
+  #botoes-topo {
+    display: flex;
+    justify-content: absolute;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-left: 20px;
 
-}
- 
+ }
 
-.card {
- margin-top: 20px; 
- background: white;
-}
-    
+  #botoes-topo button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #botoes-topo button:hover {
+    background-color: #1e40af;
+  }
+
+  .card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+  }
+
+  .card h3 {
+    margin-top: 0;
+    color: #111827;
+  }
+
+  .card p {
+    margin: 8px 0;
+    font-size: 15px;
+  }
+
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"],
+  input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  #whatsContainer {
+    margin-top: 20px;
+  }
+
+  #whatsContainer button {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  #whatsContainer button:hover {
+    background-color: #15803d;
+  }
+
+  #mensagemStatus {
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    display: none;
+    font-weight: bold;
+    color: white;
+  }
+
+  #modalConfirmacao {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  #modalConfirmacao .conteudo {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+  }
+
+  #modalConfirmacao .conteudo p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  #modalConfirmacao .conteudo button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+
+  #modalConfirmacao .conteudo button#cancelarExclusao {
+    background-color: #6b7280;
+  }
+
+  #modalConfirmacao .conteudo button:hover {
+    opacity: 0.9;
+  }
+
 </style>
 
-<a href="exibi revisitas.html">
+<a href="painel.html">
  <span class="arrow"></span>
  </a>
  </div>
@@ -217,7 +284,7 @@ border: 1px solid #ccc;
       <label>Dia:</label>
       <input type="text" id="inputDia" value="${data.dia}" />
       <label>Horário:</label>
-      <input type="text" id="inputHorario" value="${data.horario}" />
+      <input type="number" id="inputHorario" value="${data.horario}" />
       <label>Endereço:</label>
       <input type="text" id="inputEndereco" value="${data.endereco}" />
       <label>Número da Casa:</label>
@@ -240,6 +307,8 @@ border: 1px solid #ccc;
       const novoTema = document.getElementById('inputTema').value.trim();
       const novoTextoBiblia = document.getElementById('inputTextoBiblia').value.trim();
       const novaSegundaRevisita = document.getElementById('inputSegundaRevisita').value.trim();
+      const novoDia = document.getElementById('inputDia').value.trim();
+      const novoHorario = document.getElementById('inputHorario').value.trim();
       const novoEndereco = document.getElementById('inputEndereco').value.trim();
       const novoCasa = document.getElementById('inputCasa').value.trim();
       const novoNumero = document.getElementById('inputNumeroWhatsApp').value.trim();
@@ -255,6 +324,8 @@ border: 1px solid #ccc;
           tema: novoTema,
           textoBiblia: novoTextoBiblia,
           segundaRevisita: novaSegundaRevisita,
+          dia: novoDia,
+          horario: novoHorario,
           endereco: novoEndereco,
           casa: novoCasa,
           numero: novoNumero
@@ -265,6 +336,8 @@ border: 1px solid #ccc;
           tema: novoTema,
           textoBiblia: novoTextoBiblia,
           segundaRevisita: novaSegundaRevisita,
+          dia: novoDia,
+          horario: novoHorario,
           endereco: novoEndereco,
           casa: novoCasa,
           numero: novoNumero
@@ -375,8 +448,8 @@ border: 1px solid #ccc;
   carregarRevisitaSelecionada();
 </script>
 
+
+
 </body>
 </html>
-
-
 
