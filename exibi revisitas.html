@@ -9,7 +9,7 @@
 <style>
  body {
  font-family: Roboto, sans-serif;;
- background: #f4f6f9;
+ background: black;
  margin: 0;
 }
 
@@ -114,11 +114,12 @@
 
  <p>Clique em cima para ver os detalhes do seu estudante.</p>
 
- <div id="lista-revisitas">
- <div class="loader"></div>
- </div>
 
 
+
+<div id="lista-revisitas">
+  <div class="loader"></div>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -137,16 +138,15 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth();
   const db = getFirestore();
-
   const lista = document.getElementById("lista-revisitas");
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
+      lista.innerHTML = ""; // Remove o loader sempre
+
       try {
         const q = query(collection(db, "revisita"), where("uid", "==", user.uid));
         const querySnapshot = await getDocs(q);
-
-        lista.innerHTML = ""; // Remove o loader
 
         if (querySnapshot.empty) {
           lista.textContent = "Você ainda não cadastrou nenhuma revisita.";
@@ -162,17 +162,21 @@
 
             const div = document.createElement("div");
             div.classList.add("revisita");
-            div.innerHTML = `<h3>${dados.nome}</h3>`;
+
+            const h3 = document.createElement("h3");
+            h3.textContent = dados.nome || "Sem nome";
+
+            div.appendChild(h3);
 
             div.addEventListener('click', () => {
               const revisitaData = {
                 id: id,
-                nome: dados.nome,
-                assunto: dados.assunto,
-                texto: dados.texto,
-                tema: dados.tema,
-                endereco: dados.endereco,
-                casa: dados.casa
+                nome: dados.nome || "",
+                assunto: dados.assunto || "",
+                texto: dados.texto || "",
+                tema: dados.tema || "",
+                endereco: dados.endereco || "",
+                casa: dados.casa || ""
               };
               localStorage.setItem('revisitaSelecionado', JSON.stringify(revisitaData));
               window.location.href = "detalhes da revisita.html";
@@ -192,6 +196,6 @@
     }
   });
 </script>
-</body>
-</html>
+
+
 
