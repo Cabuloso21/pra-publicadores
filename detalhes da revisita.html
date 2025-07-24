@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +12,7 @@
  body {
  margin: 0px;
  font-family: Roboto, sans-serif;;
- background: white;
+ background: lime;
 }
  .arrow {
   display: inline-block;
@@ -140,7 +142,7 @@ border: 1px solid #ccc;
 
 <div id="mensagemStatus"></div>
 
-<div id="modalConfirmacao" style="display: none;">
+<div id="modalConfirmacao">
   <div class="conteudo">
     <p>Tem certeza que deseja excluir esta Revisita?</p>
     <button id="confirmarExclusao">Sim</button>
@@ -191,11 +193,13 @@ border: 1px solid #ccc;
   function renderDetalhes(data) {
     detalhes.innerHTML = `
       <h3>${data.nome}</h3>
-      <p><strong>Assunto:</strong> ${data.assunto}</p>
-      <p><strong>Texto:</strong> ${data.texto}</p>
       <p><strong>Tema:</strong> ${data.tema}</p>
+      <p><strong>Texto da bíblia:</strong> ${data.textoBiblia}</p>
+      <p><strong>2ª Revisita:</strong> ${data.segundaRevisita}</p>
+      <p><strong>Dia:</strong> ${data.dia}</p>
+      <p><strong>Horário:</strong> ${data.horario}</p>
       <p><strong>Endereço:</strong> ${data.endereco}</p>
-      <p><strong>Casa:</strong> ${data.casa}</p>
+      <p><strong>Número da Casa:</strong> ${data.casa}</p>
     `;
     inputNumero.value = data.numero || '';
   }
@@ -204,15 +208,19 @@ border: 1px solid #ccc;
     detalhes.innerHTML = `
       <label>Nome:</label>
       <input type="text" id="inputNome" value="${data.nome}" />
-      <label>Assunto:</label>
-      <input type="text" id="inputAssunto" value="${data.assunto}" />
-      <label>Texto:</label>
-      <input type="text" id="inputTexto" value="${data.texto}" />
       <label>Tema:</label>
       <input type="text" id="inputTema" value="${data.tema}" />
+      <label>Texto da bíblia:</label>
+      <input type="text" id="inputTextoBiblia" value="${data.textoBiblia}" />
+      <label>2ª Revisita:</label>
+      <input type="text" id="inputSegundaRevisita" value="${data.segundaRevisita}" />
+      <label>Dia:</label>
+      <input type="text" id="inputDia" value="${data.dia}" />
+      <label>Horário:</label>
+      <input type="text" id="inputHorario" value="${data.horario}" />
       <label>Endereço:</label>
       <input type="text" id="inputEndereco" value="${data.endereco}" />
-      <label>Casa:</label>
+      <label>Número da Casa:</label>
       <input type="text" id="inputCasa" value="${data.casa}" />
       <label>WhatsApp:</label>
       <input type="tel" id="inputNumeroWhatsApp" value="${data.numero || ''}" />
@@ -229,9 +237,9 @@ border: 1px solid #ccc;
       renderEditForm(revisitaData);
     } else {
       const novoNome = document.getElementById('inputNome').value.trim();
-      const novoAssunto = document.getElementById('inputAssunto').value.trim();
-      const novoTexto = document.getElementById('inputTexto').value.trim();
       const novoTema = document.getElementById('inputTema').value.trim();
+      const novoTextoBiblia = document.getElementById('inputTextoBiblia').value.trim();
+      const novaSegundaRevisita = document.getElementById('inputSegundaRevisita').value.trim();
       const novoEndereco = document.getElementById('inputEndereco').value.trim();
       const novoCasa = document.getElementById('inputCasa').value.trim();
       const novoNumero = document.getElementById('inputNumeroWhatsApp').value.trim();
@@ -244,15 +252,24 @@ border: 1px solid #ccc;
       try {
         await updateDoc(doc(db, 'revisita', revisitaId), {
           nome: novoNome,
-          assunto: novoAssunto,
-          texto: novoTexto,
           tema: novoTema,
+          textoBiblia: novoTextoBiblia,
+          segundaRevisita: novaSegundaRevisita,
           endereco: novoEndereco,
           casa: novoCasa,
           numero: novoNumero
         });
 
-        revisitaData = { nome: novoNome, assunto: novoAssunto, texto: novoTexto, tema: novoTema, endereco: novoEndereco, casa: novoCasa, numero: novoNumero };
+        revisitaData = {
+          nome: novoNome,
+          tema: novoTema,
+          textoBiblia: novoTextoBiblia,
+          segundaRevisita: novaSegundaRevisita,
+          endereco: novoEndereco,
+          casa: novoCasa,
+          numero: novoNumero
+        };
+
         editando = false;
         btnEditar.textContent = "Editar";
         renderDetalhes(revisitaData);
@@ -325,14 +342,16 @@ border: 1px solid #ccc;
       revisitaData = docSnap.data();
 
       renderDetalhes(revisitaData);
-
       whatsContainer.style.display = "block";
-      btnWhats = document.createElement("button");
-      btnWhats.textContent = "Conversar no WhatsApp";
-      btnWhats.style.marginTop = "10px";
-      btnWhats.style.display = "block";
-      inputNumero.insertAdjacentElement("afterend", btnWhats);
-      btnWhats.addEventListener("click", conversarNoWhatsApp);
+
+      if (!btnWhats) {
+        btnWhats = document.createElement("button");
+        btnWhats.textContent = "Conversar no WhatsApp";
+        btnWhats.style.marginTop = "10px";
+        btnWhats.style.display = "block";
+        inputNumero.insertAdjacentElement("afterend", btnWhats);
+        btnWhats.addEventListener("click", conversarNoWhatsApp);
+      }
 
       inputNumero.addEventListener("input", async () => {
         if (!revisitaId) return;
@@ -358,5 +377,6 @@ border: 1px solid #ccc;
 
 </body>
 </html>
+
 
 
