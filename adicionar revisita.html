@@ -88,84 +88,92 @@
  <div class="text">Adicione Revisita</div>
  </header>
 
-  <form id="form-anuncio">
-    <input type="text" id="nome" placeholder="Nome da revisita" required />
-    <input type="text" id="assunto" placeholder="Assunto da bíblia" required />
-    <input type="text" id="texto" placeholder="Texto" required />
-    <input type="text" id="tema" placeholder="Tema" required />
-    <input type="text" id="endereco" placeholder="Endereço" required />
-    <input type="number" id="casa" placeholder="Número da casa" required />
 
-    <button type="submit">Finalizar</button>
-    <p class="message" id="mensagem"></p>
-  </form>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-      authDomain: "teste-cfe69.firebaseapp.com",
-      projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.appspot.com",
-      messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
-    };
+<form id="form-anuncio">
+  <input type="text" id="nome" placeholder="Nome da revisita" required />
+  <input type="text" id="tema" placeholder="Tema" required />
+  <input type="text" id="textoBiblia" placeholder="Texto da Bíblia" required />
+  <input type="text" id="segundaRevisita" placeholder="2ª Revisita" required />
+  <input type="text" id="dia" placeholder="Dia" required />
+  <input type="text" id="horario" placeholder="Horário" required />
+  <input type="text" id="endereco" placeholder="Endereço" required />
+  <input type="number" id="numeroCasa" placeholder="Número da casa" required />
+  <button type="submit">Finalizar</button>
+  <p class="message" id="mensagem"></p>
+</form>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const db = getFirestore();
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    let usuario = null;
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+  };
 
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        usuario = user;
-      } else {
-        window.location.href = "login.html";
-      }
-    });
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const db = getFirestore();
 
-    const form = document.getElementById("form-anuncio");
-    const msg = document.getElementById("mensagem");
+  let usuario = null;
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      usuario = user;
+    } else {
+      window.location.href = "login.html";
+    }
+  });
 
-      const nome = document.getElementById("nome").value;
-      const assunto = document.getElementById("assunto").value;
-      const texto = document.getElementById("texto").value;
-      const tema = document.getElementById("tema").value;
-      const endereco = document.getElementById("endereco").value;
-      const casa = document.getElementById("casa").value;
+  const form = document.getElementById("form-anuncio");
+  const msg = document.getElementById("mensagem");
 
-      try {
-        await addDoc(collection(db, "revisita"), {
-          uid: usuario.uid,
-          nome,
-          assunto,
-          texto,
-          tema,
-          endereco,
-          casa,
-          emailUsuario: usuario.email,
-          nomeUsuario: usuario.displayName || "",
-          criadoEm: new Date()
-        });
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        msg.textContent = "Estudante cadastrado com sucesso!";
-        msg.style.color = "green";
-        form.reset();
-      } catch (error) {
-        msg.textContent = "Erro ao cadastrar estudante: " + error.message;
-        msg.style.color = "red";
-      }
-    });
-  </script>
- </body>
+    const nome = document.getElementById("nome").value;
+    const tema = document.getElementById("tema").value;
+    const textoBiblia = document.getElementById("textoBiblia").value;
+    const segundaRevisita = document.getElementById("segundaRevisita").value;
+    const dia = document.getElementById("dia").value;
+    const horario = document.getElementById("horario").value;
+    const endereco = document.getElementById("endereco").value;
+    const numeroCasa = document.getElementById("numeroCasa").value;
+
+    try {
+      await addDoc(collection(db, "revisita"), {
+        uid: usuario.uid,
+        nome,
+        tema,
+        textoBiblia,
+        segundaRevisita,
+        dia,
+        horario,
+        endereco,
+        casa: numeroCasa,
+        emailUsuario: usuario.email,
+        nomeUsuario: usuario.displayName || "",
+        criadoEm: new Date()
+      });
+
+      msg.textContent = "Revisita cadastrada com sucesso!";
+      msg.style.color = "green";
+      form.reset();
+    } catch (error) {
+      msg.textContent = "Erro ao cadastrar revisita: " + error.message;
+      msg.style.color = "red";
+    }
+  });
+</script>
+
+</body>
 </html>
 
 
