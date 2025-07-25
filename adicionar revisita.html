@@ -10,7 +10,7 @@
  body {
  margin: 0px;
  font-family: Roboto, sans-serif;
- background: white;
+ background: lime;
 }
 
  
@@ -79,17 +79,11 @@
  </head>
  <body>
 
- <a href="painel.html">
- <span class="arrow"></span>
- </a>
- </div>
-
- <header>
- <div class="text">Adicione Revisita</div>
- </header>
 
 
-
+<header>
+  <div class="text">Adicione Revisita</div>
+</header>
 
 <form id="form-anuncio">
   <input type="text" id="nome" placeholder="Nome da revisita" required />
@@ -97,7 +91,7 @@
   <input type="text" id="textoBiblia" placeholder="Texto da Bíblia" required />
   <input type="text" id="segundaRevisita" placeholder="2ª Revisita" required />
   <input type="text" id="dia" placeholder="Dia" required />
-  <input type="text" id="horario" placeholder="Horário" required />
+  <input type="text" id="horario" placeholder="Horário" maxlength="5" required />
   <input type="text" id="endereco" placeholder="Endereço" required />
   <input type="number" id="numeroCasa" placeholder="Número da casa" required />
   <button type="submit">Finalizar</button>
@@ -171,9 +165,17 @@
       msg.style.color = "red";
     }
   });
+
+  // 👉 Função de formatação automática da hora
+  const horarioInput = document.getElementById("horario");
+  horarioInput.addEventListener("input", (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // remove não-dígitos
+    if (value.length >= 3) {
+      value = value.slice(0, 2) + ":" + value.slice(2, 4);
+    }
+    e.target.value = value.slice(0, 5); // garante que não passe de 5 caracteres
+  });
 </script>
 
 </body>
 </html>
-
-
