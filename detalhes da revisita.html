@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>teste</title>
-</head>
-<body>
-  
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Detalhes da Revisita</title>
+
 <style>
 body {
 font-family: "Segoe UI", sans-serif;
 margin: 0;
-background-color: white;
+background-color: orange;
 }
 
   a {
@@ -102,7 +100,7 @@ background-color: white;
 
   input[type="text"],
   input[type="tel"] {
-    width: 100%;
+   width: 100%;
     padding: 10px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
@@ -110,7 +108,8 @@ background-color: white;
     font-size: 14px;
   }
 
-  #whatsContainer {
+ 
+ #whatsContainer {
     margin-top: 20px;
   }
 
@@ -190,13 +189,8 @@ background-color: white;
 
 </style>
 
- <a href="painel.html">
- <span class="arrow"></span>
- </a>
- </div>
-
  <header>
- <div class="text">Detalhes da revisita</div>
+ <div class="text">Detalhes</div>
  </header>
 
 <div id="botoes-topo">
@@ -208,14 +202,14 @@ background-color: white;
   <div class="detalhes" id="detalhes-revisita">Carregando...</div>
 
   <div id="whatsContainer" style="margin-top: 20px; display: none;">
-    <label>WhatsApp:</label>
+    <label for="numeroWhatsApp">WhatsApp:</label>
     <input type="tel" id="numeroWhatsApp" placeholder="Ex: 95350376" />
   </div>
 </div>
 
 <div id="mensagemStatus"></div>
 
-<div id="modalConfirmacao">
+<div id="modalConfirmacao" style="display:none;">
   <div class="conteudo">
     <p>Tem certeza que deseja excluir esta Revisita?</p>
     <button id="confirmarExclusao">Sim</button>
@@ -254,50 +248,71 @@ background-color: white;
   let revisitaData = null;
   let editando = false;
   let btnWhats = null;
+  let debounceTimeout;
+
+  // Função para escapar HTML
+  function escapeHtml(text = "") {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
   function mostrarMensagem(texto, cor = "#4caf50") {
     const mensagem = document.getElementById("mensagemStatus");
     mensagem.textContent = texto;
     mensagem.style.backgroundColor = cor;
     mensagem.style.display = "block";
-    setTimeout(() => { mensagem.style.display = "none"; }, 3000);
+    clearTimeout(mensagem.timeoutId);
+    mensagem.timeoutId = setTimeout(() => {
+      mensagem.style.display = "none";
+    }, 3000);
   }
 
   function renderDetalhes(data) {
     detalhes.innerHTML = `
-      <h3>${data.nome}</h3>
-      <p><strong>Tema:</strong> ${data.tema}</p>
-      <p><strong>Texto da bíblia:</strong> ${data.textoBiblia}</p>
-      <p><strong>2ª Revisita:</strong> ${data.segundaRevisita}</p>
-      <p><strong>Dia:</strong> ${data.dia}</p>
-      <p><strong>Horário:</strong> ${data.horario}</p>
-      <p><strong>Endereço:</strong> ${data.endereco}</p>
-      <p><strong>Número da Casa:</strong> ${data.casa}</p>
+      <h3>${escapeHtml(data.nome || '')}</h3>
+      <p><strong>Tema:</strong> ${escapeHtml(data.tema || '')}</p>
+      <p><strong>Texto da bíblia:</strong> ${escapeHtml(data.textoBiblia || '')}</p>
+      <p><strong>2ª Revisita:</strong> ${escapeHtml(data.segundaRevisita || '')}</p>
+      <p><strong>Dia:</strong> ${escapeHtml(data.dia || '')}</p>
+      <p><strong>Horário:</strong> ${escapeHtml(data.horario || '')}</p>
+      <p><strong>Endereço:</strong> ${escapeHtml(data.endereco || '')}</p>
+      <p><strong>Número da Casa:</strong> ${escapeHtml(data.casa || '')}</p>
     `;
     inputNumero.value = data.numero || '';
   }
 
   function renderEditForm(data) {
     detalhes.innerHTML = `
-      <label>Nome:</label>
-      <input type="text" id="inputNome" value="${data.nome}" />
-      <label>Tema:</label>
-      <input type="text" id="inputTema" value="${data.tema}" />
-      <label>Texto da bíblia:</label>
-      <input type="text" id="inputTextoBiblia" value="${data.textoBiblia}" />
-      <label>2ª Revisita:</label>
-      <input type="text" id="inputSegundaRevisita" value="${data.segundaRevisita}" />
-      <label>Dia:</label>
-      <input type="text" id="inputDia" value="${data.dia}" />
-      <label>Horário:</label>
-      <input type="number" id="inputHorario" value="${data.horario}" />
-      <label>Endereço:</label>
-      <input type="text" id="inputEndereco" value="${data.endereco}" />
-      <label>Número da Casa:</label>
-      <input type="text" id="inputCasa" value="${data.casa}" />
-      <label>WhatsApp:</label>
-      <input type="tel" id="inputNumeroWhatsApp" value="${data.numero || ''}" />
+      <label for="inputNome">Nome:</label>
+      <input type="text" id="inputNome" value="${escapeHtml(data.nome || '')}" />
+      <label for="inputTema">Tema:</label>
+      <input type="text" id="inputTema" value="${escapeHtml(data.tema || '')}" />
+      <label for="inputTextoBiblia">Texto da bíblia:</label>
+      <input type="text" id="inputTextoBiblia" value="${escapeHtml(data.textoBiblia || '')}" />
+      <label for="inputSegundaRevisita">2ª Revisita:</label>
+      <input type="text" id="inputSegundaRevisita" value="${escapeHtml(data.segundaRevisita || '')}" />
+      <label for="inputDia">Dia:</label>
+      <input type="text" id="inputDia" value="${escapeHtml(data.dia || '')}" />
+      <label for="inputHorario">Horário:</label>
+      <input type="time" id="inputHorario" maxlength="5" value="${escapeHtml(data.horario || '')}" />
+      <label for="inputEndereco">Endereço:</label>
+      <input type="text" id="inputEndereco" value="${escapeHtml(data.endereco || '')}" />
+      <label for="inputCasa">Número da Casa:</label>
+      <input type="text" id="inputCasa" value="${escapeHtml(data.casa || '')}" />
+      <label for="inputNumeroWhatsApp">WhatsApp:</label>
+      <input type="tel" id="inputNumeroWhatsApp" value="${escapeHtml(data.numero || '')}" />
     `;
+
+    aplicarFormatacaoHorario();
+  }
+
+  // Validação simples do número WhatsApp (só dígitos, 8 a 15 caracteres)
+  function validarNumeroWhatsApp(numero) {
+    return /^\d{8,15}$/.test(numero);
   }
 
   btnEditar.addEventListener("click", async () => {
@@ -321,6 +336,10 @@ background-color: white;
 
       if (!novoNome) {
         mostrarMensagem("Nome não pode ser vazio.", "#f44336");
+        return;
+      }
+      if (novoNumero && !validarNumeroWhatsApp(novoNumero)) {
+        mostrarMensagem("Número de WhatsApp inválido.", "#f44336");
         return;
       }
 
@@ -395,6 +414,10 @@ background-color: white;
       mostrarMensagem("Por favor, insira o número da revisita.", "#f44336");
       return;
     }
+    if (!validarNumeroWhatsApp(numero)) {
+      mostrarMensagem("Número de WhatsApp inválido.", "#f44336");
+      return;
+    }
     const mensagem = encodeURIComponent(`Olá ${revisitaData.nome}, tudo bem?`);
     const link = `https://wa.me/${numero}?text=${mensagem}`;
     window.open(link, "_blank");
@@ -432,17 +455,24 @@ background-color: white;
         btnWhats.addEventListener("click", conversarNoWhatsApp);
       }
 
-      inputNumero.addEventListener("input", async () => {
+      inputNumero.addEventListener("input", () => {
         if (!revisitaId) return;
-        const novoNumero = inputNumero.value.trim();
-        try {
-          await updateDoc(doc(db, 'revisita', revisitaId), { numero: novoNumero });
-          revisitaData.numero = novoNumero;
-          mostrarMensagem("Número do WhatsApp salvo!");
-        } catch (error) {
-          console.error("Erro ao salvar número:", error);
-          mostrarMensagem("Erro ao salvar número.", "#f44336");
-        }
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(async () => {
+          const novoNumero = inputNumero.value.trim();
+          if (novoNumero && !validarNumeroWhatsApp(novoNumero)) {
+            mostrarMensagem("Número de WhatsApp inválido.", "#f44336");
+            return;
+          }
+          try {
+            await updateDoc(doc(db, 'revisita', revisitaId), { numero: novoNumero });
+            revisitaData.numero = novoNumero;
+            mostrarMensagem("Número do WhatsApp salvo!");
+          } catch (error) {
+            console.error("Erro ao salvar número:", error);
+            mostrarMensagem("Erro ao salvar número.", "#f44336");
+          }
+        }, 1000); // debounce 1s
       });
 
     } catch (error) {
@@ -452,10 +482,32 @@ background-color: white;
   }
 
   carregarRevisitaSelecionada();
+
+  // Função para formatar horário no input
+  function aplicarFormatacaoHorario() {
+    const inputHorario = document.getElementById("inputHorario");
+    if (!inputHorario) return;
+
+    inputHorario.addEventListener("input", function () {
+      let valor = this.value.replace(/\D/g, ""); // Remove tudo que não for número
+
+      if (valor.length >= 3) {
+        valor = valor.slice(0, 4); // máximo 4 dígitos
+        let horas = parseInt(valor.slice(0, 2), 10);
+        let minutos = parseInt(valor.slice(2), 10);
+
+        if (horas > 23) horas = 23;
+        if (minutos > 59) minutos = 59;
+
+        const h = horas.toString().padStart(2, '0');
+        const m = minutos.toString().padStart(2, '0');
+
+        this.value = `${h}:${m}`;
+      } else {
+        this.value = valor;
+      }
+    });
+  }
 </script>
 
-
-
-</body>
-</html>
 
