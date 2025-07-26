@@ -10,24 +10,26 @@
  body {
  font-family: Arial, sans-serif;
  margin: 0;
- background: white;
+ background: #f2f2f2;
 }
   
  header {
  display: flex;
  justify-content: space-between; /* espaçamento entre logo e botão */
  align-items: center; /* alinha verticalmente */
- padding: 15px;
+ padding: 20px;
  background: #4A6DA7;
  list-style: none;
  text-decoration: none;
-}
+ border-bottom: 1px solid #4A6DA7;
+   
+ }
 
  .logo {
- color: White;
+ color: orange;
  font-weight: bold;
  text-align: center;
- font-size: 22px;
+ font-size: 25px;
 }
 
  .btn-sair {
@@ -38,7 +40,8 @@
  border-radius: 5px;
  cursor: pointer;
 font-weight: bolder;
-}
+ font-size: 16px;
+ }
 
  .btn-sair:hover {
  background-color: darkred;
@@ -50,7 +53,7 @@ font-weight: bolder;
  list-style: none;
  padding: 0;
  width: 97.1%;
- background: white;
+ background: #f2f2f2;
  overflow-x: scroll;
  border-bottom: 1px solid white;
  padding: 5px;
@@ -74,53 +77,49 @@ a {
  font-size: 15px;
 }
 
- a:hover {
- background-color: white;
- color: #4A6DA7;
- 
-} 
 
  .menu a:hover {
- color: #006400;
+ color: none;
 }
 
 .menu .icone {
  margin-right: 8px;
  width: 40px;
  height: 40px;
- fill: #4A6DA7;
+ fill: orange;
  transition: transform 0.3s, fill 0.3s;
 }
 
- .menu a:hover .icone {
- transform: scale(1.2);
- fill: #3498db;
-}
-
-
-
-
-.text {
- color: black;
- font-size: 22px;
+ .text {
+ color: #555;
+ font-size: 19px;
  font-weight: bold;
  text-align: center;
- margin-top: 30px;
- margin-bottom: 30px;
+ margin-top: 50px;
+ margin-bottom: 50px;
  margin-left: 20px;
  margin-right: 20px;
 } 
    
- .card {
- display: inline-block;
- margin-right: 100px; /* Para adicionar algum espaço entre os cards */
+
+
+
+
+.container {
+  display: flex;
+  justify-content: center;     /* Centraliza horizontalmente */
+  align-items: center;         /* Centraliza verticalmente */
+  flex-wrap: wrap;             /* Permite que quebrem para a próxima linha se não couberem */
+  gap: 31px;
+  height: 0vh;               /* Ocupa altura total da tela */
+  padding: 0px;
+  box-sizing: border-box;
 }
 
 .card {
  width: 150px;
  height: 60px;
- border: 1px solid none;
- margin: 13.80px;
+ border: 1px solid orange;
  justify-content: center;
  align-items: center;
  cursor: pointer;
@@ -142,6 +141,7 @@ a {
  color: #4A6DA7;
  margin-top: 20px;
  }
+  
 </style>
 
  <header>
@@ -189,6 +189,8 @@ a {
 
 <div class="text">Vão e façam discipulos ensinando uns aos outros</div>
 
+
+<div class="container">
 <div class="card" onclick="redirecionar('exibi designação.html')">
 <div class="texto">Designação</div>
 </div>
