@@ -17,8 +17,8 @@
   display: inline-block;
   width: 10px;
   height: 10px;
-  border-top: 2px solid #f2f2f2;
-  border-right: 2px solid #f2f2f2;
+  border-top: 2px solid orange;
+  border-right: 2px solid orange;
   transform: rotate(-130deg);
   position: absolute;
   top: 21px;
@@ -32,7 +32,7 @@
 }
 
 .text {
- color: white;
+ color: orange;
  font-size: 21px;
  font-weight: bold;
  text-align: center;
@@ -41,13 +41,13 @@
  #lista-designacoes {
  max-width: 500px;
  margin-top: 20px;
- padding: 0 15px;
+ padding: 0 12px;
 }
 
 .designacao {
  background: white;
  border: 1px solid #ddd;
- border-radius: 5px;
+ border-radius: 0px;
  padding: 16px;
  margin-bottom: 24px;
  margin-top: 50px;
@@ -95,18 +95,20 @@
 }
 
 .designacao textarea {
- width: 10%;
+ width: 90%;
  height: 500px; 
  padding: 10px;
- border: 1px solid #ccc;
- border-radius: 5px;
+ border: 0px solid white;
+ border-radius: 1px;
  font-size: 15px;
- resize: vertical;
+ margin-left: 0px;
  margin-top: 10px;
  background-color: #fefefe;
  box-sizing: border-box;
  outline: none;
- line-height: 1.6;
+ line-height: 1.7;
+
+
 }
 
 .designacao input[type="tel"] {
@@ -171,7 +173,7 @@ color: white;
  <div class="text">Minha designação</div>
  </header>
 
- <div id="lista-designacoes">Carregando designações...</div>
+<div id="lista-designacoes">Carregando designações...</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -203,7 +205,18 @@ const lista = document.getElementById("lista-designacoes");
 function criarCampoEditable(tipo, valorInicial, salvarCallback, campoNome) {
   let el;
   let salvarTimeout;
+
   const container = document.createElement("div");
+  container.style.marginBottom = "12px";
+
+  const label = document.createElement("label");
+  label.style.fontWeight = "bold";
+  label.style.display = "block";
+  label.style.marginBottom = "4px";
+  label.textContent = campoNome === "nome" ? "Nome:" :
+                      campoNome === "tema" ? "Tema:" :
+                      "";
+
   const status = document.createElement("span");
   status.style.color = "green";
   status.style.marginLeft = "8px";
@@ -220,6 +233,7 @@ function criarCampoEditable(tipo, valorInicial, salvarCallback, campoNome) {
     el.contentEditable = true;
     el.textContent = valorInicial || "";
     el.style.borderBottom = "1px dashed #ccc";
+    el.style.padding = "4px 0";
 
     if (campoNome === "nome") {
       el.style.fontWeight = "bold";
@@ -244,6 +258,7 @@ function criarCampoEditable(tipo, valorInicial, salvarCallback, campoNome) {
     salvarTimeout = setTimeout(salvar, 1000);
   });
 
+  container.appendChild(label);
   container.appendChild(el);
   container.appendChild(status);
   return container;
@@ -387,3 +402,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 </script>
+
+</body>
+</html>
+
