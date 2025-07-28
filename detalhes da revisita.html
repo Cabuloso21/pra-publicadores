@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Detalhes da Revisita</title>
 
 <style>
 body {
@@ -12,28 +11,27 @@ margin: 0;
 background-color: white;
 }
 
+
   a {
     text-decoration: none;
   }
 
-  .arrow {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-left: 3px solid #f2f2f2
-    border-bottom: 3px solid #f2f2f2;
-    margin-bottom: 10px;
-    transform: rotate(45deg);
-    position: absolute;
-    top: 21px;
-    left: 15px;
 
-
- }
+ .arrow {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid orange;
+  border-right: 2px solid orange;
+  transform: rotate(-130deg);
+  position: absolute;
+  top: 21px;
+  left: 15px;
+}
 
   header {
-    background-color: #2563eb;
-    color: white;
+    background-color: #4A6DA7;
+    color: orange;
     padding: 15px;
     border-radius: 0px;
     margin-bottom: 20px;
@@ -41,7 +39,7 @@ background-color: white;
   }
 
   header .text {
-    font-size: 1.5em;
+    font-size: 22px;
     font-weight: bold;
   }
 
@@ -55,7 +53,7 @@ background-color: white;
  }
 
   #botoes-topo button {
-    background-color: #3b82f6;
+    background-color: #4A6DA7;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -66,7 +64,7 @@ background-color: white;
   }
 
   #botoes-topo button:hover {
-    background-color: #1e40af;
+    background-color: #4A6DA7;
   }
 
   .card {
@@ -78,7 +76,7 @@ background-color: white;
 
   .card h3 {
   margin-top: 0;
-  color: black;
+  color: #4A6DA7;
   font-size: 20px;
   border-bottom: 1.50px solid #ccc;
   margin-bottom: 40px;
@@ -114,7 +112,7 @@ background-color: white;
   }
 
   #whatsContainer button {
-    background-color: #22c55e;
+    background-color: #4A6DA7;
     color: white;
     border: none;
     padding: 10px;
@@ -126,7 +124,7 @@ background-color: white;
 }
 
   #whatsContainer button:hover {
-    background-color: #15803d;
+    background-color: #4A6DA7;
   }
 
   #mensagemStatus {
@@ -169,7 +167,7 @@ background-color: white;
   }
 
   #modalConfirmacao .conteudo button {
-    background-color: #ef4444;
+    background-color: #4A6DA7;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -188,13 +186,12 @@ background-color: white;
   }
 
 </style>
-
-<a href="painel.html">
+ 
+ <a href="painel.html">
  <span class="arrow"></span>
  </a>
  </div>
 
-  
  <header>
  <div class="text">Detalhes</div>
  </header>
@@ -515,5 +512,4 @@ background-color: white;
     });
   }
 </script>
-
 
