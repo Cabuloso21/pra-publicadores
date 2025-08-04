@@ -1,152 +1,82 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>teste</title>
+<title>testando</title>
 </head>
 <body>
- 
+  <h1>testando</h1>
+
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Editar Perfil</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .titulo { font-size: 24px; margin-bottom: 10px; }
-    label { display: block; margin-top: 10px; }
-    input { width: 100%; padding: 8px; margin-top: 4px; }
-    button { margin-top: 20px; padding: 10px; }
-    .message { margin-top: 10px; }
-    .warning { color: #d35400; }
-    .success { color: #27ae60; }
-  </style>
+  <title>Alterar Email</title>
 </head>
 <body>
-
-  <header>
-    <div class="titulo">Editar Perfil</div>
-  </header>
-
-  <div class="text">Aqui você pode alterar as Informações da sua conta.</div>
-
-  <form id="form-editar">
-    <label>Nome:</label>
-    <input type="text" id="nome" required>
-
-    <label>Novo email:</label>
-    <input type="email" id="email" required>
-
-    <label>Nova senha (opcional):</label>
-    <input type="password" id="novaSenha" placeholder="Nova senha">
-
-    <label>Senha atual:</label>
-    <input type="password" id="senhaAtual" required>
-
-    <button type="button" onclick="atualizarPerfil()">Salvar alterações</button>
-
-    <p class="message warning">
-      Ao alterar seu e-mail, um link de verificação será enviado para o novo endereço.
-      As alterações só serão aplicadas após a verificação.
-    </p>
-
-    <p id="verificacaoMensagem" class="message success" style="display: none;">
-      Link de verificação enviado! Verifique seu novo e-mail para ativar a conta.
-    </p>
-  </form>
+  <h2>Alterar E-mail</h2>
+  <div id="emailChangeForm">
+    <input type="email" id="newEmail" placeholder="Novo e-mail" /><br><br>
+    <input type="password" id="currentPassword" placeholder="Senha atual" /><br><br>
+    <button onclick="updateEmail()">Salvar</button>
+  </div>
+  <p id="mensagem"></p>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      updateProfile,
-      updatePassword,
-      updateEmail,
-      sendEmailVerification,
-      EmailAuthProvider,
-      reauthenticateWithCredential,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, EmailAuthProvider, reauthenticateWithCredential, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
       authDomain: "teste-cfe69.firebaseapp.com",
+      databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
       projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.appspot.com",
+      storageBucket: "teste-cfe69.firebasestorage.app",
       messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
+      appId: "1:646579509123:web:5565c595f322cf3ba308b6",
+      measurementId: "G-81YQG8L41X"
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    let usuarioAtual = null;
+    const auth = getAuth(app);
 
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        usuarioAtual = user;
-        document.getElementById("nome").value = user.displayName || "";
-        document.getElementById("email").value = user.email || "";
-      } else {
-        window.location.href = "login.html";
-      }
-    });
+    window.updateEmail = async function () {
+      const user = auth.currentUser;
+      const newEmail = document.getElementById("newEmail").value;
+      const currentPassword = document.getElementById("currentPassword").value;
+      const mensagem = document.getElementById("mensagem");
 
-    window.atualizarPerfil = async () => {
-      const nome = document.getElementById("nome").value.trim();
-      const novoEmail = document.getElementById("email").value.trim();
-      const novaSenha = document.getElementById("novaSenha").value.trim();
-      const senhaAtual = document.getElementById("senhaAtual").value.trim();
-
-      if (!senhaAtual) {
-        alert("Digite sua senha atual para continuar.");
+      if (!user) {
+        mensagem.innerText = "Você precisa estar logado.";
         return;
       }
 
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+
       try {
-        // Reautenticar
-        const credential = EmailAuthProvider.credential(usuarioAtual.email, senhaAtual);
-        await reauthenticateWithCredential(usuarioAtual, credential);
+        // Reautentica o usuário com a senha
+        await reauthenticateWithCredential(user, credential);
 
-        // Atualizar nome, se mudou
-        if (usuarioAtual.displayName !== nome) {
-          await updateProfile(usuarioAtual, { displayName: nome });
-        }
+        // Atualiza o email
+        await updateEmail(user, newEmail);
 
-        // Atualizar senha, se informada
-        if (novaSenha !== "") {
-          await updatePassword(usuarioAtual, novaSenha);
-        }
+        // Envia o link de verificação para o novo e-mail
+        await sendEmailVerification(user);
 
-        // Atualizar e-mail, se mudou
-        if (usuarioAtual.email !== novoEmail) {
-          await updateEmail(usuarioAtual, novoEmail);
-          await sendEmailVerification(usuarioAtual);
-
-          document.getElementById("verificacaoMensagem").style.display = "block";
-          alert("Verifique seu novo e-mail para ativar a conta.");
-
-          // Encerra a sessão para forçar verificação
-          await signOut(auth);
-          setTimeout(() => {
-            window.location.href = "login.html";
-          }, 3000);
-          return;
-        }
-
-        alert("Alterações salvas com sucesso!");
+        mensagem.innerText = "E-mail atualizado. Verifique sua nova caixa de entrada para confirmar.";
       } catch (error) {
         console.error(error);
-        alert("Erro ao atualizar perfil: " + error.message);
+        mensagem.innerText = `Erro: ${error.message}`;
       }
     };
   </script>
-
 </body>
 </html>
 
 
+
+
+          
