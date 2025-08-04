@@ -1,162 +1,77 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>detalhes do anúncio sem ID</title>
+<title>teste</title>
+</head>
+<body>
+ 
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editar Perfil</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .titulo { font-size: 24px; margin-bottom: 10px; }
+    label { display: block; margin-top: 10px; }
+    input { width: 100%; padding: 8px; margin-top: 4px; }
+    button { margin-top: 20px; padding: 10px; }
+    .message { margin-top: 10px; }
+    .warning { color: #d35400; }
+    .success { color: #27ae60; }
+  </style>
 </head>
 <body>
 
-<style>
-body {
-margin: 0px;
-font-family: Roboto, sans-serif;
-}
- 
-.arrow {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-top: 2px solid orange;
-  border-right: 2px solid orange;
-  transform: rotate(-130deg);
-  position: absolute;
-  top: 21px;
-  left: 15px;
-}
+  <header>
+    <div class="titulo">Editar Perfil</div>
+  </header>
 
+  <div class="text">Aqui você pode alterar as Informações da sua conta.</div>
 
-
-
- header {
- background: #4A6DA7;
- padding: 15px;
- border-bottom: 1px solid #ccc;
-}
-
-.titulo {
- text-align: center;
- color: orange;
- font-size: 20px;
- font-weight: bold;
-}
-
-.text {
- text-align: center;
- color: #555;
- font-size: 16px;
- font-weight: none;
- margin-top: 30px;
- margin-bottom: 30px;
- margin-left: 20px;
- margin-right: 30px;
-}
-
- .input-group {
- margin-bottom: 20px;
-}
-
- input {
- width: 82.50%;
- padding: 15px;
- margin-left: 15px;
- border: 1px solid #ccc;
- border-radius: 4px;
- margin-top: 10px;
- margin-bottom: 10px;
- font-size: 15px;
-}
-    
- label {
- color: black;
- margin-left: 15px;   
- font-weight: bold;
-}
-
- button {
- padding: 15px;
- background: #4A6DA7;
- color: white;
- border: none;
- cursor: pointer;
- border-radius: 4px;
- margin-left: 30%;
- margin-bottom: 50px;
- margin-top: 20px;
- font-size: 15px;
- font-weight: bold;
-}
-
-.btn:hover {
- background-color: #45a049;
-}
-
-.message {
- margin-top: 10px;
- padding: 10px;
- border-radius: 4px;
- font-size: 15px;
-  
-
-}
-    
-.success {
- background-color: #d4edda;
- color: #155724;
-}
-    
-.warning {
- background-color: #fff3cd;
- color: #856404;
- margin-left: 20px;
- margin-right: 20px;
-}
-  
-</style>
- </head>
- <body>
- 
- <a href="painel.html">
- <span class="arrow"></span>
- </a>
- </div>
-
- <header>
- <div class="titulo">Editar Perfil</div>
- </header>
-  
- <div class="text">Aqui você pode alterar as Informações da sua conta.</div>
- </div>
-
- <form id="form-editar">
+  <form id="form-editar">
     <label>Nome:</label>
     <input type="text" id="nome" required>
 
-    <label>Email:</label>
+    <label>Novo email:</label>
     <input type="email" id="email" required>
 
-    <label>Senha:</label>
-    <input type="password" id="senha" placeholder="Nova senha (opcional)">
+    <label>Nova senha (opcional):</label>
+    <input type="password" id="novaSenha" placeholder="Nova senha">
+
+    <label>Senha atual:</label>
+    <input type="password" id="senhaAtual" required>
 
     <button type="button" onclick="atualizarPerfil()">Salvar alterações</button>
 
     <p class="message warning">
-      Ao alterar seu e-mail, um link de verificação será enviado. as alterações só serão aplicadas após a verificação.
+      Ao alterar seu e-mail, um link de verificação será enviado para o novo endereço.
+      As alterações só serão aplicadas após a verificação.
     </p>
 
-    <button type="button" id="reenviarVerificacao" style="display:none;" onclick="reenviarEmailVerificacao()">
-      Reenviar link de verificação
-    </button>
-
     <p id="verificacaoMensagem" class="message success" style="display: none;">
-      Link de verificação reenviado com sucesso! Verifique seu e-mail.
+      Link de verificação enviado! Verifique seu novo e-mail para ativar a conta.
     </p>
   </form>
 
-  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, updateProfile, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      updateProfile,
+      updatePassword,
+      updateEmail,
+      sendEmailVerification,
+      EmailAuthProvider,
+      reauthenticateWithCredential,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
@@ -169,7 +84,6 @@ font-family: Roboto, sans-serif;
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth();
-
     let usuarioAtual = null;
 
     onAuthStateChanged(auth, user => {
@@ -177,57 +91,62 @@ font-family: Roboto, sans-serif;
         usuarioAtual = user;
         document.getElementById("nome").value = user.displayName || "";
         document.getElementById("email").value = user.email || "";
-
-        if (!user.emailVerified) {
-          document.getElementById("reenviarVerificacao").style.display = "inline-block";
-        }
       } else {
         window.location.href = "login.html";
       }
     });
 
     window.atualizarPerfil = async () => {
-      const nome = document.getElementById("nome").value;
-      const novoEmail = document.getElementById("email").value;
-      const novaSenha = document.getElementById("senha").value;
+      const nome = document.getElementById("nome").value.trim();
+      const novoEmail = document.getElementById("email").value.trim();
+      const novaSenha = document.getElementById("novaSenha").value.trim();
+      const senhaAtual = document.getElementById("senhaAtual").value.trim();
+
+      if (!senhaAtual) {
+        alert("Digite sua senha atual para continuar.");
+        return;
+      }
 
       try {
+        // Reautenticar
+        const credential = EmailAuthProvider.credential(usuarioAtual.email, senhaAtual);
+        await reauthenticateWithCredential(usuarioAtual, credential);
+
+        // Atualizar nome, se mudou
         if (usuarioAtual.displayName !== nome) {
           await updateProfile(usuarioAtual, { displayName: nome });
         }
 
-        if (usuarioAtual.email !== novoEmail) {
-          await updateEmail(usuarioAtual, novoEmail);
-          await usuarioAtual.sendEmailVerification();
-          alert("Verifique seu novo e-mail para concluir a alteração.");
-          setTimeout(() => {
-            window.location.href = "login.html";
-          }, 4000);
-          return;
+        // Atualizar senha, se informada
+        if (novaSenha !== "") {
+          await updatePassword(usuarioAtual, novaSenha);
         }
 
-        if (novaSenha.trim() !== "") {
-          await updatePassword(usuarioAtual, novaSenha);
+        // Atualizar e-mail, se mudou
+        if (usuarioAtual.email !== novoEmail) {
+          await updateEmail(usuarioAtual, novoEmail);
+          await sendEmailVerification(usuarioAtual);
+
+          document.getElementById("verificacaoMensagem").style.display = "block";
+          alert("Verifique seu novo e-mail para ativar a conta.");
+
+          // Encerra a sessão para forçar verificação
+          await signOut(auth);
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 3000);
+          return;
         }
 
         alert("Alterações salvas com sucesso!");
       } catch (error) {
+        console.error(error);
         alert("Erro ao atualizar perfil: " + error.message);
       }
     };
-
-    window.reenviarEmailVerificacao = async () => {
-      try {
-        await usuarioAtual.sendEmailVerification();
-        const msg = document.getElementById("verificacaoMensagem");
-        msg.style.display = "block";
-        setTimeout(() => {
-          msg.style.display = "none";
-        }, 5000);
-      } catch (error) {
-        alert("Erro ao reenviar verificação: " + error.message);
-      }
-    };
   </script>
+
 </body>
 </html>
+
+
