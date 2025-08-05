@@ -3,73 +3,228 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>testando</title>
+<title>detalhes do anúncio sem ID</title>
 </head>
 <body>
-  <h1>testando</h1>
+
+<style>
+body {
+margin: 0px;
+font-family: Roboto, sans-serif;
+}
+ 
+.arrow {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid orange;
+  border-right: 2px solid orange;
+  transform: rotate(-130deg);
+  position: absolute;
+  top: 21px;
+  left: 15px;
+}
 
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Alterar Email</title>
-</head>
-<body>
-  <h2>Alterar E-mail</h2>
-  <div id="emailChangeForm">
-    <input type="email" id="newEmail" placeholder="Novo e-mail" /><br><br>
-    <input type="password" id="currentPassword" placeholder="Senha atual" /><br><br>
-    <button onclick="updateEmail()">Salvar</button>
-  </div>
-  <p id="mensagem"></p>
 
+
+ header {
+ background: #4A6DA7;
+ padding: 15px;
+ border-bottom: 1px solid #ccc;
+}
+
+.titulo {
+ text-align: center;
+ color: orange;
+ font-size: 20px;
+ font-weight: bold;
+}
+
+.text {
+ text-align: center;
+ color: #555;
+ font-size: 16px;
+ font-weight: none;
+ margin-top: 30px;
+ margin-bottom: 30px;
+ margin-left: 20px;
+ margin-right: 30px;
+}
+
+ .input-group {
+ margin-bottom: 20px;
+}
+
+ input {
+ width: 82.50%;
+ padding: 15px;
+ margin-left: 15px;
+ border: 1px solid #ccc;
+ border-radius: 4px;
+ margin-top: 10px;
+ margin-bottom: 10px;
+ font-size: 15px;
+}
+    
+ label {
+ color: black;
+ margin-left: 15px;   
+ font-weight: bold;
+}
+
+ button {
+ padding: 15px;
+ background: #4A6DA7;
+ color: white;
+ border: none;
+ cursor: pointer;
+ border-radius: 4px;
+ margin-left: 30%;
+ margin-bottom: 50px;
+ margin-top: 20px;
+ font-size: 15px;
+ font-weight: bold;
+}
+
+.btn:hover {
+ background-color: #45a049;
+}
+
+.message {
+ margin-top: 10px;
+ padding: 10px;
+ border-radius: 4px;
+ font-size: 15px;
+  
+
+}
+    
+.success {
+ background-color: #d4edda;
+ color: #155724;
+}
+    
+.warning {
+ background-color: #fff3cd;
+ color: #856404;
+ margin-left: 20px;
+ margin-right: 20px;
+}
+  
+</style>
+ </head>
+ <body>
+ 
+ <a href="painel.html">
+ <span class="arrow"></span>
+ </a>
+ </div>
+
+ <header>
+ <div class="titulo">Editar Perfil</div>
+ </header>
+  
+ <div class="text">Aqui você pode alterar as Informações da sua conta.</div>
+ </div>
+
+ <form id="form-editar">
+    <label>Nome:</label>
+    <input type="text" id="nome" required>
+
+    <label>Email:</label>
+    <input type="email" id="email" required>
+
+    <label>Senha:</label>
+    <input type="password" id="senha" placeholder="Nova senha (opcional)">
+
+    <button type="button" onclick="atualizarPerfil()">Salvar alterações</button>
+
+    <p class="message warning">
+      Ao alterar seus dados, um link de verificação será enviado para seu email. as alterações só serão aplicadas após a verificação.</p>
+
+    <button type="button" id="reenviarVerificacao" style="display:none;" onclick="reenviarEmailVerificacao()">
+      Reenviar link de verificação
+    </button>
+
+    <p id="verificacaoMensagem" class="message success" style="display: none;">
+      Link de verificação reenviado com sucesso! Verifique seu e-mail.
+    </p>
+  </form>
+
+  <!-- Firebase -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getAuth, EmailAuthProvider, reauthenticateWithCredential, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, updateProfile, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
       authDomain: "teste-cfe69.firebaseapp.com",
-      databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
       projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.firebasestorage.app",
+      storageBucket: "teste-cfe69.appspot.com",
       messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:5565c595f322cf3ba308b6",
-      measurementId: "G-81YQG8L41X"
+      appId: "1:646579509123:web:dd23b863dd8c54bca308b6",
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const auth = getAuth();
 
-    window.updateEmail = async function () {
-      const user = auth.currentUser;
-      const newEmail = document.getElementById("newEmail").value;
-      const currentPassword = document.getElementById("currentPassword").value;
-      const mensagem = document.getElementById("mensagem");
+    let usuarioAtual = null;
 
-      if (!user) {
-        mensagem.innerText = "Você precisa estar logado.";
-        return;
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        usuarioAtual = user;
+        document.getElementById("nome").value = user.displayName || "";
+        document.getElementById("email").value = user.email || "";
+
+        if (!user.emailVerified) {
+          document.getElementById("reenviarVerificacao").style.display = "inline-block";
+        }
+      } else {
+        window.location.href = "login.html";
       }
+    });
 
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    window.atualizarPerfil = async () => {
+      const nome = document.getElementById("nome").value;
+      const novoEmail = document.getElementById("email").value;
+      const novaSenha = document.getElementById("senha").value;
 
       try {
-        // Reautentica o usuário com a senha
-        await reauthenticateWithCredential(user, credential);
+        if (usuarioAtual.displayName !== nome) {
+          await updateProfile(usuarioAtual, { displayName: nome });
+        }
 
-        // Atualiza o email
-        await updateEmail(user, newEmail);
+        if (usuarioAtual.email !== novoEmail) {
+          await updateEmail(usuarioAtual, novoEmail);
+          await usuarioAtual.sendEmailVerification();
+          alert("Verifique seu novo e-mail para concluir a alteração.");
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 4000);
+          return;
+        }
 
-        // Envia o link de verificação para o novo e-mail
-        await sendEmailVerification(user);
+        if (novaSenha.trim() !== "") {
+          await updatePassword(usuarioAtual, novaSenha);
+        }
 
-        mensagem.innerText = "E-mail atualizado. Verifique sua nova caixa de entrada para confirmar.";
+        alert("Alterações salvas com sucesso!");
       } catch (error) {
-        console.error(error);
-        mensagem.innerText = `Erro: ${error.message}`;
+        alert("Erro ao atualizar perfil: " + error.message);
+      }
+    };
+
+    window.reenviarEmailVerificacao = async () => {
+      try {
+        await usuarioAtual.sendEmailVerification();
+        const msg = document.getElementById("verificacaoMensagem");
+        msg.style.display = "block";
+        setTimeout(() => {
+          msg.style.display = "none";
+        }, 5000);
+      } catch (error) {
+        alert("Erro ao reenviar verificação: " + error.message);
       }
     };
   </script>
@@ -79,4 +234,5 @@
 
 
 
-          
+
+      
