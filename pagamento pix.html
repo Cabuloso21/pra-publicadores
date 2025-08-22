@@ -1,96 +1,52 @@
-<div id="saida"></div>
-<div id="status-pagamento" style="margin-top:10px; font-weight:bold;"></div>
+<div id="status"></div>
+
+<form id="meuFormulario">
+  <input type="text" placeholder="Seu nome" disabled />
+  <input type="email" placeholder="Seu email" disabled />
+  <button type="submit" disabled>Enviar</button>
+</form>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// 🔑 Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyCWH18dhHz0EBY5Ycc4wjZ1H6AlO-51sho",
-  authDomain: "teste1-66092.firebaseapp.com",
-  projectId: "teste1-66092",
-  storageBucket: "teste1-66092.firebasestorage.app",
-  messagingSenderId: "517435649522",
-  appId: "1:517435649522:web:a6826c13b1e2c5062acf6b",
-  measurementId: "G-3GVBBV8W7C"
-};
+  // 🔑 Sua configuração do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.firebasestorage.app",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:5565c595f322cf3ba308b6",
+    measurementId: "G-81YQG8L41X"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  // Inicializa Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-const saida = document.getElementById("saida");
-const statusDiv = document.getElementById("status-pagamento");
+  const statusDiv = document.getElementById("status");
 
-// Usuário logado (ou identificador único)
-const usuarioId = "usuario123";
+  // 🔹 Identificador do usuário que você quer controlar
+  const userId = "usuario123";  
 
-// ===================== Formulário bloqueado =====================
-const form = document.createElement("form");
-form.id = "formularioExemplo";
+  // Escuta em tempo real as mudanças no Firestore
+  onSnapshot(doc(db, "usuarios", userId), (docSnap) => {
+    if (docSnap.exists()) {
+      const dados = docSnap.data();
 
-const campoNome = document.createElement("input");
-campoNome.placeholder = "Nome";
-campoNome.disabled = true;
+      if (dados.pagamento === true) {
+        // ✅ Desbloqueia o formulário
+        document.querySelectorAll("#meuFormulario input, #meuFormulario button")
+          .forEach(el => el.removeAttribute("disabled"));
 
-const campoProduto = document.createElement("input");
-campoProduto.placeholder = "Produto";
-campoProduto.disabled = true;
-
-const btnEnviar = document.createElement("button");
-btnEnviar.textContent = "Enviar formulário";
-btnEnviar.type = "submit";
-btnEnviar.disabled = true;
-
-form.appendChild(campoNome);
-form.appendChild(campoProduto);
-form.appendChild(btnEnviar);
-
-form.addEventListener("submit", async e=>{
-  e.preventDefault();
-  alert("Formulário enviado com sucesso!");
-  form.reset();
-});
-
-saida.appendChild(form);
-
-// ===================== Botão de pagamento Pix =====================
-const btnPix = document.createElement("button");
-btnPix.textContent = "💳 Pagar via Pix";
-btnPix.style.padding = "10px 15px";
-btnPix.style.cursor = "pointer";
-
-btnPix.addEventListener("click", async () => {
-  // Código Pix do usuário
-  const chavePix = "00020126580014BR.GOV.BCB.PIX0136e7da7da8-fc3a-4616-80d1-c4d1567e166752040000530398654044.005802BR5925Jamily Allyson Menezes Si6009SAO PAULO62140510wgAmrOxuDA6304E413";
-
-  saida.innerHTML = `<p>💳 Copie o código Pix abaixo e realize o pagamento:</p>
-                      <input value="${chavePix}" readonly style="width:80%; padding:10px">`;
-  statusDiv.textContent = "Aguardando pagamento...";
-
-  // Cria documento no Firestore para este pagamento
-  await setDoc(doc(db, "pagamentos", usuarioId), {
-    aprovado: false,
-    criadoEm: serverTimestamp()
-  });
-
-  // 🔹 Observa alterações no Firestore
-  onSnapshot(doc(db, "pagamentos", usuarioId), (docSnap) => {
-    if(docSnap.exists()){
-      const data = docSnap.data();
-      if(data.aprovado){
-        desbloquearFormulario(form.id);
+        statusDiv.textContent = "✅ Pagamento aprovado, formulário desbloqueado!";
+      } else {
+        statusDiv.textContent = "⏳ Pagamento ainda não aprovado.";
       }
+    } else {
+      statusDiv.textContent = "❌ Documento do usuário não encontrado.";
     }
   });
-});
-
-saida.appendChild(btnPix);
-
-// ===================== Função desbloquear formulário =====================
-function desbloquearFormulario(formId){
-  const form = document.getElementById(formId);
-  form.querySelectorAll("input,textarea,button").forEach(el => el.disabled = false);
-  statusDiv.textContent = "Pagamento aprovado! Formulário desbloqueado ✅";
-}
 </script>
