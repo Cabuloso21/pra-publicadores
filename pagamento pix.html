@@ -1,16 +1,19 @@
+
 <div id="status"></div>
 
 <form id="meuFormulario">
-  <input type="text" placeholder="Seu nome" disabled />
-  <input type="email" placeholder="Seu email" disabled />
+  <input type="text" placeholder="Nome" disabled />
+  <input type="email" placeholder="Email" disabled />
   <button type="submit" disabled>Enviar</button>
 </form>
 
+<button id="gerarPagamento">💳 Gerar Pagamento</button>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-  // 🔑 Sua configuração do Firebase
+  // 🔑 Configuração Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
     authDomain: "teste-cfe69.firebaseapp.com",
@@ -22,31 +25,54 @@
     measurementId: "G-81YQG8L41X"
   };
 
-  // Inicializa Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   const statusDiv = document.getElementById("status");
+  const form = document.getElementById("meuFormulario");
+  const btnPagamento = document.getElementById("gerarPagamento");
 
-  // 🔹 Identificador do usuário que você quer controlar
-  const userId = "usuario123";  
+  // ID do usuário
+  const userId = "usuario123";
 
-  // Escuta em tempo real as mudanças no Firestore
+  // =================== Cria documento do usuário ===================
+  async function criarUsuario() {
+    await setDoc(doc(db, "usuarios", userId), {
+      pagamento: false,
+      criadoEm: serverTimestamp()
+    });
+    statusDiv.textContent = "Usuário criado. Formulário bloqueado até o pagamento.";
+  }
+
+  // =================== Escuta mudanças no pagamento ===================
   onSnapshot(doc(db, "usuarios", userId), (docSnap) => {
     if (docSnap.exists()) {
-      const dados = docSnap.data();
-
-      if (dados.pagamento === true) {
-        // ✅ Desbloqueia o formulário
-        document.querySelectorAll("#meuFormulario input, #meuFormulario button")
-          .forEach(el => el.removeAttribute("disabled"));
-
-        statusDiv.textContent = "✅ Pagamento aprovado, formulário desbloqueado!";
+      const data = docSnap.data();
+      if (data.pagamento === true) {
+        // Desbloqueia o formulário
+        form.querySelectorAll("input, button").forEach(el => el.removeAttribute("disabled"));
+        statusDiv.textContent = "✅ Pagamento aprovado! Formulário desbloqueado.";
       } else {
-        statusDiv.textContent = "⏳ Pagamento ainda não aprovado.";
+        form.querySelectorAll("input, button").forEach(el => el.setAttribute("disabled", true));
+        statusDiv.textContent = "⏳ Pagamento pendente. Formulário bloqueado.";
       }
-    } else {
-      statusDiv.textContent = "❌ Documento do usuário não encontrado.";
     }
+  });
+
+  // =================== Botão simula geração de pagamento ===================
+  btnPagamento.addEventListener("click", async () => {
+    // Aqui você pode gerar o Pix ou Mercado Pago
+    const chavePix = "00020126580014BR.GOV.BCB.PIX...";
+    statusDiv.textContent = `💳 Copie o código Pix: ${chavePix}`;
+
+    // Se quiser, já cria o documento do usuário se não existir
+    await criarUsuario();
+  });
+
+  // =================== Submissão do formulário ===================
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert("Formulário enviado com sucesso!");
+    form.reset();
   });
 </script>
