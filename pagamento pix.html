@@ -1,4 +1,3 @@
-
 <div id="status"></div>
 
 <form id="meuFormulario">
@@ -10,69 +9,75 @@
 <button id="gerarPagamento">💳 Gerar Pagamento</button>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-  // 🔑 Configuração Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-    authDomain: "teste-cfe69.firebaseapp.com",
-    databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
-    projectId: "teste-cfe69",
-    storageBucket: "teste-cfe69.firebasestorage.app",
-    messagingSenderId: "646579509123",
-    appId: "1:646579509123:web:5565c595f322cf3ba308b6",
-    measurementId: "G-81YQG8L41X"
-  };
+// 🔑 Configuração Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+  authDomain: "teste-cfe69.firebaseapp.com",
+  databaseURL: "https://teste-cfe69-default-rtdb.firebaseio.com",
+  projectId: "teste-cfe69",
+  storageBucket: "teste-cfe69.firebasestorage.app",
+  messagingSenderId: "646579509123",
+  appId: "1:646579509123:web:5565c595f322cf3ba308b6",
+  measurementId: "G-81YQG8L41X"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  const statusDiv = document.getElementById("status");
-  const form = document.getElementById("meuFormulario");
-  const btnPagamento = document.getElementById("gerarPagamento");
+const statusDiv = document.getElementById("status");
+const form = document.getElementById("meuFormulario");
+const btnPagamento = document.getElementById("gerarPagamento");
 
-  // ID do usuário
-  const userId = "usuario123";
+// ID do usuário
+const userId = "usuario123";
 
-  // =================== Cria documento do usuário ===================
-  async function criarUsuario() {
-    await setDoc(doc(db, "usuarios", userId), {
-      pagamento: false,
+// ===================== Cria ou atualiza documento de pagamento =====================
+async function criarOuAtualizarPagamento() {
+  try {
+    await setDoc(doc(db, "pagamentos", userId), {
+      aprovado: false,
       criadoEm: serverTimestamp()
-    });
-    statusDiv.textContent = "Usuário criado. Formulário bloqueado até o pagamento.";
+    }, { merge: true }); // merge:true mantém campos existentes
+    statusDiv.textContent = "Documento de pagamento criado com sucesso!";
+  } catch (err) {
+    statusDiv.textContent = "Erro ao criar pagamento: " + err.message;
+    console.error(err);
   }
+}
 
-  // =================== Escuta mudanças no pagamento ===================
-  onSnapshot(doc(db, "usuarios", userId), (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (data.pagamento === true) {
-        // Desbloqueia o formulário
-        form.querySelectorAll("input, button").forEach(el => el.removeAttribute("disabled"));
-        statusDiv.textContent = "✅ Pagamento aprovado! Formulário desbloqueado.";
-      } else {
-        form.querySelectorAll("input, button").forEach(el => el.setAttribute("disabled", true));
-        statusDiv.textContent = "⏳ Pagamento pendente. Formulário bloqueado.";
-      }
+// ===================== Observa alterações no pagamento =====================
+onSnapshot(doc(db, "pagamentos", userId), (docSnap) => {
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    if (data.aprovado) {
+      form.querySelectorAll("input, button").forEach(el => el.removeAttribute("disabled"));
+      statusDiv.textContent = "✅ Pagamento aprovado! Formulário desbloqueado.";
+    } else {
+      form.querySelectorAll("input, button").forEach(el => el.setAttribute("disabled", true));
+      statusDiv.textContent = "⏳ Pagamento pendente. Formulário bloqueado.";
     }
-  });
+  } else {
+    statusDiv.textContent = "❌ Documento de pagamento não encontrado.";
+  }
+});
 
-  // =================== Botão simula geração de pagamento ===================
-  btnPagamento.addEventListener("click", async () => {
-    // Aqui você pode gerar o Pix ou Mercado Pago
-    const chavePix = "00020126580014BR.GOV.BCB.PIX...";
-    statusDiv.textContent = `💳 Copie o código Pix: ${chavePix}`;
+// ===================== Botão gerar pagamento =====================
+btnPagamento.addEventListener("click", async () => {
+  const chavePix = "00020126580014BR.GOV.BCB.PIX..."; // Coloque sua chave Pix real
+  statusDiv.textContent = `💳 Copie o código Pix: ${chavePix}`;
 
-    // Se quiser, já cria o documento do usuário se não existir
-    await criarUsuario();
-  });
+  await criarOuAtualizarPagamento();
+});
 
-  // =================== Submissão do formulário ===================
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    alert("Formulário enviado com sucesso!");
-    form.reset();
-  });
+// ===================== Submissão do formulário =====================
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  alert("Formulário enviado com sucesso!");
+  form.reset();
+});
 </script>
+
+
