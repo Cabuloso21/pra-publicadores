@@ -1,18 +1,19 @@
-<div id="status"></div>
+<div id="saida"></div>
+<div id="status-pagamento" style="margin-top:10px; font-weight:bold;"></div>
 
-<form id="meuFormulario">
-  <input type="text" placeholder="Nome" disabled />
-  <input type="email" placeholder="Email" disabled />
-  <button type="submit" disabled>Enviar</button>
-</form>
-
-<button id="gerarPagamento">💳 Gerar Pagamento</button>
+<!-- Modal do checkout Mercado Pago -->
+<div id="mp-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+  <div id="mp-container" style="background:white; padding:20px; border-radius:10px; width:400px; max-width:90%; position:relative;">
+    <button id="mp-close" style="position:absolute; top:10px; right:10px; cursor:pointer;">✖️</button>
+    <div id="mp-checkout"></div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// 🔑 Configuração Firebase
+// 🔑 Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
   authDomain: "teste-cfe69.firebaseapp.com",
@@ -27,57 +28,134 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const statusDiv = document.getElementById("status");
-const form = document.getElementById("meuFormulario");
-const btnPagamento = document.getElementById("gerarPagamento");
+const saida = document.getElementById("saida");
+const statusDiv = document.getElementById("status-pagamento");
+const mpModal = document.getElementById("mp-modal");
+const mpClose = document.getElementById("mp-close");
+const mpCheckoutDiv = document.getElementById("mp-checkout");
 
-// ID do usuário
-const userId = "usuario123";
+const usuarioId = "usuario123"; // ID do usuário logado ou identificador único
 
-// ===================== Cria ou atualiza documento de pagamento =====================
-async function criarOuAtualizarPagamento() {
-  try {
-    await setDoc(doc(db, "pagamentos", userId), {
-      aprovado: false,
-      criadoEm: serverTimestamp()
-    }, { merge: true }); // merge:true mantém campos existentes
-    statusDiv.textContent = "Documento de pagamento criado com sucesso!";
-  } catch (err) {
-    statusDiv.textContent = "Erro ao criar pagamento: " + err.message;
-    console.error(err);
-  }
-}
+// ===================== Formulário bloqueado =====================
+const form = document.createElement("form");
+form.id = "formularioExemplo";
 
-// ===================== Observa alterações no pagamento =====================
-onSnapshot(doc(db, "pagamentos", userId), (docSnap) => {
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    if (data.aprovado) {
-      form.querySelectorAll("input, button").forEach(el => el.removeAttribute("disabled"));
-      statusDiv.textContent = "✅ Pagamento aprovado! Formulário desbloqueado.";
-    } else {
-      form.querySelectorAll("input, button").forEach(el => el.setAttribute("disabled", true));
-      statusDiv.textContent = "⏳ Pagamento pendente. Formulário bloqueado.";
-    }
-  } else {
-    statusDiv.textContent = "❌ Documento de pagamento não encontrado.";
-  }
-});
+const campoNome = document.createElement("input");
+campoNome.placeholder = "Nome";
+campoNome.disabled = true;
 
-// ===================== Botão gerar pagamento =====================
-btnPagamento.addEventListener("click", async () => {
-  const chavePix = "00020126580014BR.GOV.BCB.PIX..."; // Coloque sua chave Pix real
-  statusDiv.textContent = `💳 Copie o código Pix: ${chavePix}`;
+const campoProduto = document.createElement("input");
+campoProduto.placeholder = "Produto";
+campoProduto.disabled = true;
 
-  await criarOuAtualizarPagamento();
-});
+const btnEnviar = document.createElement("button");
+btnEnviar.textContent = "Enviar formulário";
+btnEnviar.type = "submit";
+btnEnviar.disabled = true;
 
-// ===================== Submissão do formulário =====================
-form.addEventListener("submit", (e) => {
+form.appendChild(campoNome);
+form.appendChild(campoProduto);
+form.appendChild(btnEnviar);
+
+form.addEventListener("submit", e => {
   e.preventDefault();
   alert("Formulário enviado com sucesso!");
   form.reset();
 });
-</script>
 
+saida.appendChild(form);
+
+// ===================== Observa pagamentos no Firestore =====================
+onSnapshot(doc(db, "pagamentos", usuarioId), docSnap => {
+  if(docSnap.exists()){
+    const data = docSnap.data();
+    if(data.aprovado){
+      desbloquearFormulario(form.id);
+      mpModal.style.display = "none";
+    } else {
+      statusDiv.textContent = "⏳ Pagamento pendente...";
+      form.querySelectorAll("input,button").forEach(el => el.disabled = true);
+    }
+  }
+});
+
+// ===================== Botões de pagamento =====================
+const btnPix = document.createElement("button");
+btnPix.textContent = "💳 Pagar via Pix";
+btnPix.style.marginRight = "10px";
+btnPix.style.padding = "10px 15px";
+btnPix.style.cursor = "pointer";
+
+const btnMP = document.createElement("button");
+btnMP.textContent = "💵 Pagar via Mercado Pago";
+btnMP.style.padding = "10px 15px";
+btnMP.style.cursor = "pointer";
+
+saida.appendChild(btnPix);
+saida.appendChild(btnMP);
+
+// ===================== Botão Pix =====================
+btnPix.addEventListener("click", async () => {
+  const chavePix = "00020126580014BR.GOV.BCB.PIX0136e7da7da8-fc3a-4616-80d1-c4d1567e166752040000530398654044.005802BR5925Jamily Allyson Menezes Si6009SAO PAULO62140510wgAmrOxuDA6304E413";
+  saida.innerHTML += `<p>💳 Copie o código Pix abaixo e realize o pagamento:</p>
+                      <input value="${chavePix}" readonly style="width:80%; padding:10px">`;
+  statusDiv.textContent = "⏳ Aguardando pagamento via Pix...";
+
+  // Cria documento Firestore para Pix
+  await setDoc(doc(db, "pagamentos", usuarioId), { aprovado: false, criadoEm: serverTimestamp() }, { merge: true });
+
+  // Observa alteração
+  onSnapshot(doc(db, "pagamentos", usuarioId), docSnap => {
+    if(docSnap.exists() && docSnap.data().aprovado){
+      desbloquearFormulario(form.id);
+      statusDiv.textContent = "✅ Pagamento via Pix aprovado! Formulário desbloqueado.";
+    }
+  });
+});
+
+// ===================== Botão Mercado Pago =====================
+mpClose.addEventListener("click", () => mpModal.style.display = "none");
+
+btnMP.addEventListener("click", async () => {
+  mpModal.style.display = "flex";
+  statusDiv.textContent = "🔔 Criando pagamento Mercado Pago...";
+
+  // Cria documento Firestore
+  await setDoc(doc(db, "pagamentos", usuarioId), { aprovado: false, criadoEm: serverTimestamp() }, { merge: true });
+
+  // Chama backend Node.js para gerar preference_id
+  const res = await fetch("http://localhost:3000/criar-pagamento", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ usuario: usuarioId, valor: 50, descricao: "Acesso Premium" })
+  });
+  const data = await res.json(); // data.id = preference_id
+
+  // Carrega SDK Mercado Pago
+  if(!window.MercadoPago){
+    const mpScript = document.createElement("script");
+    mpScript.src = "https://sdk.mercadopago.com/js/v2";
+    mpScript.onload = () => renderCheckout(data.id);
+    document.body.appendChild(mpScript);
+  } else {
+    renderCheckout(data.id);
+  }
+});
+
+// ===================== Renderiza checkout Mercado Pago =====================
+function renderCheckout(preferenceId){
+  const mp = new MercadoPago("TEST-58386062-5f31-4b3c-8ea9-2cd9098cbfb4", { locale: 'pt-BR' });
+  mp.checkout({
+    preference: { id: preferenceId },
+    render: { container: "#mp-checkout", label: "Concluir Pagamento" }
+  });
+}
+
+// ===================== Função desbloquear formulário =====================
+function desbloquearFormulario(formId){
+  const form = document.getElementById(formId);
+  form.querySelectorAll("input,textarea,button").forEach(el => el.disabled = false);
+  statusDiv.textContent = "✅ Formulário desbloqueado após pagamento!";
+}
+</script>
 
