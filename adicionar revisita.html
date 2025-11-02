@@ -38,16 +38,7 @@
  font-size: 20px;
 }
 
- input, textarea {
- width: 85%;
- padding: 16px;
- margin: 15.0px;
- border-radius: 4px;
- border: 1px solid #ccc;
- margin-left: 16px;
- font-size: 15px;
-}
-    
+ 
  button {
  width: 40%;
  padding: 15px;
@@ -58,13 +49,15 @@
  border-radius: 4px;
  margin-left: 30%;
  margin-bottom: 50px;
+ margin-top: 30px;
  font-size: 16px;
  font-weight: bold;
 }
 
  button:hover {
  background-color: #218838;
-}
+} 
+ 
  
 .message {
  margin-top: 15px;
@@ -72,6 +65,38 @@
  color: green;
 }
   
+ #form-anuncio {
+    display: block;
+    max-width: 400px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+   margin-top: 50px;
+
+ }
+
+  #form-anuncio label {
+    display: block;
+    margin-top: 25px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  #form-anuncio input {
+    width: 100%;
+    padding: 15px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  #form-anuncio input:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 3px #007BFF;
+  }
+
  </style>
  </head>
  <body>
@@ -86,15 +111,31 @@
 </header>
 
 <form id="form-anuncio">
-  <input type="text" id="nome" placeholder="Nome da revisita" required />
-  <input type="text" id="tema" placeholder="Tema" required />
-  <input type="text" id="textoBiblia" placeholder="Texto da Bíblia" required />
-  <input type="text" id="segundaRevisita" placeholder="2ª Revisita" required />
-  <input type="text" id="dia" placeholder="Dia" required />
-  <input type="text" id="horario" placeholder="Horário" maxlength="5" required />
-  <input type="text" id="endereco" placeholder="Endereço" required />
-  <input type="number" id="numeroCasa" placeholder="Número da casa" required />
-  <button type="submit">Finalizar</button>
+  <label for="nome">Nome da revisita:</label>
+  <input type="text" id="nome" required />
+  
+<label for="nome">Tema:</label>
+  <input type="text" id="tema" required />
+  
+<label for="nome">Texto da bíblia:</label>
+ <input type="text" id="textoBiblia" required />
+  
+<label for="nome">2 Revisita:</label>
+ <input type="text" id="segundaRevisita" required />
+  
+<label for="nome">Dia:</label>
+ <input type="text" id="dia" required />
+  
+<label for="nome">Horário:</label>
+ <input type="text" id="horario" required />
+  
+<label for="nome">Endereço:</label>
+ <input type="text" id="endereco" required />
+  
+<label for="nome">Número da casa:</label>
+ <input type="number" id="numeroCasa" required />
+  
+ <button type="submit">Finalizar</button>
   <p class="message" id="mensagem"></p>
 </form>
 
@@ -166,7 +207,7 @@
     }
   });
 
-  // 👉 Função de formatação automática da hora
+  // Função de formatação automática da hora
   const horarioInput = document.getElementById("horario");
   horarioInput.addEventListener("input", (e) => {
     let value = e.target.value.replace(/\D/g, ""); // remove não-dígitos
