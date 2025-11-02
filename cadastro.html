@@ -8,47 +8,47 @@
  
 <style>
   body {
- font-family: Arial, sans-serif;
- margin: 0; 
+ font-family: Roboto, sans-serif;
+
+margin: 0; 
  background: white;
  }
  
  header {
  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar o cabeçalho */
  border-bottom: 1px solid #4A6DA7;
- background: white;
+ background: #4A6DA7;
  padding: 15px;
-
+ 
 }
  
 .logo {
  font-size: 22px;
  font-weight: bolder;
- align-items: center;
- margin-left: 10px;
- color: #4A6DA7;
-
+ margin-left: 0px;
+ color: white;
+ 
 }
-
+ 
  .logo::first-letter {
  font-size: 30px; /* tamanho da letra L */
  font-weight: bold;
- color: orange;
+ color: coral;
  align-items: center;
  margin-left: 11px;
 }
-
+ 
  .titulo {
       font-size: 24px;
       margin-bottom: 20px;
       font-weight: bolder;
-      color: #4A6DA7;
+      color: black;
       text-align: center;
       margin-top: 40px;
  }
     
  .btn {
-      padding: 10px 20px;
+      padding: 10px 40px;
       background: #4A6DA7;
       color: white;
       border-radius: 5px;
@@ -57,7 +57,7 @@
       font-weight: bolder;
       font-size: 17px;
       text-align: center;
-      margin-left: 35%;
+      margin-left: 32%;
       
 }
     .btn:hover {
@@ -69,35 +69,37 @@
       font-weight: bold;
     }
     
-
-
+ 
+ 
  label {
  display: block;
  margin-bottom: 5px;
  font-weight: bolder;
- color: #4A6DA7;
+ color: black;
  }
-
-
+ 
+ 
  .input-group {
     margin-bottom: 16px;
     display: flex;
    margin-left: 20px;
-
+ 
    flex-direction: column;
   }
-
+ 
   .input-group input[type="password"],
   .input-group input[type="text"],
   .input-group input[type="email"],
   .input-group input[type="text"] {
-    padding: 10px;
+    padding: 15px;
     font-size: 16px;
     margin-top: 4px;
     border-radius: 6px;
     border: 1px solid #ccc;
-  }
+   margin-right: 20px;
 
+ }
+ 
   .mostrar-senha {
     margin-top: 8px;
     display: flex;
@@ -106,21 +108,21 @@
     font-size: 14px;
     color: #444;
   }
-
+ 
   .mostrar-senha input[type="checkbox"] {
     accent-color: #2196f3;
     transform: scale(1.1);
     cursor: pointer;
   }
-
+ 
   .mostrar-senha label {
     cursor: pointer;
     user-select: none;
   }
-
-
+ 
+ 
  footer {
- margin-top: 80%;
+ margin-top: 89%;
  font-size: 14px;
  text-align: center;
  color: #666;
@@ -130,117 +132,109 @@
  color: #007bff;
  text-decoration: none;
 }
-
+ 
 </style>
+ 
+ 
+<header>
+  <div class="logo">Publicador jw</div>
+</header>
 
- <header>
- <div class="logo">Publicador / jw</div>
- </header>
- </div>
- <div class="titulo">Cadastre-se</div>
-
+<div class="titulo">Cadastre-se</div>
 
 <form id="formCadastro">
-    <div class="input-group">
-      <label for="nome">Nome:</label>
-      <input type="text" id="nome" required />
-    </div>
-    <div class="input-group">
-      <label for="email">E-mail:</label>
-      <input type="email" id="email" required />
-    </div>
-
- <div class="input-group">
-  <label for="senha">Senha:</label>
-  <input type="password" id="senha" required />
-  <div class="mostrar-senha">
-    <input type="checkbox" id="mostrarSenha" />
-    <label for="mostrarSenha">Mostrar senha</label>
+  <div class="input-group">
+    <label for="email">E-mail:</label>
+    <input type="email" id="email" required />
   </div>
-</div>
 
- <button type="submit" class="btn">Criar conta</button>
- </form>
- <div class="error-message" id="mensagemErro"></div>
+  <div class="input-group">
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha" required />
+    <div class="mostrar-senha">
+      <input type="checkbox" id="mostrarSenha" />
+      <label for="mostrarSenha">Mostrar senha</label>
+    </div>
+  </div>
 
- <footer>
- <div class="brand">
- <p>&copy; 2025° - Publicador / jw / todos os direitos reservados.</p>
- </div>
- </footer>
+  <button type="submit" class="btn">Criar conta</button>
+</form>
 
+<div class="error-message" id="mensagemErro"></div>
+
+<footer>
+  <div class="brand">
+    <p>&copy; 2025° - Publicador jw / todos os direitos reservados.</p>
+  </div>
+</footer>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
-      authDomain: "teste-cfe69.firebaseapp.com",
-      projectId: "teste-cfe69",
-      storageBucket: "teste-cfe69.appspot.com",
-      messagingSenderId: "646579509123",
-      appId: "1:646579509123:web:dd23b863dd8c54bca308b6"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqkWODpY54YGrvqPVMABK_k_ZJLo1KXMA",
+    authDomain: "teste-cfe69.firebaseapp.com",
+    projectId: "teste-cfe69",
+    storageBucket: "teste-cfe69.appspot.com",
+    messagingSenderId: "646579509123",
+    appId: "1:646579509123:web:dd23b863dd8c54bca308b6"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    document.getElementById("formCadastro").addEventListener("submit", async (e) => {
-      e.preventDefault();
+  document.getElementById("formCadastro").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const nome = document.getElementById("nome").value;
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
-      const mensagemErro = document.getElementById("mensagemErro");
-      mensagemErro.textContent = "";
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    const mensagemErro = document.getElementById("mensagemErro");
+    mensagemErro.textContent = "";
 
-      try {
-        const usuario = await createUserWithEmailAndPassword(auth, email, senha);
+    try {
+      const usuario = await createUserWithEmailAndPassword(auth, email, senha);
+      await sendEmailVerification(usuario.user);
 
-        await sendEmailVerification(usuario.user);
+      await setDoc(doc(db, "usuarios", usuario.user.uid), {
+        email: email
+      });
 
-        await setDoc(doc(db, "usuarios", usuario.user.uid), {
-          nome: nome,
-          email: email
-        });
+      alert("Conta criada com sucesso! Um código de verificação foi enviado para o seu e-mail.");
+      window.location.href = "login.html";
+    } catch (error) {
+      let erroMensagem = "";
 
-        alert("Conta criada com sucesso! Um código de verificação foi enviado para o seu e-mail.");
-        window.location.href = "login.html";
-      } catch (error) {
-        let erroMensagem = "";
-
-        switch (error.code) {
-          case "auth/email-already-in-use":
-            erroMensagem = "Este e-mail já está cadastrado. Tente outro.";
-            break;
-          case "auth/invalid-email":
-            erroMensagem = "E-mail inválido. Verifique o formato.";
-            break;
-          case "auth/weak-password":
-            erroMensagem = "A senha deve ter no mínimo 6 caracteres.";
-            break;
-          default:
-            erroMensagem = "Erro ao criar conta. Tente novamente.";
-        }
-
-        mensagemErro.textContent = erroMensagem;
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          erroMensagem = "Este e-mail já está cadastrado. Tente outro.";
+          break;
+        case "auth/invalid-email":
+          erroMensagem = "E-mail inválido. Verifique o formato.";
+          break;
+        case "auth/weak-password":
+          erroMensagem = "A senha deve ter no mínimo 6 caracteres.";
+          break;
+        default:
+          erroMensagem = "Erro ao criar conta. Tente novamente.";
       }
-    });
-  </script>
 
-
+      mensagemErro.textContent = erroMensagem;
+    }
+  });
+</script>
 
 <script>
- document.getElementById("mostrarSenha").addEventListener("change", function () {
- const senhaInput = document.getElementById("senha");
- senhaInput.type = this.checked ? "text" : "password";
-});
+  document.getElementById("mostrarSenha").addEventListener("change", function () {
+    const senhaInput = document.getElementById("senha");
+    senhaInput.type = this.checked ? "text" : "password";
+  });
 </script>
 </body>
 </html>
+
 
 
 
