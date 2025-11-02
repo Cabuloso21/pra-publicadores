@@ -20,11 +20,23 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 
-  .text {
-    font-size: 22px;
-    font-weight: bold;
-   text-align: absolute;
+  
+ 
+.logo {
+ font-size: 22px;
+ font-weight: bolder;
+ text-align: absolute;
+ margin-left: 5px;
+ color: #f2f2f2;
+
+}
+
+.logo::first-letter {
+ font-size: 30px; /* tamanho da letra L */
+ font-weight: bold;
+ color: coral;
  }
+
 
   h2 {
     margin-top: 2rem;
@@ -89,7 +101,7 @@
  }
 
   .btn:hover {
-    background-color: #4338ca;
+    background-color: #4A6DA7;
   }
 
   .info-message,
@@ -122,7 +134,7 @@
 
  
  <header>
- <div class="text">Publicador jw</div>
+ <div class="logo">Publicador jw</div>
  </header>
 
 
@@ -170,7 +182,7 @@
 
       try {
         await sendPasswordResetEmail(auth, email);
-        mensagemSucesso.textContent = "Link de recuperação de senha enviado para o seu e-mail. Verifique sua caixa de entrada.";
+        mensagemSucesso.textContent = "Link de recuperação de senha enviado para o seu e-mail. Verifique sua caixa de entrada, ou na caixa de span.";
       } catch (error) {
         let erroMensagem = "Erro ao enviar link de recuperação: " + error.message;
         mensagemErro.textContent = erroMensagem;
@@ -179,3 +191,4 @@
   </script>
 </body>
 </html>
+  
