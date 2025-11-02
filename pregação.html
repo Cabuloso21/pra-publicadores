@@ -43,13 +43,15 @@ form {
     background: white;
     width: 100%;
     max-width: 500px;
-  }
+ 
+
+ }
 
   form label {
     display: block;
     margin-top: 15px;
     font-weight: bold;
-    color: black;
+    color: coral;
     margin-left: 15px;
     font-size: 17px;
   }
@@ -57,7 +59,7 @@ form {
   form input[type="text"],
   form textarea {
     width: 70%;
-    padding: 10px;
+    padding: 15px;
     margin-top: 5px;
     margin-left: 15px;
     border: 1px solid #ccc;
@@ -71,15 +73,26 @@ form {
   form textarea:focus {
     border-color: #4a90e2;
     outline: none;
- 
+   color: black;
  }
 
   form textarea {
-    width: 93%;
+    width: 100%;
     min-height: 800px;
- }
+  margin-left: 0px;
+margin-top: 10px;
 
-  form button {
+}
+
+ h3 {
+color: coral;
+text-align: absolute;
+margin-top: 40px;
+margin-left: 15px;
+}
+
+
+ form button {
     margin-top: 20px;
     background-color: #4a90e2;
     color: white;
@@ -117,8 +130,8 @@ form {
   <label for="texto">Texto da bíblia:</label>
   <input type="text" id="texto" placeholder="Digite o texto da bíblia">
 
-  <label for="descricao">Descrição:</label>
-  <textarea id="descricao" placeholder="Digite a descrição"></textarea>
+  <h3>Descrição</h3>
+<textarea id="descricao" placeholder="Digite a descrição"></textarea>
 
   <button type="button" onclick="enviarWhatsapp()">Enviar</button>
 </form>
