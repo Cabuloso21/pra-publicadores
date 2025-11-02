@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
+ 
 <style>
  body {
  font-family: Arial, sans-serif;
  margin: 0;
- background: white;
+ background: #f2f2f2;
 }
   
  header {
@@ -24,14 +24,14 @@
  border-bottom: 1px solid #4A6DA7;
    
  }
-
+ 
  .logo {
- color: orange;
+ color: coral;
  font-weight: bold;
  text-align: center;
  font-size: 25px;
 }
-
+ 
  .btn-sair {
  background: #4A6DA7;
  color: white;
@@ -42,13 +42,13 @@
 font-weight: bolder;
  font-size: 16px;
  }
-
+ 
  .btn-sair:hover {
  background-color: darkred;
 }
-
-
-
+ 
+ 
+ 
 .menu ul {
  list-style: none;
  padding: 0;
@@ -58,38 +58,38 @@ font-weight: bolder;
  border-bottom: 1px solid white;
  padding: 5px;
 }
-
+ 
  ul {
  list-style: none;
  margin: 0;
  padding: 0;
  display: flex;
-
+ 
 }
-
-
+ 
+ 
 a {
  display: flex;
- color: #4A6DA7;
+ color: coral;
  text-decoration: none;
  padding: 10px;
  font-weight: bold;
  font-size: 15px;
 }
-
-
+ 
+ 
  .menu a:hover {
  color: none;
 }
-
+ 
 .menu .icone {
  margin-right: 8px;
  width: 40px;
  height: 40px;
- fill: orange;
+ fill: coral;
  transition: transform 0.3s, fill 0.3s;
 }
-
+ 
  .text {
  color: #555;
  font-size: 19px;
@@ -101,10 +101,10 @@ a {
  margin-right: 20px;
 } 
    
-
-
-
-
+ 
+ 
+ 
+ 
 .container {
   display: flex;
   justify-content: center;     /* Centraliza horizontalmente */
@@ -115,11 +115,11 @@ a {
   padding: 0px;
   box-sizing: border-box;
 }
-
+ 
 .card {
  width: 150px;
  height: 60px;
- border: 1px solid orange;
+ border: 1px solid coral;
  justify-content: center;
  align-items: center;
  cursor: pointer;
@@ -133,23 +133,23 @@ a {
  background-color: none;
    
 }
-
+ 
 .texto {
  font-size: 16px;
  text-align: center;
  font-weight: bold;
- color: #4A6DA7;
+ color: black;
  margin-top: 20px;
  }
   
 </style>
-
+ 
  <header>
  <div class="logo">Painel</div>
  <button class="btn-sair" onclick="sair()">Sair</button>
  </header>
-
-
+ 
+ 
  <div class="menu">
   <ul>
   <li>
@@ -186,53 +186,53 @@ a {
     </li>
   </ul>
 </div>
-
+ 
 <div class="text">Vão e façam discipulos ensinando uns aos outros</div>
-
-
+ 
+ 
 <div class="container">
 <div class="card" onclick="redirecionar('exibi designação.html')">
 <div class="texto">Designação</div>
 </div>
-
+ 
 <div class="card" onclick="redirecionar('lista de estudantes2.html')">
 <div class="texto">Estudantes</div>
 </div>
-
+ 
 <div class= "card" onclick="redirecionar('exibi revisitas.html')">
 <div class="texto">Revisitas</div>
 </div>
-
+ 
 <div class="card" onclick="redirecionar('pregação.html')">
 <div class="texto">Pregação</div>
 </div>
-
+ 
 <div class="card" onclick="redirecionar('relatório.html')">
 <div class="texto">Relatório</div>
 </div>
-
+ 
 <div class= "card" onclick="redirecionar('vamos.html')">
 <div class="texto">Limpeza do salão</div>
 </div>
 </div>
  
 <script defer src="caminho.js"></script>
-
+ 
 <script>
  function redirecionar(url) {
  window.location.href = url;
 }
 </script>
-
-
+ 
+ 
 <script>
   function sair() {
     // Exemplo: limpar dados do localStorage
     localStorage.clear();
-
+ 
     // Redirecionar para página de login (altere conforme sua estrutura)
     window.location.href = "index.html";
   }
 </script>
 </body>
-</html>
+</html> 
