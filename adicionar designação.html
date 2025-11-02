@@ -36,33 +36,7 @@
  font-size: 20px;
 }
 
- #form-anuncio {
- max-width: 500px;
- margin-left: 20px;
- margin-right: 20px;
- padding: 10px;
- background-color: #f8f9fa;
- border-radius: 12px;
- box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
- font-family: Arial, sans-serif;
- margin-top: 30px;
-}
-
- #form-anuncio input[type="text"] {
- width: 91%;
- padding: 16px;
- margin-left: 0px;
- border: 1px solid #ccc;
- border-radius: 8px;  
- font-size: 16px;
- transition: border-color 0.3s;
- margin-top: 20px;
-}
-
- #form-anuncio input[type="text"]:focus {
- border-color: #007bff;
- outline: none;
-}
+ 
 
  #form-anuncio button {
  width: 50%;
@@ -89,24 +63,64 @@
  font-weight: bold;
 }
 
+
+  #form-anuncio {
+ display: block;
+ max-width: 350px;
+ margin: 20px auto;
+ font-family: Arial, sans-serif;
+ background: #f2f2f2;
+ height: 20%; 
+ padding: 20px;
+ border: 1px solid white;
+ border-radius: 10px;
+ }
+
+  #form-anuncio label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+    color: #333;
+    margin-left: 3px;
+ }
+
+  #form-anuncio input {
+    width: 100%;
+    padding: 15px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  #form-anuncio input:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 3px #007BFF;
+  }
 </style>
+
 
  <a href="painel.html">
  <span class="arrow"></span>
  </a>
  </div>
 
+ <header>
+ <div class="text">Adicionar designação</div>
+ </header>
 
-<header>
-  <div class="text">Adicionar designação</div>
-</header>
+ <form id="form-anuncio">
+ <label for="produto">Nome:</label>
+ <input type="text" id="produto" placeholder="Digite Seu nome" required />
 
-<form id="form-anuncio">
-  <input type="text" id="produto" placeholder="Nome do participante" required />
-  <input type="text" id="tema" placeholder="Tema" required />
-  <button type="submit">Finalizar</button>
-  <p class="message" id="mensagem"></p>
-</form>
+ <label for="tema">Tema:</label>
+ <input type="text" id="tema" placeholder="Digite o tema" required />
+
+ <button type="submit">Finalizar</button>
+ <p class="message" id="mensagem"></p>
+ </form>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
