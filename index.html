@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Card com Botão</title>
+  <title>Lopixe</title>
 
   <style>
     *{
@@ -15,12 +15,33 @@
 
     body{
       background: #f4f4f4;
+    }
+
+    /* Cabeçalho */
+    header{
+      width: 100%;
+      background: #007bff;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    header h1{
+      color: white;
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+
+    /* Área principal */
+    .container{
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: calc(100vh - 80px);
+      padding: 20px;
     }
 
+    /* Card */
     .card{
       width: 320px;
       background: white;
@@ -47,6 +68,7 @@
       margin-bottom: 20px;
     }
 
+    /* Botão */
     .btn{
       display: inline-block;
       padding: 12px 20px;
@@ -66,18 +88,28 @@
 </head>
 <body>
 
-  <div class="card">
-    <img src="https://picsum.photos/400/200" alt="Imagem">
+  <!-- Cabeçalho -->
+  <header>
+    <h1>Lopixe</h1>
+  </header>
 
-    <h2>Meu Card</h2>
+  <!-- Conteúdo -->
+  <div class="container">
+    <div class="card">
 
-    <p>
-      Esse é um exemplo de card em HTML e CSS com botão de redirecionamento.
-    </p>
+      <img src="https://picsum.photos/400/200" alt="Imagem">
 
-    <a href="https://www.google.com" target="_blank" class="btn">
-      Acessar Site
-    </a>
+      <h2>Meu Card</h2>
+
+      <p>
+        Esse é um exemplo de card em HTML e CSS com botão de redirecionamento.
+      </p>
+
+      <a href="https://www.google.com" target="_blank" class="btn">
+        Acessar Site
+      </a>
+
+    </div>
   </div>
 
 </body>
